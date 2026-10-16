@@ -132,32 +132,38 @@ kbd.wide{min-width:36px}
 .howgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(224px,1fr));gap:10px;margin-top:14px;max-height:52%;overflow:auto;padding-right:4px}
 .howgrid .stat p{font-size:12px;line-height:1.6;color:#eadcc4;margin-top:6px}
 .howgrid .stat p b{color:var(--ember)}
-/* ---------- CONTROLLI TOUCH (compatti) ---------- */
-#touch{position:fixed;left:0;right:0;bottom:0;height:min(36vh,256px);z-index:40;display:none;pointer-events:none;padding:0 10px calc(8px + env(safe-area-inset-bottom))}
+
+/* ---------- CONTROLLI TOUCH: compatti e senza sovrapposizioni ---------- */
+#touch{position:fixed;left:0;right:0;bottom:0;height:220px;height:min(32vh,220px);z-index:40;display:none;pointer-events:none;padding:0 8px calc(8px + env(safe-area-inset-bottom))}
 body.touch #touch{display:block}
 body.touch #comboPanel{display:none}
 body.touch #stage{border-radius:0;border-left:none;border-right:none}
-#dpad{position:absolute;left:10px;bottom:10px;width:clamp(120px,28vw,170px);height:clamp(120px,28vw,170px);border-radius:50%;pointer-events:auto;touch-action:none;
+#dpad{position:absolute;left:8px;bottom:8px;width:128px;width:clamp(108px,25vw,146px);height:128px;height:clamp(108px,25vw,146px);border-radius:50%;pointer-events:auto;touch-action:none;
   background:radial-gradient(circle at 50% 38%,#16414cbb,#08222acc);border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink),inset 0 2px 0 #ffffff22}
 #dpad .hub{position:absolute;left:50%;top:50%;width:34%;height:34%;transform:translate(-50%,-50%);border-radius:50%;background:#0a2a33;border:3px solid var(--ink);box-shadow:inset 0 2px 0 #ffffff1a}
-#dpad .dg{position:absolute;display:grid;place-items:center;font:400 clamp(16px,4vw,24px) var(--disp);color:#ffe6a855;pointer-events:none;transition:color .08s,transform .08s,text-shadow .08s}
+#dpad .dg{position:absolute;display:grid;place-items:center;font:400 18px var(--disp);font:400 clamp(14px,3.6vw,22px) var(--disp);color:#ffe6a855;pointer-events:none;transition:color .08s,transform .08s,text-shadow .08s}
 #dpad .dg.on{color:var(--ember);text-shadow:0 0 14px #ffc53199}
-#dU{left:50%;top:5%;transform:translateX(-50%)}#dU.on{transform:translateX(-50%) scale(1.22)}
-#dD{left:50%;bottom:5%;transform:translateX(-50%)}#dD.on{transform:translateX(-50%) scale(1.22)}
-#dL{left:5%;top:50%;transform:translateY(-50%)}#dL.on{transform:translateY(-50%) scale(1.22)}
-#dR{right:5%;top:50%;transform:translateY(-50%)}#dR.on{transform:translateY(-50%) scale(1.22)}
-#actions{position:absolute;right:8px;bottom:10px;width:clamp(176px,40vw,250px);height:clamp(142px,31vw,194px);pointer-events:none}
+#dU{left:50%;top:5%;transform:translateX(-50%)}#dU.on{transform:translateX(-50%) scale(1.18)}
+#dD{left:50%;bottom:5%;transform:translateX(-50%)}#dD.on{transform:translateX(-50%) scale(1.18)}
+#dL{left:5%;top:50%;transform:translateY(-50%)}#dL.on{transform:translateY(-50%) scale(1.18)}
+#dR{right:5%;top:50%;transform:translateY(-50%)}#dR.on{transform:translateY(-50%) scale(1.18)}
+
+#actions{position:absolute;right:8px;bottom:8px;width:196px;width:clamp(176px,43vw,230px);height:174px;height:clamp(160px,37vw,200px);pointer-events:none}
 .ab{position:absolute;pointer-events:auto;touch-action:none;display:grid;place-items:center;border:3px solid var(--ink);border-radius:50%;
-  font:400 clamp(11px,2.9vw,15px) var(--disp);color:var(--ink);box-shadow:0 4px 0 var(--ink),inset 0 2px 0 #ffffff44;transition:transform .07s,box-shadow .07s,filter .1s}
+  font:400 13px var(--disp);font:400 clamp(10px,2.7vw,15px) var(--disp);color:var(--ink);box-shadow:0 4px 0 var(--ink),inset 0 2px 0 #ffffff44;transition:transform .07s,box-shadow .07s,filter .1s}
 .ab.act{transform:translateY(3px) scale(.95);box-shadow:none;filter:brightness(1.22)}
-#aWave{right:0;bottom:0;width:clamp(72px,17vw,100px);height:clamp(72px,17vw,100px);background:linear-gradient(180deg,#ff9d4d,var(--fox));color:#fff;text-shadow:0 2px 0 var(--ink)}
-#aJump{right:clamp(58px,13vw,80px);bottom:clamp(54px,12.5vw,72px);width:clamp(62px,14.5vw,84px);height:clamp(62px,14.5vw,84px);background:linear-gradient(180deg,#ffd06a,var(--ember))}
-#aTaunt{left:2px;bottom:clamp(8px,2.4vw,16px);width:clamp(44px,10.5vw,60px);height:clamp(44px,10.5vw,60px);background:linear-gradient(180deg,#8fdcb6,var(--leaf));font-size:clamp(7.5px,2vw,9.5px);line-height:1.05}
-#comboPad{position:absolute;left:0;top:0;display:grid;grid-template-columns:1fr 1fr;gap:6px;width:clamp(104px,24vw,142px);pointer-events:none}
-#comboPad .ab{position:relative;border-radius:12px;width:100%;height:clamp(34px,8vw,46px);font:800 clamp(7.5px,2vw,9.5px) var(--body);letter-spacing:.04em;
+
+#comboPad{position:absolute;left:0;top:0;width:54%;height:44%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:5px;pointer-events:none}
+#comboPad .ab{position:relative;width:100%;height:100%;border-radius:12px;
+  font:800 9px var(--body);font:800 clamp(7.5px,1.9vw,10px) var(--body);letter-spacing:.04em;
   background:linear-gradient(180deg,#1a4a58,#0b2b34);color:var(--paper);box-shadow:0 3px 0 var(--ink),inset 0 1px 0 #ffffff22}
 #comboPad .ab u{display:block;text-decoration:none;font-size:6.5px;color:var(--ember);letter-spacing:.08em;margin-top:1px}
 #comboPad .ab.off{opacity:.4}
+
+#aJump{right:0;top:0;width:68px;width:clamp(58px,13.5vw,82px);height:68px;height:clamp(58px,13.5vw,82px);background:linear-gradient(180deg,#ffd06a,var(--ember))}
+#aWave{right:0;bottom:0;width:84px;width:clamp(72px,17.5vw,100px);height:84px;height:clamp(72px,17.5vw,100px);background:linear-gradient(180deg,#ff9d4d,var(--fox));color:#fff;text-shadow:0 2px 0 var(--ink)}
+#aTaunt{left:0;bottom:0;width:54px;width:clamp(46px,11vw,62px);height:54px;height:clamp(46px,11vw,62px);background:linear-gradient(180deg,#8fdcb6,var(--leaf));font-size:9px;font-size:clamp(7.5px,1.9vw,9.5px);line-height:1.05}
+
 #rotate{position:fixed;inset:0;z-index:60;display:none;place-items:center;background:#061419f5;text-align:center;padding:24px}
 body.touch.portrait #rotate{display:grid}
 #rotate p{font:400 18px var(--disp);color:var(--ember);line-height:1.6}
@@ -220,8 +226,8 @@ body.touch.portrait #rotate{display:grid}
             <button class="btn btn-ghost" id="btnSound">🔊 SUONO ON</button>
           </div>
           <p class="hintline">Tastiera: <kbd>A</kbd><kbd>D</kbd> muovi · <kbd>W</kbd>/<kbd>␣</kbd> salta (doppio salto) · <kbd>S</kbd>+salto scendi · <kbd>J</kbd> onda · <kbd>T</kbd> provoca · <kbd>P</kbd> pausa<br>
-          Mobile: d-pad a sinistra (scorri il pollice), <b>ONDA</b> e <b>SALTO</b> a destra, griglia combo sopra.<br>
-          Telecomando TV: <kbd>◀▶</kbd> muovi · <kbd>▲</kbd> salta · <kbd>OK</kbd> spara · <kbd>1‑4</kbd> combo · <kbd>5</kbd> provoca · <kbd>⏎</kbd> conferma · <kbd>⎋</kbd> pausa/indietro.</p>
+          Mobile: d-pad a sinistra, <b>ONDA</b>/<b>SALTO</b> a destra, griglia combo sopra.<br>
+          Controller: <kbd>Stick/D-pad</kbd> muovi · <kbd>A</kbd> salta · <kbd>B/X</kbd> spara · <kbd>Y</kbd> provoca · <kbd>LB/RB/LT/RT</kbd> combo · <kbd>Start</kbd> pausa.</p>
         </div>
         <div class="roster">
           <div class="rcard">
@@ -261,8 +267,8 @@ body.touch.portrait #rotate{display:grid}
         <div class="stat"><i>MEGA OCCHEI · 50⚡</i><p>Tieni <kbd>J</kbd> finché la sfera brilla, poi rilascia: <b>trave</b> che spazza mezza mappa. Fa male anche al boss.</p></div>
         <div class="stat"><i>UVA &amp; CASSETTE</i><p>L'<b>uva</b> dà +19 vita e +28 energia. Le cassette di legno «OCHEI» esplodono e spesso ne contengono una. Quella dorata: +72 energia.</p></div>
         <div class="stat"><i>MAPPE INFINITE</i><p>Le mappe si generano da sole e <b>non finiscono mai</b>. Ogni 3 livelli torna il boss, più forte. Più vai avanti, più aculei.</p></div>
-        <div class="stat"><i>MOBILE</i><p>D-pad <b>continuo</b>: appoggia il pollice e scorri, cambia direzione da solo. <b>ONDA</b> e <b>SALTO</b> a destra, griglia <b>3PL/RSH/CLN/MEGA</b> sopra, <b>PROVOCA</b> in basso. Ora più compatti, si vede meglio il campo.</p></div>
-        <div class="stat"><i>TELECOMANDO TV</i><p><kbd>◀▶</kbd> muovi · <kbd>▲</kbd> salta · <kbd>▼</kbd> scendi · <kbd>OK</kbd>/<kbd>⏎</kbd> spara (tieni = mega) · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd> combo istantanee · <kbd>5</kbd> provoca · <kbd>⏎</kbd> conferma nei menu · <kbd>⎋</kbd>/<kbd>Indietro</kbd> pausa. Nei menu <kbd>▲▼</kbd> spostano la selezione.</p></div>
+        <div class="stat"><i>MOBILE</i><p>D-pad continuo a sinistra. A destra: griglia combo in alto, <b>SALTO</b>, <b>ONDA</b>, <b>PROVOCA</b>. Tasti separati, niente sovrapposizioni.</p></div>
+        <div class="stat"><i>CONTROLLER</i><p><kbd>Stick/D-pad</kbd> muovi · <kbd>A</kbd> salta · <kbd>B/X</kbd> spara · <kbd>Y</kbd> provoca · <kbd>LB</kbd> triplo · <kbd>RB</kbd> rush · <kbd>LT</kbd> ciclone · <kbd>RT</kbd> mega · <kbd>Start</kbd> pausa.</p></div>
       </div>
       <div class="cta-row"><button class="btn btn-big" id="btnBack">◀ TORNA</button><button class="btn" id="btnStart2">occhei,siuum</button></div>
     </section>
@@ -313,9 +319,9 @@ body.touch.portrait #rotate{display:grid}
       <div class="ab" id="cCyclone">CLN<u>35⚡</u></div>
       <div class="ab" id="cMega">MEGA<u>50⚡</u></div>
     </div>
-    <div class="ab" id="aTaunt">OCCH<br>EI</div>
     <div class="ab" id="aJump">SALTO</div>
     <div class="ab" id="aWave">ONDA</div>
+    <div class="ab" id="aTaunt">OCCH<br>EI</div>
   </div>
 </div>
 <div id="rotate"><div><p>🦊 GIRA IL TELEFONO<br><span style="font:400 13px var(--body);color:#d8c6a8">il campo di battaglia è orizzontale, occhei?</span></p></div></div>
@@ -324,6 +330,47 @@ body.touch.portrait #rotate{display:grid}
 <script>
 (function(){
 "use strict";
+
+/* polyfill minimi per TV/browser vecchi */
+if(!window.requestAnimationFrame){
+  window.requestAnimationFrame=window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.msRequestAnimationFrame||function(cb){return setTimeout(function(){cb(Date.now());},16);};
+}
+if(!window.cancelAnimationFrame){
+  window.cancelAnimationFrame=window.webkitCancelAnimationFrame||window.mozCancelAnimationFrame||window.msCancelAnimationFrame||clearTimeout;
+}
+if(!window.performance)window.performance={};
+if(!window.performance.now)window.performance.now=function(){return Date.now();};
+if(typeof Object.assign!=='function'){
+  Object.assign=function(target){
+    if(target===null||target===undefined)throw new TypeError('Cannot convert undefined or null to object');
+    var to=Object(target);
+    for(var i=1;i<arguments.length;i++){
+      var next=arguments[i];
+      if(next===null||next===undefined)continue;
+      for(var key in next)if(Object.prototype.hasOwnProperty.call(next,key))to[key]=next[key];
+    }
+    return to;
+  };
+}
+if(!Math.hypot){
+  Math.hypot=function(){
+    var sum=0;
+    for(var i=0;i<arguments.length;i++){var n=Number(arguments[i]);if(!isFinite(n))return Infinity;sum+=n*n;}
+    return Math.sqrt(sum);
+  };
+}
+if(typeof Element!=='undefined' && !Element.prototype.closest){
+  Element.prototype.closest=function(s){
+    var el=this;
+    do{
+      if((el.matches||el.msMatchesSelector||el.webkitMatchesSelector||el.mozMatchesSelector).call(el,s))return el;
+      el=el.parentElement||el.parentNode;
+    }while(el!==null&&el.nodeType===1);
+    return null;
+  };
+}
+try{ window.addEventListener('unhandledrejection',function(e){ if(e&&e.preventDefault)e.preventDefault(); }); }catch(_){}
+
 const VW=960,VH=540,GRAV=2150,GY=470,INK='#20140A',TAU=Math.PI*2;
 const $=s=>document.querySelector(s), $$=s=>Array.prototype.slice.call(document.querySelectorAll(s));
 const clamp=(v,a,b)=>v<a?a:(v>b?b:v), lerp=(a,b,t)=>a+(b-a)*t;
@@ -345,10 +392,12 @@ if(window.CanvasRenderingContext2D && CanvasRenderingContext2D.prototype){
   };
 }
 
-['gesturestart','gesturechange','gestureend'].forEach(g=>document.addEventListener(g,e=>e.preventDefault(),{passive:false}));
-document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});
-document.addEventListener('touchmove',e=>{ if(e.touches&&e.touches.length>1)e.preventDefault(); },{passive:false});
-document.addEventListener('contextmenu',e=>{ if(e.target.closest&&e.target.closest('#touch'))e.preventDefault(); });
+try{
+  ['gesturestart','gesturechange','gestureend'].forEach(g=>document.addEventListener(g,e=>e.preventDefault(),{passive:false}));
+  document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});
+  document.addEventListener('touchmove',e=>{ if(e.touches&&e.touches.length>1)e.preventDefault(); },{passive:false});
+  document.addEventListener('contextmenu',e=>{ if(e.target&&e.target.closest&&e.target.closest('#touch'))e.preventDefault(); });
+}catch(_){}
 
 function showErr(msg){
   const p=$('#err'); if(!p)return;
@@ -356,7 +405,7 @@ function showErr(msg){
   p.classList.add('on');
   const b=$('#boot'); if(b)b.classList.add('gone');
 }
-window.addEventListener('error',ev=>showErr((ev.message||'errore')+'\n'+(ev.filename||'')+':'+(ev.lineno||'')));
+window.addEventListener('error',ev=>{ if(window.console&&console.error)console.error(ev&&ev.message?ev.message:ev); });
 
 function hexRgb(h){ let s=h.slice(1); if(s.length===3)s=s.split('').map(c=>c+c).join(''); const n=parseInt(s,16); return [(n>>16)&255,(n>>8)&255,n&255]; }
 function mix(a,b,t){ const p=hexRgb(a),q=hexRgb(b); return 'rgb('+Math.round(lerp(p[0],q[0],t))+','+Math.round(lerp(p[1],q[1],t))+','+Math.round(lerp(p[2],q[2],t))+')'; }
@@ -506,6 +555,101 @@ const P={x:120,y:GY-60,w:32,h:38,vx:0,vy:0,face:1,onGround:false,hp:100,maxhp:10
   fireCd:0,dropT:0,shootT:0,dead:false,bubble:'',bubbleT:0,blink:0};
 const inp={l:false,r:false,u:false,d:false};
 
+/* ------------------------- GAMEPAD / CONTROLLER ------------------------- */
+const GP={prev:{},wasActive:false,broken:false};
+function gb(g,i){ try{ return !!(g&&g.buttons&&g.buttons[i]&&g.buttons[i].pressed); }catch(_){ return false; } }
+function gv(g,i){ try{ return (g&&g.buttons&&g.buttons[i]&&typeof g.buttons[i].value==='number')?g.buttons[i].value:0; }catch(_){ return 0; } }
+function gpEdge(name,pressed,press,release){
+  const was=!!GP.prev[name];
+  if(pressed&&!was&&press)press();
+  if(!pressed&&was&&release)release();
+  GP.prev[name]=!!pressed;
+}
+function pollGamepad(){
+  if(GP.broken)return;
+  try{
+    const get=navigator.getGamepads||navigator.webkitGetGamepads||navigator.msGetGamepads;
+    if(typeof get!=='function')return;
+    const pads=get.call(navigator);
+    if(!pads)return;
+    let g=null;
+    for(let i=0;i<pads.length;i++){ if(pads[i]&&pads[i].connected){ g=pads[i]; break; } }
+    if(!g){
+      for(const k in GP.prev)GP.prev[k]=false;
+      if(GP.wasActive){ inp.l=inp.r=inp.u=inp.d=false; GP.wasActive=false; }
+      return;
+    }
+
+    const ax=g.axes||[];
+    const lx=Number(ax[0])||0, ly=Number(ax[1])||0;
+    const dz=0.23;
+    const left = lx < -dz || gb(g,14);
+    const right= lx >  dz || gb(g,15);
+    const up   = ly < -dz || gb(g,12) || gb(g,0);
+    const down = ly >  dz || gb(g,13);
+    const fire = gb(g,1) || gb(g,2);
+    const tauntBtn = gb(g,3);
+    const cTriple = gb(g,4);
+    const cRush = gb(g,5);
+    const cCyclone = gb(g,6);
+    const cMega = gb(g,7) || gv(g,7) > 0.45;
+    const startBtn = gb(g,9);
+    const backBtn = gb(g,8);
+
+    const any = left||right||up||down||fire||tauntBtn||cTriple||cRush||cCyclone||cMega||startBtn||backBtn;
+    if(any && !A.started) armAudio();
+
+    if(any){
+      inp.l=left; inp.r=right; inp.u=up; inp.d=down;
+      GP.wasActive=true;
+    } else if(GP.wasActive){
+      inp.l=inp.r=inp.u=inp.d=false;
+      GP.wasActive=false;
+    }
+
+    if(up && !GP.prev.up){
+      if(G.state==='play') P.jbuf=.14;
+      if(G.state==='play') pushBuf('U');
+    }
+    if(left && !GP.prev.left) pushBuf('L');
+    if(right && !GP.prev.right) pushBuf('R');
+    if(down && !GP.prev.down) pushBuf('D');
+    GP.prev.up=up; GP.prev.left=left; GP.prev.right=right; GP.prev.down=down;
+
+    gpEdge('gpFire', fire,
+      ()=>{ if(G.state==='play'&&!P.dead) onFirePress(); },
+      ()=>{ if(G.fireHeld||P.charging) onFireRelease(); }
+    );
+    gpEdge('gpTaunt', tauntBtn, ()=>taunt(), null);
+    gpEdge('gpTriple', cTriple, ()=>doCombo('triple'), null);
+    gpEdge('gpRush', cRush, ()=>doCombo('rush'), null);
+    gpEdge('gpCyclone', cCyclone, ()=>doCombo('cyclone'), null);
+    gpEdge('gpMega', cMega, ()=>doCombo('mega'), null);
+    gpEdge('gpStart', startBtn, ()=>{ if(G.state==='play'||G.state==='pause') togglePause(); }, null);
+
+    const inMenus=(G.state==='title'||G.state==='how'||G.state==='pause'||G.state==='over'||G.state==='win');
+    if(inMenus){
+      gpEdge('gpMenuA', gb(g,0), ()=>{
+        try{
+          const ae=document.activeElement;
+          if(ae&&ae.tagName==='BUTTON'&&ae.offsetParent!==null)ae.click();
+          else menuDefault();
+        }catch(_){ menuDefault(); }
+      }, null);
+      gpEdge('gpMenuB', gb(g,1)||backBtn, ()=>{
+        if(G.state==='pause')togglePause();
+        else if(G.state==='over'||G.state==='win'||G.state==='how')toMenu();
+      }, null);
+    } else {
+      GP.prev.gpMenuA=false;
+      GP.prev.gpMenuB=false;
+    }
+  }catch(err){
+    GP.broken=true;
+  }
+}
+try{ window.addEventListener('gamepadconnected',function(){ armAudio(); }); }catch(_){}
+
 function buildLevel(i){
   const L=genLevel(i); G.def=L; G.level=i; G.diff=Math.floor(i/3);
   G.solids=[{x:-40,y:GY,w:L.w+80,h:VH-GY+40,kind:'ground'}];
@@ -546,7 +690,7 @@ function buildLevel(i){
     for(let j=G.spawnQ.length-1;j>0;j--){const j2=rndi(0,j);const tmp=G.spawnQ[j];G.spawnQ[j]=G.spawnQ[j2];G.spawnQ[j2]=tmp;}
   }
   P.x=120;P.y=GY-60;P.vx=0;P.vy=0;P.hp=P.maxhp;P.en=P.maxen;P.dead=false;P.invuln=.6;P.jumps=0;
-  P.charging=false;P.charge=0;P.holdT=0;P.holdShots=0;P.stretch=0;P.bubbleT=0;
+  P.charging=false;P.charge=0;P.holdT=0;P.holdShots=0;P.stretch=0;P.bubbleT=0;P.jbuf=0;P.coyote=0;P.dropT=0;P.fireCd=0;P.shootT=0;
   A.intensity=L.boss?1:.25+Math.min(i,8)*.06; A.bpm=L.boss?152:132+Math.min(i,8)*3;
 }
 function mkGrape(x,y,k){ return {x:x,y:y,k:k,t:rnd(6),got:false}; }
@@ -959,7 +1103,7 @@ function update(dt){
   updatePlayer(dt); updateShots(dt);
   for(const e of G.enemies){
     if(e.enter>0){ e.enter-=dt; continue; }
-    e.invuln=Math.max(0,(e.invuln||0)-dt);   /* FIX: l'invulnerabilità deve scadere, altrimenti dmgEnemy esce sempre prima di togliere HP (boss invincibile) */
+    e.invuln=Math.max(0,(e.invuln||0)-dt);
     e.t+=dt; e.flash=Math.max(0,e.flash-dt*4.5);
     if(e.speech){ e.speech.t-=dt; if(e.speech.t<=0)e.speech=null; }
     if(e.k==='riccio')riccioAI(e,dt); else if(e.k==='piccione')piccioneAI(e,dt); else bossAI(e,dt);
@@ -1518,7 +1662,7 @@ window.addEventListener('keydown',e=>{
   if(s==='L'){inp.l=true;pushBuf('L');}
   if(s==='R'){inp.r=true;pushBuf('R');}
   if(s==='D'){inp.d=true;pushBuf('D');}
-  if(s==='U'){inp.u=true;P.jbuf=.14;if(inPlay)pushBuf('U');}
+  if(s==='U'){inp.u=true;if(inPlay){P.jbuf=.14;pushBuf('U');}}
   if(c==='KeyJ'||c==='KeyZ'||c==='KeyK') onFirePress();
   else if((c==='Enter'||k==='Enter')&&inPlay) onFirePress();
   if(c==='KeyT') taunt();
@@ -1574,9 +1718,9 @@ function bindHold(el,down,up){
   const d=e=>{ e.preventDefault(); if(pid!==null)return; pid=e.pointerId;
     try{ el.setPointerCapture(pid); }catch(_){}
     el.classList.add('act'); armAudio(); down(); };
-  const u=e=>{ if(pid===null)return; if(e&&e.pointerId!==pid)return; pid=null;
-    try{ el.releasePointerCapture&&el.releasePointerCapture(el._cap||0); }catch(_){}
-    el.classList.remove('act'); if(up)up(); };
+  const u=e=>{ if(pid===null)return; if(e&&e.pointerId!==pid)return;
+    try{ el.releasePointerCapture&&el.releasePointerCapture(pid); }catch(_){}
+    pid=null; el.classList.remove('act'); if(up)up(); };
   el.addEventListener('pointerdown',d);
   el.addEventListener('pointerup',u);
   el.addEventListener('pointercancel',u);
@@ -1592,7 +1736,7 @@ function bindTouch(){
     if(cur==='L')inp.l=false; if(cur==='R')inp.r=false; if(cur==='U')inp.u=false; if(cur==='D')inp.d=false;
     cur=d;
     if(d==='L'){inp.l=true;pushBuf('L');} else if(d==='R'){inp.r=true;pushBuf('R');}
-    else if(d==='D'){inp.d=true;pushBuf('D');} else if(d==='U'){inp.u=true;P.jbuf=.14;pushBuf('U');}
+    else if(d==='D'){inp.d=true;pushBuf('D');} else if(d==='U'){inp.u=true;if(G.state==='play'){P.jbuf=.14;pushBuf('U');}}
     ['#dL','#dR','#dU','#dD'].forEach(s=>{const el=$(s); if(el)el.classList.remove('on');});
     if(d){const el=$('#d'+d); if(el)el.classList.add('on');}
   };
@@ -1603,7 +1747,7 @@ function bindTouch(){
   dpad.addEventListener('pointerup',rel); dpad.addEventListener('pointercancel',rel); dpad.addEventListener('lostpointercapture',rel);
   dpad.addEventListener('contextmenu',e=>e.preventDefault());
 
-  bindHold($('#aJump'),()=>{inp.u=true;P.jbuf=.14;pushBuf('U');},()=>inp.u=false);
+  bindHold($('#aJump'),()=>{inp.u=true;if(G.state==='play'){P.jbuf=.14;pushBuf('U');}},()=>inp.u=false);
   bindHold($('#aWave'),onFirePress,onFireRelease);
   bindHold($('#aTaunt'),taunt,null);
   [['cTriple','triple'],['cRush','rush'],['cCyclone','cyclone'],['cMega','mega']].forEach(pair=>{
@@ -1680,6 +1824,13 @@ function wireButtons(){
   });
 }
 
+function enableTouch(){
+  if(!document.body.classList.contains('touch')){
+    document.body.classList.add('touch');
+    layout();
+  }
+}
+
 let last=performance.now(), booted=false, errOnce=false;
 function frame(now){
   requestAnimationFrame(frame);
@@ -1687,6 +1838,7 @@ function frame(now){
     let dt=(now-last)/1000; last=now;
     if(!(dt>0))dt=0; if(dt>.05)dt=.05;
     A.tick();
+    pollGamepad();
     if(G.state==='play'){
       if(G.slowmo>0){ G.slowmo-=dt; dt*=.34; }
       if(G.hitstop>0)G.hitstop-=dt; else update(dt);
@@ -1696,8 +1848,7 @@ function frame(now){
     render();
     if(!booted){ booted=true; UI.boot.classList.add('gone'); }
   }catch(e){
-    if(!errOnce){ errOnce=true; showErr((e&&e.message?e.message:String(e))+'\n'+(e&&e.stack?String(e.stack).split('\n').slice(0,4).join('\n'):'')); }
-    if(window.console&&console.error)console.error(e);
+    if(!errOnce){ errOnce=true; if(window.console&&console.error)console.error(e); }
   }
 }
 function layout(){
@@ -1714,8 +1865,8 @@ function layout(){
 
 try{
   cacheUI(); bindTouch(); wireButtons();
-  if(window.matchMedia&&matchMedia('(pointer:coarse)').matches)document.body.classList.add('touch');
-  window.addEventListener('touchstart',()=>document.body.classList.add('touch'),{once:true,passive:true});
+  try{ if(window.matchMedia&&matchMedia('(pointer:coarse)').matches)enableTouch(); }catch(_){}
+  window.addEventListener('touchstart',enableTouch,{once:true,passive:true});
   window.addEventListener('resize',layout);
   window.addEventListener('orientationchange',()=>setTimeout(layout,200));
   window.addEventListener('pointerdown',armAudio,{once:true});
@@ -1723,8 +1874,8 @@ try{
   buildLevel(0); layout(); show('scr-title');
   requestAnimationFrame(frame);
 }catch(e){
-  showErr((e&&e.message?e.message:String(e))+'\n'+(e&&e.stack?String(e.stack).split('\n').slice(0,5).join('\n'):''));
   if(window.console&&console.error)console.error(e);
+  const b=$('#boot'); if(b)b.classList.add('gone');
 }
 })();
 </script>
