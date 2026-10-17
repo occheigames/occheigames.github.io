@@ -98,7 +98,7 @@ kbd.wide{min-width:36px}
 .btn-ghost{background:transparent;color:var(--paper);border-color:#ffd9a855;box-shadow:0 4px 0 #00000088;font-size:11px}
 .hintline{margin-top:12px;font-size:11px;color:#cbb89b;line-height:2}
 .title-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(10px,2.4vw,26px);align-items:center}
-@media(max-width:770px){.title-grid{grid-template-columns:1fr}.roster{display:none!important}}
+@media(max-width:770px) and (hover:hover){.title-grid{grid-template-columns:1fr}.roster{display:none!important}}
 .roster{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .rcard{position:relative;border:3px solid var(--ink);border-radius:13px;padding:8px;overflow:hidden;background:linear-gradient(165deg,#133a45,#0a2129);box-shadow:0 5px 0 var(--ink);transition:transform .22s cubic-bezier(.2,1.4,.4,1),box-shadow .22s}
 .rcard:nth-child(odd){transform:rotate(-1.6deg)}
@@ -186,7 +186,7 @@ body.touch .tape,body.touch .hintline{display:none}
 body.touch .btn{min-height:44px;padding:10px 16px}
 body.touch .howgrid{max-height:62%}
 body.touch .howgrid .stat p{font-size:12.5px}
-@media(max-height:430px){
+@media(max-height:430px) and (hover:hover){
  .tagline,.hintline{display:none}.eyebrow{margin-bottom:2px}.logo{margin:0 0 6px}
  .btn-big{font-size:15px;padding:9px 16px}.cardsub{font-size:11px}.stats{margin:8px 0 2px}
  .stat b{font-size:14px}.rank{margin-top:4px}.cta-row{margin-top:8px}
@@ -219,6 +219,30 @@ body.touch .howgrid .stat p{font-size:12.5px}
 .mbar u{display:block;height:100%;background:var(--leaf);text-decoration:none}
 .mb{font-size:11px;padding:7px 12px;white-space:nowrap}.mwait{font:800 9px var(--body);letter-spacing:.14em;color:#ffd9a888}
 .btn.no{filter:grayscale(.8);opacity:.6}
+
+/* --- v3 mobile: palco fisso 960x540 scalato su tutto lo schermo --- */
+body.touch #app{padding:0;display:block}
+body.touch #stage{position:absolute;left:50%;top:50%;max-width:none;border:0;border-radius:0;box-shadow:none;transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:center center}
+body.touch .lbl{font-size:12px}
+body.touch #hpnum{font-size:15px}
+body.touch #score{font-size:30px}
+body.touch #lvlchip{font-size:11px}body.touch #lvlchip b{font-size:14px}
+body.touch #comboPill{font-size:18px}
+body.touch .tbtn{width:60px;height:60px;font-size:26px}
+body.touch #toolbar{top:84px}
+body.touch .btn{min-height:52px;font-size:15px;padding:8px 18px}
+body.touch .btn-big{font-size:20px}body.touch .btn-ghost{font-size:13px}
+body.touch .tagline{font-size:14px}
+body.touch .cardsub{font-size:15px}
+body.touch .stat i{font-size:10px}body.touch .stat b{font-size:19px}
+body.touch .howgrid{max-height:58%}body.touch .howgrid .stat p{font-size:13.5px}
+body.touch .mt b{font-size:15px}body.touch .mt i{font-size:12px}body.touch .mb{font-size:14px;padding:10px 16px}
+body.touch #dpad{left:calc(10px + env(safe-area-inset-left))}
+body.touch #actions{right:calc(10px + env(safe-area-inset-right))}
+.pigban{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:10px;max-width:46ch;padding:8px 10px;border:3px solid var(--ink);border-radius:12px;background:linear-gradient(100deg,#2a4560e6,#1d2a3de6);font-size:12px;line-height:1.4;color:#eadcc4}
+.pigban span{width:100%;font:400 11px var(--disp);color:var(--ember);letter-spacing:.05em}
+.pigban b{color:#a9cdf2}
+.pigbtn{font-size:11px;padding:6px 12px}
 </style>
 </head>
 <body>
@@ -268,6 +292,7 @@ body.touch .howgrid .stat p{font-size:12.5px}
           <p class="eyebrow">Arcade 2D · volpe contro aculei · mappe infinite</p>
           <h1 class="logo"><span class="l1">GULLOTTA</span><span class="l2">FIGHT</span><span class="l3">OCCHEI!</span></h1>
           <p class="tagline">Sei una <b>volpe</b> con le onde in corpo. Spara <b>occhei</b> energetici, salta sui tetti, raccogli <b>uva</b> e manda a quel paese <b>ricci</b> che si arrotolano e <b>piccioni</b> che piocono dal cielo. Le mappe si generano da sole, <b>all'infinito</b>: ogni 3 c'è lui, <b>Ricciotto Re d'Aculei</b>.</p>
+          <div class="pigban"><span>NOVITÀ · BOSS PICCIONE</span><div><b>Piccionone Capostorme</b> ti aspetta alle mappe <b>6, 12, 18…</b> Vola, bombarda e si tuffa.</div><button class="btn pigbtn" id="btnPig">PROVA SUBITO</button></div>
           <div class="cta-row">
             <button class="btn btn-big" id="btnStart">occhei,siuum</button>
             <button class="btn btn-alt" id="btnHow">COMBOS &amp; COMANDI</button>
@@ -316,7 +341,7 @@ body.touch .howgrid .stat p{font-size:12.5px}
         <div class="stat"><i>MEGA OCCHEI · 50⚡</i><p>Tieni <kbd>J</kbd> finché la sfera brilla, poi rilascia: <b>trave</b> che spazza mezza mappa. Fa male anche al boss.</p></div>
         <div class="stat"><i>UVA &amp; CASSETTE</i><p>L'<b>uva</b> dà +19 vita e +28 energia. Le cassette di legno «OCHEI» esplodono e spesso ne contengono una. Quella dorata: +72 energia.</p></div>
         <div class="stat"><i>MAPPE INFINITE</i><p>Le mappe si generano da sole e <b>non finiscono mai</b>. Ogni 3 livelli torna il boss, più forte. Più vai avanti, più aculei.</p></div>
-        <div class="stat"><i>MOBILE</i><p>D-pad continuo a sinistra. A destra: griglia combo in alto, <b>SALTO</b>, <b>ONDA</b>, <b>PROVOCA</b>. Tasti separati, niente sovrapposizioni.</p></div>
+        <div class="stat"><i>BOSS PICCIONE</i><p>Alle mappe <b>6, 12, 18…</b> arriva <b>Piccionone Capostorme</b>: vola, bombarda di cacche, si tuffa a terra (<b>lì è vulnerabile</b>) e richiama lo stormo. Dal menu puoi provarlo subito.</p></div><div class="stat"><i>MOBILE</i><p>D-pad continuo a sinistra. A destra: griglia combo in alto, <b>SALTO</b>, <b>ONDA</b>, <b>PROVOCA</b>. Tasti separati, niente sovrapposizioni.</p></div>
         <div class="stat"><i>CONTROLLER</i><p><kbd>Stick/D-pad</kbd> muovi · <kbd>A</kbd> salta · <kbd>B/X</kbd> spara · <kbd>Y</kbd> provoca · <kbd>LB</kbd> triplo · <kbd>RB</kbd> rush · <kbd>LT</kbd> ciclone · <kbd>RT</kbd> mega · <kbd>Start</kbd> pausa.</p></div>
       </div>
       <div class="cta-row"><button class="btn btn-big" id="btnBack">◀ TORNA</button><button class="btn" id="btnStart2">occhei,siuum</button></div>
@@ -1720,7 +1745,7 @@ function attract(dt){
 
 const UI={};
 function cacheUI(){
-  const ids=['foxBadge','hpbar','hpnum','enfill','enwrap','score','comboPill','lvlname','bossbar','bhpfill','bossPhase','comboPanel','hud','stage','boot','btnStart','btnStart2','btnHow','btnBack','btnSound','btnSound2','btnPause','btnResume','btnQuit','btnQuit2','btnQuit3','btnRetry','btnAgain','cardNo','cardName','cardSub','cardMeta','overStats','overRank','overQuote','winStats','winRank','bossName','btnShop','btnShopBack','tabMis','tabShop','shopBody','wallet'];
+  const ids=['foxBadge','hpbar','hpnum','enfill','enwrap','score','comboPill','lvlname','bossbar','bhpfill','bossPhase','comboPanel','hud','stage','boot','btnStart','btnStart2','btnHow','btnBack','btnSound','btnSound2','btnPause','btnResume','btnQuit','btnQuit2','btnQuit3','btnRetry','btnAgain','cardNo','cardName','cardSub','cardMeta','overStats','overRank','overQuote','winStats','winRank','bossName','btnShop','btnShopBack','tabMis','tabShop','shopBody','wallet','btnPig'];
   ids.forEach(k=>UI[k]=$('#'+k));
   UI.scrTitle=$('#scr-title');
   UI.rows=$$('#comboPanel .crow');
@@ -1922,12 +1947,12 @@ function showCard(){
     speakP('OCCHEI!',1.4);
   },1750);
 }
-function startGame(){
+function startGame(at){ at=(typeof at==='number'&&at>0)?at:0;
   if(G.state==='play'||G.state==='card')return;
   armAudio();
   G.score=0; G.banked=0; G.combo=0; G.stats={kills:0,occhei:0,maxCombo:0,uva:0,dmg:0,start:performance.now()};
   hudCache={hp:-1,sc:-1,cb:-1};
-  buildLevel(0); showCard();
+  buildLevel(at); showCard();
 }
 function retryLevel(){ G.score=Math.floor(G.score*.5); G.banked=G.score; buildLevel(G.level); showCard(); }
 function togglePause(){
@@ -1965,7 +1990,7 @@ function wireButtons(){
   on(UI.btnPause,togglePause); on(UI.btnResume,togglePause);
   on(UI.btnQuit,toMenu); on(UI.btnQuit2,toMenu); on(UI.btnQuit3,toMenu);
   on(UI.btnAgain,startGame); on(UI.btnRetry,retryLevel);
-  on(UI.btnShop,openShop); on(UI.btnShopBack,()=>{ G.state='title'; show('scr-title'); });
+  on(UI.btnShop,openShop); on(UI.btnPig,()=>startGame(5)); on(UI.btnShopBack,()=>{ G.state='title'; show('scr-title'); });
   on(UI.tabMis,()=>{ shopTab='mis'; renderShop(); }); on(UI.tabShop,()=>{ shopTab='shop'; renderShop(); });
   UI.shopBody.addEventListener('click',shopClick);
   UI.scrTitle.addEventListener('pointerdown',e=>{
@@ -2006,7 +2031,8 @@ function layout(){
   let w=innerWidth-pad*2, h=w*9/16;
   const availH=innerHeight-pad*2;
   if(h>availH){ h=availH; w=h*16/9; }
-  UI.stage.style.width=Math.floor(w)+'px'; UI.stage.style.height=Math.floor(h)+'px';
+  if(touch){ UI.stage.style.width=VW+'px'; UI.stage.style.height=VH+'px'; UI.stage.style.setProperty('--s',(w/VW).toFixed(4)); }
+  else { UI.stage.style.width=Math.floor(w)+'px'; UI.stage.style.height=Math.floor(h)+'px'; UI.stage.style.removeProperty('--s'); }
   G.dpr=LITE?clamp(w/VW,.6,1):clamp((window.devicePixelRatio||1)*(w/VW),.8,2);
   cvs.width=Math.round(VW*G.dpr); cvs.height=Math.round(VH*G.dpr);
   ctx.setTransform(G.dpr,0,0,G.dpr,0,0);
