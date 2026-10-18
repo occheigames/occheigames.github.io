@@ -4,160 +4,833 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mini Games Arcade</title>
+<meta name="description" content="Free browser mini-games: Monster Smash, Rocket Rise, Match & Escape, Cow Escape, Lumen, Gullotta Fight and Talking Gullotta. No downloads, no sign-up.">
+
 <!-- ===== GOOGLE ADSENSE ===== -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6380006770259018"
      crossorigin="anonymous"></script>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;700;800&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
+/* ==========================================================
+   MINI GAMES ARCADE · cabinet neon
+   ========================================================== */
 *{margin:0;padding:0;box-sizing:border-box}
-body{min-height:100vh;font-family:Rubik,system-ui,sans-serif;color:#fff;
-  background:radial-gradient(900px 520px at 15% -10%,rgba(124,77,255,.35),transparent 60%),
-    radial-gradient(820px 520px at 110% 115%,rgba(0,229,255,.16),transparent 60%),
-    linear-gradient(165deg,#160a2e,#0d1b36);
-  display:flex;flex-direction:column;align-items:center;padding:40px 16px 20px}
-h1{font-family:'Press Start 2P',monospace;font-size:clamp(18px,4vw,30px);
-  text-shadow:0 0 18px rgba(124,77,255,.9);margin-bottom:8px;text-align:center}
-.sub{opacity:.75;margin-bottom:32px;text-align:center}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;width:100%;max-width:960px}
-.card{display:block;text-decoration:none;color:#fff;
-  background:linear-gradient(170deg,rgba(60,30,110,.6),rgba(15,25,55,.7));
-  border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:16px;text-align:center;
-  transition:transform .15s, box-shadow .15s}
-.card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(124,77,255,.35)}
-.card img{width:100%;height:170px;object-fit:cover;border-radius:14px;margin-bottom:12px;
-  box-shadow:0 10px 26px rgba(0,0,0,.5)}
-.card h2{font-family:'Press Start 2P',monospace;font-size:12px;margin-bottom:8px}
-.card p{font-size:13px;opacity:.75;line-height:1.5}
-.card .play{display:inline-block;margin-top:12px;font-family:'Press Start 2P',monospace;font-size:11px;
-  padding:10px 18px;border-radius:12px;background:linear-gradient(180deg,#5dff9d,#19c96d);color:#08121f}
-.soon{opacity:.45}
-.soon .icon{font-size:52px;margin:40px 0 10px}
+:root{
+  --vio:#7c4dff;--cy:#00e5ff;--grn:#5dff9d;--amb:#ffb03a;--red:#ff5d73;
+  --ink:#0b0618;--p1:#1c0d3a;--p2:#0d1b36;
+  --txt:#efe9ff;--dim:rgba(239,233,255,.62);
+  --e:cubic-bezier(.2,.9,.25,1);
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  min-height:100vh;color:var(--txt);font-family:Rubik,system-ui,sans-serif;
+  background:
+    radial-gradient(1000px 560px at 12% -12%,rgba(124,77,255,.34),transparent 62%),
+    radial-gradient(880px 560px at 108% 112%,rgba(0,229,255,.17),transparent 60%),
+    linear-gradient(168deg,#170a30 0%,#101331 46%,#0a1122 100%);
+  overflow-x:hidden;
+}
+/* griglia pixel + scanline + vignetta CRT */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background-image:
+    linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:34px 34px;
+  mask-image:radial-gradient(120% 90% at 50% 20%,#000 30%,transparent 88%);
+  animation:gridDrift 24s linear infinite}
+@keyframes gridDrift{to{background-position:34px 68px,68px 34px}}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:80;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 2px,transparent 2px 4px),
+             radial-gradient(115% 95% at 50% 40%,transparent 46%,rgba(4,2,10,.72) 100%);
+  opacity:.55}
+#pixfield{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.pix{position:absolute;width:3px;height:3px;background:var(--pc,#8ef);opacity:0;
+  box-shadow:0 0 8px var(--pc,#8ef);animation:pixFloat linear infinite}
+@keyframes pixFloat{
+  0%{transform:translateY(20px) scale(.6);opacity:0}
+  12%{opacity:.9}88%{opacity:.5}
+  100%{transform:translateY(-115vh) scale(1.1);opacity:0}}
+.wrap{position:relative;z-index:2;max-width:1080px;margin:0 auto;padding:34px 16px 26px}
 
-/* NEW badge for recently added games */
-.new-badge{display:inline-block;margin-left:6px;padding:2px 8px;font-size:9px;
-  background:linear-gradient(180deg,#ff6b6b,#e63946);color:#fff;border-radius:6px;
-  font-family:'Press Start 2P',monospace;vertical-align:middle;
-  box-shadow:0 0 10px rgba(230,57,70,.6);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+/* ---------- MARQUEE / CABINET ---------- */
+.cab{position:relative;padding:clamp(14px,2.4vw,22px) clamp(14px,3vw,30px) clamp(18px,2.6vw,26px);
+  border-radius:22px 22px 16px 16px;
+  background:linear-gradient(180deg,#2a1250 0%,#180a33 40%,#100722 100%);
+  border:2px solid rgba(255,255,255,.14);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.18),inset 0 -26px 44px rgba(0,0,0,.6),
+    0 34px 70px -34px #000,0 0 0 6px rgba(124,77,255,.10),0 0 60px -18px rgba(124,77,255,.55)}
+.cab::before{content:"";position:absolute;inset:8px;border-radius:16px;pointer-events:none;
+  border:1px dashed rgba(255,255,255,.10)}
+.bolts{position:absolute;inset:0;pointer-events:none}
+.bolts i{position:absolute;width:9px;height:9px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#8f7ad6 55%,#3a2160);
+  box-shadow:0 1px 2px rgba(0,0,0,.7)}
+.bolts i:nth-child(1){left:14px;top:14px}.bolts i:nth-child(2){right:14px;top:14px}
+.bolts i:nth-child(3){left:14px;bottom:14px}.bolts i:nth-child(4){right:14px;bottom:14px}
+.bulbs{display:flex;justify-content:space-between;gap:6px;margin:-2px 6px 12px}
+.bulbs span{flex:1 1 0;height:8px;border-radius:99px;background:rgba(255,255,255,.10);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.bulbs span.on{animation:bulb 1.6s linear infinite}
+@keyframes bulb{0%,100%{background:rgba(255,255,255,.12);box-shadow:none}
+  8%{background:var(--bc,#ffd66b);box-shadow:0 0 14px 2px var(--bc,#ffd66b)}}
+.marq{text-align:center}
+.marq h1{font-family:'Press Start 2P',monospace;font-weight:400;
+  font-size:clamp(15px,4.3vw,34px);line-height:1.35;letter-spacing:.02em;color:#fff;
+  text-shadow:0 0 6px #fff,0 0 20px var(--vio),0 0 42px rgba(124,77,255,.85),0 4px 0 #2a0f4f}
+.marq h1 .b{color:var(--cy);text-shadow:0 0 6px #fff,0 0 22px var(--cy),0 0 46px rgba(0,229,255,.8),0 4px 0 #06303a}
+.marq h1 .flick{animation:flick 6s steps(1,end) infinite}
+@keyframes flick{0%,57%,100%{opacity:1}58%{opacity:.25}59%{opacity:1}62%{opacity:.35}63%{opacity:1}}
+.coin{margin-top:14px;display:inline-flex;align-items:center;gap:9px;
+  font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:.06em;color:var(--amb);
+  padding:8px 14px;border-radius:99px;background:rgba(0,0,0,.35);border:1px solid rgba(255,176,58,.4);
+  box-shadow:0 0 22px -6px rgba(255,176,58,.7)}
+.coin i{width:8px;height:8px;border-radius:50%;background:var(--amb);animation:blink 1.1s steps(1,end) infinite}
+@keyframes blink{50%{opacity:.15}}
+.stats{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+.stat{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);
+  padding:7px 12px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+  transition:transform .2s var(--e),color .2s,border-color .2s,background .2s}
+.stat:hover{transform:translateY(-3px);color:#fff;border-color:var(--cy);background:rgba(0,229,255,.10)}
+.stat b{color:var(--grn);font-weight:900}
 
-.about{width:100%;max-width:960px;margin-top:40px;
-  background:linear-gradient(170deg,rgba(60,30,110,.5),rgba(15,25,55,.65));
-  border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:26px 24px;text-align:left}
-.about h2{font-family:'Press Start 2P',monospace;font-size:14px;margin-bottom:16px;
-  color:#c9b6ff;text-shadow:0 0 12px rgba(124,77,255,.7)}
-.about p{font-size:13.5px;line-height:1.75;opacity:.85;margin-bottom:12px}
-.about p b{color:#7ce7ff}
-.about .badges{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
-.about .badge{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
-  border-radius:999px;padding:7px 14px;font-size:11.5px;font-weight:700;letter-spacing:.3px}
-.about .contact{font-size:12px;opacity:.7;margin-bottom:0}
-.about .contact a{color:#7ce7ff;text-decoration:none}
-.about .contact a:hover{text-decoration:underline}
+/* ---------- FILTRI ---------- */
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin:26px 0 16px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{cursor:pointer;font-family:'Press Start 2P',monospace;font-size:8.5px;letter-spacing:.04em;
+  color:var(--dim);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+  padding:9px 12px;border-radius:9px;transition:.2s var(--e)}
+.chip:hover{color:#fff;border-color:var(--vio);transform:translateY(-2px)}
+.chip[aria-pressed="true"]{color:#12041f;background:linear-gradient(180deg,var(--grn),#19c96d);
+  border-color:#c9ffe0;box-shadow:0 0 22px -6px var(--grn)}
+.count{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.count b{color:var(--cy)}
 
-#adbar{width:100%;max-width:960px;margin-top:32px;min-height:100px}
+/* ---------- GRIGLIA / CARD ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:20px}
+.card{position:relative;display:flex;flex-direction:column;border-radius:18px;overflow:hidden;
+  background:linear-gradient(172deg,rgba(72,36,132,.55),rgba(13,22,52,.72));
+  border:1px solid rgba(255,255,255,.15);
+  box-shadow:0 18px 40px -24px #000;
+  transition:transform .28s var(--e),box-shadow .3s,border-color .3s,opacity .3s;
+  animation:cardIn .55s var(--e) backwards}
+@keyframes cardIn{from{opacity:0;transform:translateY(26px) scale(.96)}}
+.card::before{ /* alone colorato che segue il mouse */
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(320px 220px at var(--mx,50%) var(--my,0%),color-mix(in srgb,var(--accent) 26%,transparent),transparent 70%)}
+.card:hover{transform:translateY(-8px);border-color:color-mix(in srgb,var(--accent) 60%,transparent);
+  box-shadow:0 30px 60px -26px #000,0 0 44px -14px var(--accent)}
+.card:hover::before{opacity:1}
+.card.hide{display:none}
+.linkmask{position:absolute;inset:0;z-index:2;border-radius:18px}
+.linkmask:focus-visible{outline:3px solid var(--cy);outline-offset:3px}
+.thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:#0a0518;border-bottom:1px solid rgba(255,255,255,.10)}
+.art,.photo{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
+.photo{opacity:0;transition:opacity .45s,transform .5s var(--e);transform:scale(1.04)}
+.card.has-cover .photo{opacity:1;transform:none}
+.card.has-cover .art{filter:saturate(.6) brightness(.5)}
+.art{transition:transform .5s var(--e)}
+.card:hover .art{transform:scale(1.06) rotate(-.6deg)}
+.card:hover .photo{transform:scale(1.05)}
+.shine{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+.shine::after{content:"";position:absolute;top:-30%;bottom:-30%;width:38%;left:-45%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
+  transform:skewX(-18deg);transition:left .65s var(--e)}
+.card:hover .shine::after{left:118%}
+.badge{position:absolute;z-index:4;top:10px;left:10px;font-family:'Press Start 2P',monospace;font-size:8px;
+  padding:6px 8px;border-radius:7px;color:#fff;background:linear-gradient(180deg,#ff6b6b,#e63946);
+  box-shadow:0 0 14px rgba(230,57,70,.7);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.62}}
+.ratio{position:absolute;z-index:4;bottom:10px;right:10px;font:800 9.5px/1 Rubik;letter-spacing:.14em;
+  text-transform:uppercase;color:#fff;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.2);
+  padding:5px 8px;border-radius:6px;opacity:.85}
+.addcover{position:absolute;z-index:5;top:10px;right:10px;cursor:pointer;
+  font:900 10px/1 Rubik;letter-spacing:.08em;text-transform:uppercase;color:#0b0618;
+  background:linear-gradient(180deg,#fff,#c9b6ff);border:1px solid #fff;border-radius:8px;padding:7px 9px;
+  opacity:0;transform:translateY(-6px);transition:.22s var(--e)}
+.card:hover .addcover,.addcover:focus-visible{opacity:1;transform:none}
+.addcover:hover{background:linear-gradient(180deg,var(--amb),#ff8a3c);box-shadow:0 0 18px -2px var(--amb)}
+.cbody{position:relative;z-index:2;padding:15px 16px 18px;display:flex;flex-direction:column;gap:9px;flex:1}
+.card h2{font-family:'Press Start 2P',monospace;font-weight:400;font-size:11.5px;line-height:1.5;
+  color:#fff;letter-spacing:.01em}
+.card h2 .fx{color:var(--accent);text-shadow:0 0 14px color-mix(in srgb,var(--accent) 70%,transparent)}
+.card p{font-size:13px;line-height:1.62;color:var(--dim)}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
+.tag{font:800 9px/1 Rubik;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+  border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:5px 8px}
+.play{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;margin-top:4px;
+  font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 16px;border-radius:11px;
+  color:#08121f;background:linear-gradient(180deg,#5dff9d,#19c96d);
+  box-shadow:0 5px 0 #0e7a41,0 0 24px -6px var(--grn);transition:.18s var(--e)}
+.card:hover .play{transform:translateY(-2px);box-shadow:0 7px 0 #0e7a41,0 0 34px -4px var(--grn)}
+.card .play i{font-style:normal;transition:transform .2s var(--e)}
+.card:hover .play i{transform:translateX(4px)}
+/* coming soon */
+.soon{--accent:#8f7ad6;justify-content:center;align-items:center;text-align:center;min-height:260px;
+  border-style:dashed;background:rgba(255,255,255,.03)}
+.soon .lock{font-size:44px;filter:drop-shadow(0 0 18px rgba(143,122,214,.8));animation:hover 3.4s ease-in-out infinite}
+@keyframes hover{50%{transform:translateY(-9px) rotate(4deg)}}
+.soon h2{font-size:11px}
+.soon .dots{display:flex;gap:6px;justify-content:center;margin-top:6px}
+.soon .dots b{width:6px;height:6px;border-radius:50%;background:var(--vio);animation:dots 1.4s ease-in-out infinite}
+.soon .dots b:nth-child(2){animation-delay:.18s}.soon .dots b:nth-child(3){animation-delay:.36s}
+@keyframes dots{50%{opacity:.2;transform:translateY(-5px)}}
 
-footer{margin-top:24px;font-size:12px;opacity:.7;text-align:center;line-height:1.9;max-width:960px}
-footer a{color:#7ce7ff;text-decoration:none;margin:0 8px}
+/* ---------- PANNELLI ---------- */
+.panel{margin-top:34px;border-radius:20px;padding:24px 22px;
+  background:linear-gradient(172deg,rgba(60,30,110,.5),rgba(13,22,52,.66));
+  border:1px solid rgba(255,255,255,.14);box-shadow:0 24px 50px -30px #000}
+.panel h2{font-family:'Press Start 2P',monospace;font-weight:400;font-size:13px;color:#c9b6ff;
+  margin-bottom:6px;text-shadow:0 0 14px rgba(124,77,255,.75)}
+.panel .lead{font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:16px}
+.panel .lead b{color:var(--cy)}
+.covwrap{display:grid;gap:10px}
+.covrow{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;
+  padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.10);
+  transition:transform .2s var(--e),border-color .2s,background .2s}
+.covrow:hover{transform:translateX(5px);border-color:color-mix(in srgb,var(--accent) 55%,transparent);background:rgba(0,0,0,.42)}
+.covrow .sw{width:44px;height:26px;border-radius:6px;overflow:hidden;position:relative;flex:0 0 auto;
+  border:1px solid rgba(255,255,255,.2)}
+.covrow .sw img,.covrow .sw svg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.covrow .nm{font-family:'Press Start 2P',monospace;font-size:8.5px;line-height:1.6;color:#fff;word-break:break-all}
+.covrow .nm em{display:block;font:700 11px/1.5 Rubik;font-style:normal;color:var(--dim);letter-spacing:.02em;margin-top:3px}
+.pill{font:900 9.5px/1 Rubik;letter-spacing:.12em;text-transform:uppercase;padding:6px 9px;border-radius:99px;white-space:nowrap}
+.pill.ok{color:#062b16;background:linear-gradient(180deg,#8affc0,#1fc46f)}
+.pill.no{color:#ffd7dd;background:rgba(255,93,115,.16);border:1px solid rgba(255,93,115,.5)}
+.pill.loc{color:#3a2500;background:linear-gradient(180deg,#ffe08a,var(--amb))}
+.how{margin-top:16px;display:grid;gap:8px}
+.how div{display:flex;gap:10px;font-size:12.5px;line-height:1.6;color:var(--dim)}
+.how div b{color:#fff;font-weight:800;flex:0 0 22px;height:22px;border-radius:6px;display:grid;place-items:center;
+  background:rgba(124,77,255,.28);border:1px solid rgba(124,77,255,.5);font-size:11px}
+code{font-family:'Press Start 2P',monospace;font-size:8.5px;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.16);
+  padding:3px 6px;border-radius:5px;color:var(--grn);word-break:break-all}
+.about p{font-size:13.5px;line-height:1.8;opacity:.88;margin-bottom:12px}
+.about p b{color:var(--cy)}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.badge2{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:999px;
+  padding:8px 15px;font-size:11.5px;font-weight:800;letter-spacing:.3px;transition:.2s var(--e)}
+.badge2:hover{transform:translateY(-3px) rotate(-1.5deg);background:rgba(0,229,255,.14);border-color:var(--cy)}
+.contact{font-size:12px;opacity:.75;margin-bottom:0}
+.contact a{color:var(--cy);text-decoration:none}
+.contact a:hover{text-decoration:underline}
+#adbar{width:100%;max-width:1080px;margin:30px auto 0;min-height:100px}
+footer{margin-top:26px;font-size:12px;opacity:.72;text-align:center;line-height:2;max-width:1080px;padding:0 16px 30px}
+footer a{color:var(--cy);text-decoration:none;margin:0 8px}
 footer a:hover{text-decoration:underline}
-footer .sep{opacity:.4;margin:0 4px}
+footer .sep{opacity:.4}
+/* reveal */
+.rv{opacity:0;transform:translateY(28px)}
+.rv.in{opacity:1;transform:none;transition:opacity .7s var(--e),transform .7s var(--e)}
+@media (max-width:560px){
+  .grid{grid-template-columns:1fr}
+  .bar{flex-direction:column;align-items:flex-start}
+  .addcover{opacity:1;transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.05s!important}
+}
 </style>
 </head>
 <body>
-  <h1>MINI GAMES ARCADE</h1>
-  <div class="sub">Pick a game and have fun!</div>
+<div id="pixfield" aria-hidden="true"></div>
 
-  <div class="grid">
-    <a class="card" href="monster-smash.html">
-      <img src="cover-monsters.jpg" alt="Monster Smash">
-      <h2>MONSTER SMASH</h2>
-      <p>Squash monsters before their timer runs out. Daily challenge, 3 bosses, gems, shop & more!</p>
-      <span class="play">PLAY</span>
-    </a>
-    <a class="card" href="rocket-rise.html">
-      <img src="cover-rocket.jpg" alt="Rocket Rise">
-      <h2>ROCKET RISE</h2>
-      <p>Climb as high as you can! Engine management, flammable zones, black holes, aliens & repairs.</p>
-      <span class="play">PLAY</span>
-    </a>
-    <a class="card" href="match-escape.html">
-      <img src="cover-match.jpg" alt="Match & Escape">
-      <h2>MATCH &amp; ESCAPE</h2>
-      <p>Match 3+ symbols to clear the road! A monster is chasing you — complete levels before time runs out!</p>
-      <span class="play">PLAY</span>
-    </a>
+<div class="wrap">
 
-    <!-- ========== NUOVO GIOCO: COW ESCAPE ========== -->
-    <a class="card" href="cow-escape.html">
-      <img src="cover-cows.jpg" alt="Cow Escape">
-      <h2>COW ESCAPE <span class="new-badge">NEW</span></h2>
-      <p>Flee from angry cows through a procedural 3D forest maze! Sprint, jump over logs, dodge rocks, avoid mud traps, and reach one of the many escape flags. Click-to-move with smart pathfinding, mobile joystick, saved progress & increasing difficulty.</p>
-      <span class="play">PLAY</span>
-    </a>
-
-    <!-- ========== NUOVO GIOCO: LUMEN ========== -->
-    <a class="card" href="lumen.html">
-      <img src="cover-lumen.jpg" alt="Lumen">
-      <h2>LUMEN <span class="new-badge">NEW</span></h2>
-      <p>Dive into the abyss as a bioluminescent jellyfish! Collect light to survive, avoid deep-sea predators, and discover the truth about the angler's lure. Immersive synth audio, 8 depth zones, combos, shields & whale encounters.</p>
-      <span class="play">PLAY</span>
-    </a>
-
-    <!-- ========== NUOVO GIOCO: GULLOTTA FIGHT ========== -->
-    <a class="card" href="gullotta-fight.html">
-      <img src="cover-gullotta.jpg" alt="Gullotta Fight">
-      <h2>GULLOTTA FIGHT <span class="new-badge">NEW</span></h2>
-      <p>Step into the ring as Gullotta in this fast-paced arcade fighting game! Master combo chains, dodge enemy attacks, unleash special moves, and defeat increasingly tough bosses. Mobile-friendly controls, progression system, and epic boss battles await!</p>
-      <span class="play">PLAY</span>
-    </a>
-
-    <div class="card soon">
-      <div class="icon">🔒</div>
-      <h2>COMING SOON</h2>
-      <p>More mini-games are on the way…</p>
+  <!-- ============ MARQUEE ============ -->
+  <header class="cab">
+    <div class="bolts"><i></i><i></i><i></i><i></i></div>
+    <div class="bulbs" id="bulbsTop" aria-hidden="true"></div>
+    <div class="marq">
+      <h1>MINI GAMES<br><span class="b flick">ARCADE</span></h1>
+      <div class="coin"><i></i>insert coin · free play</div>
+      <div class="stats" id="statRow"></div>
     </div>
+    <div class="bulbs" id="bulbsBot" aria-hidden="true" style="margin:16px 6px -4px"></div>
+  </header>
+
+  <!-- ============ FILTRI ============ -->
+  <div class="bar">
+    <div class="chips" id="chips"></div>
+    <div class="count"><b id="visN">0</b> games ready</div>
   </div>
 
-  <!-- ===== ABOUT ===== -->
-  <section class="about">
+  <!-- ============ GRIGLIA (generata dalla lista ARCADE) ============ -->
+  <main class="grid" id="grid"></main>
+
+  <!-- ============ COVER MAP ============ -->
+  <section class="panel rv" id="coverPanel">
+    <h2>COVER MAP</h2>
+    <p class="lead">Every game is bound to <b>one image file</b>. Drop the files next to <code>index.html</code>
+      with these exact names and they appear instantly — no code edit needed. Missing covers fall back to the
+      built-in illustration, which prints the filename it expects.</p>
+    <div class="covwrap" id="covRows"></div>
+    <div class="how">
+      <div><b>1</b><span>Recommended size <b style="color:#fff">800×450</b> (16:9), JPG / PNG / WebP, under ~200 KB. Square or tall images get center-cropped automatically.</span></div>
+      <div><b>2</b><span>Upload to the same folder as the page, or edit the <code>cover</code> value inside the <b style="color:#fff">ARCADE</b> list at the top of the script to use another path (e.g. <code>img/cover-cows.webp</code>).</span></div>
+      <div><b>3</b><span>The <b style="color:#fff">＋ COVER</b> button on each card lets you preview an image from your device right away. It is downscaled and kept in <i>your browser only</i> (localStorage) — perfect for testing before publishing. Use <b style="color:#fff">RESET PREVIEWS</b> to clear it.</span></div>
+      <div><b>4</b><span>Adding a brand-new game = copy one object in the <code>ARCADE</code> list, change <code>id / file / title / desc / cover / accent / art</code>. Everything else (card, filter, cover map, counters) builds itself.</span></div>
+    </div>
+    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="chip" id="resetCov">Reset previews</button>
+      <button class="chip" id="copyList">Copy file list</button>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="panel about rv">
     <h2>ABOUT MINI GAMES ARCADE</h2>
     <p><b>Mini Games Arcade</b> is an independent collection of free browser games.
-    Our mission is simple: fun, bite-sized games you can play instantly —
-    <b>no downloads, no installs, no account required</b>. Just open the site and press play,
-    on your phone, tablet or computer.</p>
+      Our mission is simple: fun, bite-sized games you can play instantly —
+      <b>no downloads, no installs, no account required</b>. Just open the site and press play,
+      on your phone, tablet or computer.</p>
     <p>Every game is hand-built, carefully tested and updated regularly. Your best scores,
-    crystals and unlocked items are saved <b>privately on your own device</b> — we don't ask
-    for personal data and we never will. New mini-games are added all the time, so keep an
-    eye on the "Coming Soon" slot!</p>
+      crystals and unlocked items are saved <b>privately on your own device</b> — we don't ask
+      for personal data and we never will. New mini-games are added all the time, so keep an
+      eye on the “Coming Soon” slot!</p>
     <p>We are a small indie team making games with passion. If you have ideas, feedback or
-    partnership requests, we would love to hear from you.</p>
+      partnership requests, we would love to hear from you.</p>
     <div class="badges">
-      <span class="badge">100% FREE</span>
-      <span class="badge">NO DOWNLOADS</span>
-      <span class="badge">NO SIGN-UP</span>
-      <span class="badge">MOBILE FRIENDLY</span>
-      <span class="badge">SAFE & FAMILY FRIENDLY</span>
-      <span class="badge">NEW GAMES REGULARLY</span>
+      <span class="badge2">100% FREE</span>
+      <span class="badge2">NO DOWNLOADS</span>
+      <span class="badge2">NO SIGN-UP</span>
+      <span class="badge2">MOBILE FRIENDLY</span>
+      <span class="badge2">SAFE &amp; FAMILY FRIENDLY</span>
+      <span class="badge2">NEW GAMES REGULARLY</span>
     </div>
     <p class="contact">Contact: <a href="mailto:davidebellomo1@icloud.com">davidebellomo1@icloud.com</a></p>
   </section>
 
-  <!-- ===== ADSENSE BANNER ===== -->
+  <!-- ===== ADSENSE BANNER (sostituisci IL-TUO-SLOT-ID) ===== -->
   <div id="adbar">
-    <ins class="adsbygoogle"
-         style="display:block"
+    <ins class="adsbygoogle" style="display:block"
          data-ad-client="ca-pub-6380006770259018"
          data-ad-slot="IL-TUO-SLOT-ID"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
+         data-ad-format="auto" data-full-width-responsive="true"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
   </div>
+</div>
 
-  <footer>
-    © 2026 Mini Games Arcade — All rights reserved.<br>
-    Made with passion for players everywhere.<br>
-    <a href="privacy.html">Privacy Policy</a>
-    <span class="sep">•</span>
-    <a href="mailto:davidebellomo1@icloud.com">Contact</a>
-  </footer>
+<footer>
+  © 2026 Mini Games Arcade — All rights reserved.<br>
+  Made with passion for players everywhere.<br>
+  <a href="privacy.html">Privacy Policy</a><span class="sep">•</span>
+  <a href="mailto:davidebellomo1@icloud.com">Contact</a><span class="sep">•</span>
+  <a href="#grid">Back to games</a>
+</footer>
+
+<input type="file" id="picker" accept="image/*" hidden>
+
+<script>
+/* ============================================================================
+   1 · LISTA GIOCHI — un oggetto = una card = una copertina
+   `cover`  → nome esatto del file immagine che devi inserire
+   `art`    → illustrazione di riserva disegnata dal codice
+   ============================================================================ */
+const ARCADE = [
+  {
+    id: "monster-smash", file: "monster-smash.html", title: "MONSTER SMASH",
+    cover: "cover-monsters.jpg", alt: "Monster Smash cover",
+    accent: "#ff5d73", c1: "#4a0f3c", c2: "#12041a", art: "monster", isNew: false,
+    tags: ["action", "arcade"],
+    desc: "Squash monsters before their timer runs out. Daily challenge, 3 bosses, gems, shop & more!"
+  },
+  {
+    id: "rocket-rise", file: "rocket-rise.html", title: "ROCKET RISE",
+    cover: "cover-rocket.jpg", alt: "Rocket Rise cover",
+    accent: "#4de0ff", c1: "#122a5e", c2: "#080b26", art: "rocket", isNew: false,
+    tags: ["action", "skill"],
+    desc: "Climb as high as you can! Engine management, flammable zones, black holes, aliens & repairs."
+  },
+  {
+    id: "match-escape", file: "match-escape.html", title: "MATCH & ESCAPE",
+    cover: "cover-match.jpg", alt: "Match and Escape cover",
+    accent: "#ffd23f", c1: "#3d2a06", c2: "#141026", art: "match", isNew: false,
+    tags: ["puzzle", "adventure"],
+    desc: "Match 3+ symbols to clear the road! A monster is chasing you — finish levels before time runs out."
+  },
+  {
+    id: "cow-escape", file: "cow-escape.html", title: "COW ESCAPE",
+    cover: "cover-cows.jpg", alt: "Cow Escape cover",
+    accent: "#ffb03a", c1: "#123a22", c2: "#0a1410", art: "cow", isNew: true,
+    tags: ["3d", "adventure", "skill"],
+    desc: "Flee angry cows through a procedural 3D forest maze! Sprint, jump logs, dodge rocks and mud, reach an escape flag. Click-to-move pathfinding, mobile joystick, saved progress, rising difficulty."
+  },
+  {
+    id: "lumen", file: "lumen.html", title: "LUMEN",
+    cover: "cover-lumen.jpg", alt: "Lumen cover",
+    accent: "#00e5ff", c1: "#04203a", c2: "#01060f", art: "lumen", isNew: true,
+    tags: ["adventure", "relax"],
+    desc: "Dive into the abyss as a bioluminescent jellyfish. Collect light to survive, dodge predators, discover the angler's lure. Synth audio, 8 depth zones, combos, shields & whale encounters."
+  },
+  {
+    id: "gullotta-fight", file: "gullotta-fight.html", title: "GULLOTTA FIGHT",
+    cover: "cover-gullotta.jpg", alt: "Gullotta Fight cover",
+    accent: "#ff7a29", c1: "#4a1a12", c2: "#170710", art: "fight", isNew: true,
+    tags: ["action", "fighting"],
+    desc: "Step into the ring as Gullotta! Combo chains, dodges, special moves and tougher bosses, mobile-friendly controls and a full progression system."
+  },
+  {
+    id: "talking-gullotta", file: "talking-gullotta.html", title: "TALKING GULLOTTA",
+    cover: "cover-talking.jpg", alt: "Talking Gullotta cover",
+    accent: "#5dff9d", c1: "#2f1a0e", c2: "#0f1a12", art: "talking", isNew: true,
+    tags: ["funny", "talking", "relax"],
+    desc: "Meet Gullotta the fox in her tavern. She repeats everything you say, hunts for grapes, pulls weird faces, does the SIUUU, throws karate moves and plays Xbox — and if you ignore her she falls asleep crooked with her mouth open, then wakes up going “occhei”."
+  }
+];
+
+/* ============================================================================
+   2 · ILLUSTRZIONI DI RISERVA (800×450) — mostrano il nome file atteso
+   ============================================================================ */
+const ART = {
+  monster: g => `
+    <path d="M0 360h800v90H0z" fill="#1a0512"/>
+    <g stroke="${g.accent}" stroke-opacity=".18"><path d="M0 120h800M0 200h800M0 280h800"/></g>
+    <rect x="180" y="52" width="440" height="26" rx="13" fill="#000" fill-opacity=".45"/>
+    <rect x="184" y="56" width="286" height="18" rx="9" fill="#ffd23f" class="puls"/>
+    <text x="640" y="74" font-family="Rubik" font-weight="900" font-size="20" fill="#ffd23f">0:07</text>
+    <path d="M232 372q0-166 168-166t168 166z" fill="${g.accent}"/>
+    <path d="M268 232l-40-72 76 26zM532 232l40-72-76 26z" fill="#c9304a"/>
+    <circle cx="336" cy="286" r="30" fill="#fff"/><circle cx="464" cy="286" r="30" fill="#fff"/>
+    <circle cx="342" cy="292" r="13" fill="#20060f"/><circle cx="458" cy="292" r="13" fill="#20060f"/>
+    <path d="M300 340h200v34H300z" fill="#2a0812"/>
+    <path d="M300 340l22 22 22-22 22 22 22-22 22 22 22-22 22 22 22-22v10H300z" fill="#fff"/>
+    <g transform="rotate(-26 646 300)">
+      <rect x="628" y="250" width="34" height="180" rx="9" fill="#8d5b2b"/>
+      <rect x="586" y="206" width="118" height="58" rx="10" fill="#c9c4c0"/>
+      <rect x="586" y="206" width="118" height="16" rx="8" fill="#eae7e3"/></g>
+    <path d="M132 300l26-40 12 30 26-34-8 44z" fill="${g.accent}" fill-opacity=".5"/>`,
+
+  rocket: g => `
+    <g fill="#fff" fill-opacity=".8"><circle cx="120" cy="90" r="2.4"/><circle cx="240" cy="60" r="1.8"/>
+      <circle cx="640" cy="120" r="2.2"/><circle cx="700" cy="230" r="1.6"/><circle cx="90" cy="250" r="1.8"/>
+      <circle cx="560" cy="70" r="1.6"/><circle cx="330" cy="130" r="1.8"/></g>
+    <g transform="translate(660,110)">
+      <ellipse rx="62" ry="26" fill="none" stroke="#b56ac4" stroke-width="4" stroke-opacity=".8"/>
+      <ellipse rx="34" ry="14" fill="#0a0316"/><path d="M-62 0a62 26 0 0 0 62 26" fill="none" stroke="#4de0ff" stroke-width="3"/></g>
+    <path d="M0 450q400-170 800 0z" fill="#2a1050"/>
+    <path d="M0 450q400-136 800 0z" fill="#3a1a68" fill-opacity=".7"/>
+    <g stroke="#4de0ff" stroke-opacity=".5" font-family="Rubik" font-weight="800" font-size="15" fill="#4de0ff">
+      <path d="M56 380h44M56 300h44M56 220h44M56 140h44"/>
+      <text x="108" y="386">100m</text><text x="108" y="306">400m</text>
+      <text x="108" y="226">900m</text><text x="108" y="146">1.6km</text></g>
+    <g transform="translate(400,0)">
+      <path d="M0 84l48 96v152h-96V180z" fill="#e8ecf5"/>
+      <path d="M0 84l30 60h-60z" fill="#ff5d73"/>
+      <circle cy="216" r="24" fill="#0d2b3a"/><circle cy="216" r="24" fill="none" stroke="#4de0ff" stroke-width="5"/>
+      <path d="M-48 240l-40 92h40zM48 240l40 92h-40z" fill="#ff5d73"/>
+      <rect x="-50" y="326" width="100" height="14" rx="6" fill="#b9c1d4"/>
+      <path class="flame" d="M0 340l30 62q-30 40-60 0z" fill="#ffb03a"/>
+      <path class="flame" d="M0 344l16 40q-16 26-32 0z" fill="#fff2b8"/></g>
+    <g fill="#5dff9d"><circle cx="600" cy="300" r="7"/><circle cx="616" cy="292" r="4"/></g>`,
+
+  match: g => `
+    <g stroke="#ffd23f" stroke-opacity=".14"><path d="M0 90h800M0 210h800M0 330h800M200 0v450M400 0v450M600 0v450"/></g>
+    <g transform="translate(206,54)">
+      <g><rect width="118" height="118" rx="16" fill="#241a3c" stroke="#fff" stroke-opacity=".12"/>
+        <circle cx="59" cy="59" r="34" fill="#ff5d73"/></g>
+      <g transform="translate(140,0)"><rect width="118" height="118" rx="16" fill="#241a3c" stroke="#fff" stroke-opacity=".12"/>
+        <path d="M59 22l38 37-38 37-38-37z" fill="#4de0ff"/></g>
+      <g transform="translate(280,0)"><rect width="118" height="118" rx="16" fill="#241a3c" stroke="#fff" stroke-opacity=".12"/>
+        <path d="M59 24l38 68H21z" fill="#5dff9d"/></g>
+      <g transform="translate(0,140)"><rect width="118" height="118" rx="16" fill="#241a3c" stroke="#ffd23f" stroke-width="4"/>
+        <path d="M59 20l12 30 32 3-25 22 8 33-29-18-29 18 8-33-25-22 32-3z" fill="#ffd23f"/></g>
+      <g transform="translate(140,140)"><rect width="118" height="118" rx="16" fill="#241a3c" stroke="#ffd23f" stroke-width="4"/>
+        <path d="M59 20l12 30 32 3-25 22 8 33-29-18-29 18 8-33-25-22 32-3z" fill="#ffd23f"/></g>
+      <g transform="translate(280,140)"><rect width="118" height="118" rx="16" fill="#241a3c" stroke="#ffd23f" stroke-width="4"/>
+        <path d="M59 20l12 30 32 3-25 22 8 33-29-18-29 18 8-33-25-22 32-3z" fill="#ffd23f"/></g>
+      <g transform="translate(0,280)"><rect width="118" height="118" rx="16" fill="#1a1330" stroke="#fff" stroke-opacity=".1"/>
+        <rect x="26" y="26" width="66" height="66" rx="12" fill="#b56ac4"/></g>
+      <g transform="translate(140,280)"><rect width="118" height="118" rx="16" fill="#1a1330" stroke="#fff" stroke-opacity=".1"/>
+        <path d="M59 24a35 35 0 1 1 0 70z" fill="#4de0ff"/><path d="M59 24a35 35 0 1 0 0 70z" fill="#ff5d73"/></g>
+      <g transform="translate(280,280)"><rect width="118" height="118" rx="16" fill="#1a1330" stroke="#fff" stroke-opacity=".1"/>
+        <path d="M59 22l34 20v40l-34 20-34-20V42z" fill="#5dff9d"/></g></g>
+    <path d="M640 30q60 40 0 80" fill="none" stroke="#5dff9d" stroke-width="6"/>
+    <path d="M660 70h-30l14-18zM630 70l14 18z" fill="#5dff9d"/>
+    <text x="700" y="76" font-family="Rubik" font-weight="900" font-size="22" fill="#5dff9d" text-anchor="middle">ESCAPE</text>
+    <path d="M0 450q200-90 400-90t400 90z" fill="#12041a"/>
+    <g class="puls"><ellipse cx="330" cy="404" rx="26" ry="14" fill="#ff5d73"/><ellipse cx="470" cy="404" rx="26" ry="14" fill="#ff5d73"/></g>`,
+
+  cow: g => `
+    <path d="M0 300h800v150H0z" fill="#123a22"/>
+    <g fill="#0c2a18"><path d="M60 300l50-120 50 120zM180 300l40-96 40 96zM560 300l54-130 54 130zM680 300l38-92 38 92z"/></g>
+    <g fill="#1a5230"><path d="M-20 300l60-150 60 150zM300 300l56-136 56 136zM720 300l60-150 60 150z"/></g>
+    <path d="M330 450q70-120 0-150h140q-70 30 0 150z" fill="#3a2a18" opacity=".9"/>
+    <g transform="translate(400,236)">
+      <ellipse cy="66" rx="120" ry="26" fill="#000" fill-opacity=".3"/>
+      <path d="M-96-6a96 74 0 0 1 192 0v34a96 60 0 0 1-192 0z" fill="#fff"/>
+      <path d="M-96-6c14-30 44-40 60-24s-6 40-30 44-34 4-30-20z" fill="#20232a"/>
+      <path d="M40-16c16-16 44-6 54 22s-10 34-30 26-30-30-24-48z" fill="#20232a"/>
+      <path d="M-96-18l-46-16 8 40zM96-18l46-16-8 40z" fill="#fff"/>
+      <path d="M-70-56l-16-34 34 14zM70-56l16-34-34 14z" fill="#ffe0a8"/>
+      <ellipse cy="34" rx="58" ry="34" fill="#ffb0b6"/>
+      <ellipse cx="-20" cy="30" rx="9" ry="13" fill="#c96a76"/><ellipse cx="20" cy="30" rx="9" ry="13" fill="#c96a76"/>
+      <circle cx="-38" cy="-24" r="13" fill="#20232a"/><circle cx="38" cy="-24" r="13" fill="#20232a"/>
+      <circle cx="-34" cy="-28" r="4.6" fill="#fff"/><circle cx="42" cy="-28" r="4.6" fill="#fff"/></g>
+    <g fill="#fff" fill-opacity=".5"><ellipse cx="228" cy="392" rx="42" ry="14"/><ellipse cx="576" cy="392" rx="42" ry="14"/>
+      <ellipse cx="180" cy="424" rx="30" ry="10"/><ellipse cx="624" cy="424" rx="30" ry="10"/></g>
+    <g transform="translate(700,196)"><path d="M0 0v200" stroke="#e8e2d0" stroke-width="8"/>
+      <g><rect x="4" y="4" width="34" height="22" fill="#5dff9d"/><rect x="38" y="4" width="34" height="22" fill="#12180f"/>
+        <rect x="4" y="26" width="34" height="22" fill="#12180f"/><rect x="38" y="26" width="34" height="22" fill="#5dff9d"/></g></g>
+    <text x="96" y="82" font-family="Rubik" font-weight="900" font-size="24" fill="#ffb03a">MAZE 4 · 0:38</text>`,
+
+  lumen: g => `
+    <g opacity=".16" fill="#8ef6ff"><path d="M120 0l70 450H100z"/><path d="M420 0l50 450H360z"/><path d="M660 0l60 450H580z"/></g>
+    <g stroke="#0f5f7a" stroke-opacity=".55" font-family="Rubik" font-weight="800" font-size="14" fill="#3fa8c9">
+      <path d="M0 130h800M0 250h800M0 370h800" stroke-dasharray="10 14"/>
+      <text x="18" y="124">200m</text><text x="18" y="244">800m</text><text x="18" y="364">1 400m</text></g>
+    <g transform="translate(300,190)">
+      <path d="M-96 0a96 78 0 0 1 192 0q0 30-96 30t-96-30z" fill="#00e5ff" fill-opacity=".9"/>
+      <path d="M-96 0a96 78 0 0 1 192 0q0 18-96 18t-96-18z" fill="#b56ac4" fill-opacity=".75"/>
+      <ellipse cx="-30" cy="-24" rx="16" ry="10" fill="#fff" fill-opacity=".55"/>
+      <g stroke="#8ef6ff" stroke-opacity=".8" stroke-width="5" fill="none" stroke-linecap="round">
+        <path class="sway" d="M-64 26c-10 60 14 90-4 150"/><path class="sway2" d="M-24 30c8 66-16 100 2 156"/>
+        <path class="sway" d="M22 30c-10 62 16 96-2 152"/><path class="sway2" d="M62 24c12 58-12 92 6 146"/></g>
+      <circle r="150" fill="url(#${g.id}halo)" opacity=".55"/></g>
+    <g fill="#8ef6ff" fill-opacity=".7"><circle cx="560" cy="120" r="3"/><circle cx="620" cy="200" r="2"/>
+      <circle cx="500" cy="300" r="2.6"/><circle cx="700" cy="330" r="2"/><circle cx="180" cy="330" r="2.4"/></g>
+    <g transform="translate(640,400)">
+      <path d="M0 0c-40-26-96-24-124 6 30 26 92 28 124 6z" fill="#04121c"/>
+      <path d="M-124 6l-32-18 6 26-30 6 34 12z" fill="#04121c"/>
+      <circle cx="-84" cy="-2" r="6" fill="#04121c"/>
+      <path d="M-96-14q-16-40-52-38" fill="none" stroke="#04121c" stroke-width="5"/>
+      <circle class="puls" cx="-150" cy="-52" r="10" fill="#ffd23f"/>
+      <circle cx="-150" cy="-52" r="26" fill="#ffd23f" opacity=".22"/></g>
+    <text x="400" y="60" text-anchor="middle" font-family="Rubik" font-weight="900" font-size="22" fill="#8ef6ff">LIGHT 68% · COMBO x4</text>`,
+
+  fight: g => `
+    <path d="M0 300h800v150H0z" fill="#2a0f14"/>
+    <path d="M120 300l-60 150h680l-60-150z" fill="#3c151c"/>
+    <g stroke="#ffb03a" stroke-width="7"><path d="M40 190h720M40 232h720M40 274h720"/></g>
+    <g fill="#e63946"><rect x="26" y="168" width="26" height="118" rx="8"/><rect x="748" y="168" width="26" height="118" rx="8"/></g>
+    <g transform="translate(300,250)">
+      <path d="M-96-108l-26-46 56 20zM-14-124l14-52 30 44z" fill="#ff7a29"/>
+      <ellipse rx="76" ry="66" fill="#ff7a29"/>
+      <ellipse cx="-24" cy="-16" rx="26" ry="20" fill="#fff" fill-opacity=".25"/>
+      <path d="M-70 40h140v34a20 20 0 0 1-20 20h-100a20 20 0 0 1-20-20z" fill="#c9302c"/>
+      <rect x="-70" y="34" width="140" height="14" rx="7" fill="#fff" fill-opacity=".85"/></g>
+    <g transform="translate(508,244)">
+      <path d="M96-104l26-46-56 20zM14-120l-14-52-30 44z" fill="#4de0ff"/>
+      <ellipse rx="72" ry="62" fill="#4de0ff"/>
+      <ellipse cx="24" cy="-16" rx="24" ry="18" fill="#fff" fill-opacity=".25"/>
+      <path d="M-66 38h132v32a20 20 0 0 1-20 20h-92a20 20 0 0 1-20-20z" fill="#1c6f8a"/>
+      <rect x="-66" y="32" width="132" height="14" rx="7" fill="#fff" fill-opacity=".85"/></g>
+    <path d="M404 196l24 44-40 8 30 38-52-14 12 44-38-30" fill="none" stroke="#fff" stroke-opacity=".0"/>
+    <g class="puls"><path d="M404 178l18 40 42 6-30 30 8 42-38-20-38 20 8-42-30-30 42-6z" fill="#fff2b8"/></g>
+    <text x="404" y="150" text-anchor="middle" font-family="'Press Start 2P',monospace" font-size="34" fill="#fff">VS</text>
+    <g><rect x="40" y="46" width="300" height="24" rx="6" fill="#000" fill-opacity=".5"/>
+      <rect x="44" y="50" width="252" height="16" rx="4" fill="#5dff9d"/>
+      <rect x="460" y="46" width="300" height="24" rx="6" fill="#000" fill-opacity=".5"/>
+      <rect x="464" y="50" width="96" height="16" rx="4" fill="#ff5d73"/>
+      <text x="40" y="38" font-family="Rubik" font-weight="900" font-size="15" fill="#5dff9d">GULLOTTA</text>
+      <text x="760" y="38" text-anchor="end" font-family="Rubik" font-weight="900" font-size="15" fill="#ff5d73">CHALLENGER</text></g>`,
+
+  talking: g => `
+    <g stroke="#000" stroke-opacity=".22"><path d="M0 90h800M0 180h800M0 270h800"/></g>
+    <path d="M0 340h800v110H0z" fill="#2a170d"/>
+    <ellipse cx="404" cy="352" rx="180" ry="34" fill="#6b2f3c" opacity=".8"/>
+    <g transform="translate(330,196)">
+      <path d="M-88-42l-24-58 62 24zM88-42l24-58-62 24z" fill="#c25a22"/>
+      <path d="M0-96c46 0 78 30 80 72 2 42-16 74-42 88-12 8-26 12-38 12s-26-4-38-12c-26-14-44-46-42-88 2-42 34-72 80-72z" fill="#ef8040"/>
+      <path d="M0-42c16 0 26 10 26 24S14 4 0 4s-26-10-26-22 10-24 26-24z" fill="#2c1a12"/>
+      <path d="M-44-14c8 30 20 46 44 46s36-16 44-46c-14 14-74 14-88 0z" fill="#fff2dd"/>
+      <circle cx="-30" cy="-40" r="13" fill="#fff8ec"/><circle cx="30" cy="-40" r="13" fill="#fff8ec"/>
+      <circle cx="-28" cy="-38" r="8" fill="#241105"/><circle cx="32" cy="-38" r="8" fill="#241105"/>
+      <circle cx="-31" cy="-42" r="3" fill="#fff"/><circle cx="29" cy="-42" r="3" fill="#fff"/>
+      <path d="M-18 12c6 8 30 8 36 0" stroke="#2c1a12" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <g stroke="#fff2dd" stroke-width="3" opacity=".85"><path d="M-42-4l-34-10M-42 6l-34 6M42-4l34-10M42 6l34 6"/></g></g>
+    <g transform="translate(556,120)">
+      <path d="M0 0h196a16 16 0 0 1 16 16v52a16 16 0 0 1-16 16H64l-30 30 4-30H0A16 16 0 0 1-16 68V16A16 16 0 0 1 0 0z"
+            fill="#fffaf0" stroke="#2b1a10" stroke-width="4"/>
+      <text x="90" y="52" text-anchor="middle" font-family="'Press Start 2P',monospace" font-size="19" fill="#a53c14">OCCHEI</text></g>
+    <g transform="translate(148,150)">
+      <circle cx="-14" cy="-16" r="15" fill="#8b4a86"/><circle cx="14" cy="-18" r="15" fill="#6a3168"/>
+      <circle cx="0" cy="4" r="16" fill="#9a54a0"/><circle cx="-24" cy="8" r="13" fill="#7c3f78"/>
+      <circle cx="24" cy="8" r="13" fill="#8b4a86"/><circle cx="0" cy="28" r="12" fill="#6a3168"/>
+      <path d="M0-30q10-16 26-18" stroke="#4d7a48" stroke-width="6" fill="none"/>
+      <g fill="#fff" opacity=".4"><circle cx="-19" cy="-21" r="4"/><circle cx="9" cy="-23" r="4"/><circle cx="-4" cy="0" r="4.4"/></g></g>
+    <g transform="translate(636,300)">
+      <rect x="-72" y="-46" width="144" height="86" rx="10" fill="#2b2523" stroke="#171312" stroke-width="5"/>
+      <rect x="-60" y="-36" width="120" height="60" rx="6" fill="#123a2c"/>
+      <g fill="#5fdc8a"><rect x="-52" y="-28" width="34" height="22" rx="3"/><rect x="-12" y="-28" width="34" height="22" rx="3" fill="#1f4f8f"/>
+        <rect x="28" y="-28" width="24" height="22" rx="3" fill="#7c3f78"/></g>
+      <text x="0" y="16" text-anchor="middle" font-family="Rubik" font-weight="900" font-size="13" fill="#8ee6a8">DEVO GIOCARE</text></g>
+    <g fill="#cfe6ff" font-family="Rubik" font-weight="900" opacity=".9"><text x="252" y="90" font-size="30">Z</text>
+      <text x="286" y="62" font-size="22">z</text><text x="308" y="42" font-size="15">z</text></g>
+    <path d="M180 388h440l-14 26H194z" fill="#e8eef5"/><path d="M180 388h440l-4 8H184z" fill="#c33a3a"/>`
+};
+
+function artSVG(g) {
+  const inner = (ART[g.art] || ART.monster)(g);
+  return '<svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
+    '<defs>' +
+    '<linearGradient id="' + g.id + 'G" x1="0" y1="0" x2="1" y2="1">' +
+    '<stop offset="0" stop-color="' + g.c1 + '"/><stop offset="1" stop-color="' + g.c2 + '"/></linearGradient>' +
+    '<radialGradient id="' + g.id + 'halo"><stop offset="0" stop-color="#8ef6ff" stop-opacity=".55"/>' +
+    '<stop offset="1" stop-color="#8ef6ff" stop-opacity="0"/></radialGradient>' +
+    '</defs><rect width="800" height="450" fill="url(#' + g.id + 'G)"/>' + inner +
+    /* fascia col nome file da inserire */
+    '<rect x="0" y="404" width="800" height="46" fill="#050109" fill-opacity=".72"/>' +
+    '<text x="20" y="434" font-family="Rubik" font-weight="900" font-size="19" fill="#ffffff" fill-opacity=".92">' + g.cover + '</text>' +
+    '<text x="780" y="434" text-anchor="end" font-family="Rubik" font-weight="800" font-size="15" fill="#8ef6ff" fill-opacity=".8">800 × 450 · jpg / png / webp</text>' +
+    '</svg>';
+}
+
+/* ============================================================================
+   3 · RENDER CARD
+   ============================================================================ */
+const KEY = "mgarcade_cover_v1_";
+const grid = document.getElementById("grid");
+const store = {
+  get(id) { try { return localStorage.getItem(KEY + id); } catch (e) { return null; } },
+  set(id, v) { try { localStorage.setItem(KEY + id, v); return true; } catch (e) { return false; } },
+  del(id) { try { localStorage.removeItem(KEY + id); } catch (e) {} },
+  all() { const out = []; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf(KEY) === 0) out.push(k); } return out; }
+};
+
+function cardNode(g, i) {
+  const a = document.createElement("article");
+  a.className = "card";
+  a.style.setProperty("--accent", g.accent);
+  a.style.animationDelay = (i * 70 + 60) + "ms";
+  a.dataset.id = g.id;
+  a.dataset.tags = g.tags.join(",");
+  a.dataset.new = g.isNew ? "1" : "0";
+
+  const titleHTML = g.title.split(" ").map((w, n) => n === g.title.split(" ").length - 1 ? '<span class="fx">' + w + '</span>' : w).join(" ");
+
+  a.innerHTML =
+    '<div class="thumb">' +
+      '<div class="art">' + artSVG(g) + '</div>' +
+      '<img class="photo" alt="' + g.alt + '" loading="lazy" decoding="async">' +
+      '<div class="shine"></div>' +
+      (g.isNew ? '<span class="badge">NEW</span>' : '') +
+      '<span class="ratio">16:9</span>' +
+      '<button class="addcover" type="button" title="Insert a cover image from your device">＋ cover</button>' +
+    '</div>' +
+    '<div class="cbody">' +
+      '<h2>' + titleHTML + '</h2>' +
+      '<p>' + g.desc + '</p>' +
+      '<div class="tags">' + g.tags.map(t => '<span class="tag">' + t + '</span>').join("") + '</div>' +
+      '<span class="play">PLAY <i>▸</i></span>' +
+    '</div>' +
+    '<a class="linkmask" href="' + g.file + '" aria-label="Play ' + g.title + '"></a>';
+
+  /* alone che segue il puntatore */
+  a.addEventListener("pointermove", e => {
+    const r = a.getBoundingClientRect();
+    a.style.setProperty("--mx", ((e.clientX - r.left) / r.width * 100).toFixed(1) + "%");
+    a.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100).toFixed(1) + "%");
+  });
+
+  /* copertina */
+  const img = a.querySelector(".photo");
+  const local = store.get(g.id);
+  img.addEventListener("load", () => { a.classList.add("has-cover"); markStatus(g.id, local ? "local" : "ok"); });
+  img.addEventListener("error", () => { a.classList.remove("has-cover"); markStatus(g.id, "missing"); });
+  img.src = local || g.cover;
+
+  /* ＋ cover → file picker → downscale 800×450 → localStorage */
+  a.querySelector(".addcover").addEventListener("click", e => {
+    e.preventDefault(); e.stopPropagation(); pickFor(g, img, a);
+  });
+  return a;
+}
+
+function renderCards() {
+  grid.innerHTML = "";
+  ARCADE.forEach((g, i) => grid.appendChild(cardNode(g, i)));
+  const soon = document.createElement("article");
+  soon.className = "card soon";
+  soon.style.setProperty("--accent", "#8f7ad6");
+  soon.style.animationDelay = (ARCADE.length * 70 + 60) + "ms";
+  soon.dataset.tags = "soon"; soon.dataset.new = "0";
+  soon.innerHTML = '<div class="cbody" style="align-items:center;gap:6px">' +
+    '<div class="lock">🔒</div><h2>COMING SOON</h2>' +
+    '<p>More mini-games are on the way…</p>' +
+    '<div class="dots"><b></b><b></b><b></b></div></div>';
+  grid.appendChild(soon);
+}
+
+/* ============================================================================
+   4 · INSERIMENTO IMMAGINE
+   ============================================================================ */
+let pending = null;
+const picker = document.getElementById("picker");
+picker.addEventListener("change", () => {
+  const f = picker.files && picker.files[0];
+  if (f && pending) pending(f);
+  picker.value = "";
+});
+function pickFor(g, img, card) {
+  pending = file => {
+    if (!/^image\//.test(file.type)) return;
+    const url = URL.createObjectURL(file);
+    const im = new Image();
+    im.onload = () => {
+      const W = 800, H = 450, c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      const x = c.getContext("2d");
+      const s = Math.max(W / im.width, H / im.height);
+      const w = im.width * s, h = im.height * s;
+      x.drawImage(im, (W - w) / 2, (H - h) / 2, w, h);
+      URL.revokeObjectURL(url);
+      const data = c.toDataURL("image/jpeg", 0.82);
+      const saved = store.set(g.id, data);
+      img.src = data;
+      markStatus(g.id, saved ? "local" : "ok");
+      flash("Preview set · " + g.cover + (saved ? " (saved in this browser)" : ""));
+    };
+    im.onerror = () => { URL.revokeObjectURL(url); flash("Could not read that image"); };
+    im.src = url;
+  };
+  picker.click();
+}
+let flashT = null;
+function flash(msg) {
+  clearTimeout(flashT);
+  let t = document.getElementById("flash");
+  if (!t) {
+    t = document.createElement("div"); t.id = "flash";
+    t.style.cssText = "position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:99;" +
+      "font:900 11px/1 Rubik;letter-spacing:.08em;text-transform:uppercase;color:#08121f;" +
+      "background:linear-gradient(180deg,#8affc0,#1fc46f);padding:11px 16px;border-radius:11px;" +
+      "box-shadow:0 10px 30px -8px #000,0 0 30px -6px #5dff9d;opacity:0;transition:opacity .25s,transform .3s";
+    document.body.appendChild(t);
+  }
+  t.textContent = msg; t.style.opacity = "1"; t.style.transform = "translateX(-50%) translateY(-6px)";
+  flashT = setTimeout(() => { t.style.opacity = "0"; t.style.transform = "translateX(-50%)"; }, 2400);
+}
+
+/* ============================================================================
+   5 · COVER MAP (stato live delle immagini)
+   ============================================================================ */
+const covRows = document.getElementById("covRows");
+function renderCoverMap() {
+  covRows.innerHTML = ARCADE.map(g =>
+    '<div class="covrow" data-id="' + g.id + '" style="--accent:' + g.accent + '">' +
+      '<div class="sw">' + artSVG(g) + '<img alt="" loading="lazy"></div>' +
+      '<div class="nm">' + g.cover + '<em>' + g.title + ' → ' + g.file + '</em></div>' +
+      '<div class="cell"><span class="pill no">checking…</span></div>' +
+    '</div>').join("");
+}
+function markStatus(id, state) {
+  const row = covRows.querySelector('[data-id="' + id + '"]');
+  if (!row) return;
+  const pill = row.querySelector(".pill");
+  const sw = row.querySelector(".sw");
+  const g = ARCADE.find(x => x.id === id);
+  const live = state === "ok" || state === "local";
+  if (live) {
+    const im = sw.querySelector("img") || document.createElement("img");
+    im.alt = ""; im.src = state === "local" ? store.get(id) : g.cover;
+    sw.appendChild(im);
+  }
+  pill.className = "pill " + (state === "local" ? "loc" : state === "ok" ? "ok" : "no");
+  pill.textContent = state === "local" ? "preview only" : state === "ok" ? "found" : "missing";
+  const n = ARCADE.filter(x => {
+    const p = covRows.querySelector('[data-id="' + x.id + '"] .pill');
+    return p && (p.classList.contains("ok") || p.classList.contains("loc"));
+  }).length;
+  const s = document.getElementById("covCount"); if (s) s.textContent = n + "/" + ARCADE.length;
+}
+document.getElementById("resetCov").addEventListener("click", () => {
+  store.all().forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
+  flash("Previews cleared");
+  renderCards(); renderCoverMap();
+  ARCADE.forEach(g => {
+    const img = grid.querySelector('[data-id="' + g.id + '"] .photo');
+    if (img) { img.onload = () => { img.closest(".card").classList.add("has-cover"); markStatus(g.id, "ok"); };
+      img.onerror = () => markStatus(g.id, "missing"); img.src = g.cover; }
+  });
+});
+document.getElementById("copyList").addEventListener("click", () => {
+  const txt = ARCADE.map(g => g.cover + "   ← " + g.title + " (" + g.file + ")").join("\n");
+  navigator.clipboard && navigator.clipboard.writeText(txt).then(() => flash("File list copied"), () => flash(txt));
+});
+
+/* ============================================================================
+   6 · FILTRI
+   ============================================================================ */
+const TAGSET = ["all", "new", ...Array.from(new Set(ARCADE.flatMap(g => g.tags)))];
+const chips = document.getElementById("chips");
+chips.innerHTML = TAGSET.map((t, i) =>
+  '<button class="chip" type="button" data-f="' + t + '" aria-pressed="' + (i === 0) + '">' + t + '</button>').join("");
+chips.addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  chips.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c === b)));
+  applyFilter(b.dataset.f);
+});
+function applyFilter(f) {
+  let n = 0;
+  grid.querySelectorAll(".card").forEach(c => {
+    const tags = (c.dataset.tags || "").split(",");
+    const ok = f === "all" ? c.dataset.tags !== "soon"
+      : f === "new" ? c.dataset.new === "1"
+        : c.dataset.tags !== "soon" && tags.indexOf(f) >= 0;
+    c.classList.toggle("hide", !ok);
+    if (ok) { n++; c.style.animation = "none"; void c.offsetWidth; c.style.animation = "cardIn .45s var(--e)"; }
+  });
+  document.getElementById("visN").textContent = n;
+}
+
+/* ============================================================================
+   7 · MARQUEE: lampadine + statistiche + pixel ambientali
+   ============================================================================ */
+function bulbs(el, n, colors) {
+  let h = "";
+  for (let i = 0; i < n; i++) {
+    h += '<span class="on" style="--bc:' + colors[i % colors.length] + ';animation-delay:' + (i * 0.09).toFixed(2) + 's"></span>';
+  }
+  el.innerHTML = h;
+}
+bulbs(document.getElementById("bulbsTop"), 22, ["#ffd66b", "#ff8ab4", "#8ef6ff", "#b7ffcf"]);
+bulbs(document.getElementById("bulbsBot"), 22, ["#8ef6ff", "#b7ffcf", "#ffd66b", "#ff8ab4"]);
+
+document.getElementById("statRow").innerHTML =
+  '<div class="stat"><b id="gN">' + ARCADE.length + '</b>&nbsp;games</div>' +
+  '<div class="stat"><b>0</b>&nbsp;downloads</div>' +
+  '<div class="stat"><b>0</b>&nbsp;accounts</div>' +
+  '<div class="stat"><b>100%</b>&nbsp;free</div>' +
+  '<div class="stat">covers&nbsp;<b id="covCount">0/' + ARCADE.length + '</b></div>';
+
+(function pixels() {
+  const f = document.getElementById("pixfield");
+  const cols = ["#8ef6ff", "#c9b6ff", "#5dff9d", "#ffd23f", "#ff8ab4"];
+  let h = "";
+  for (let i = 0; i < 46; i++) {
+    h += '<div class="pix" style="left:' + (Math.random() * 100).toFixed(2) + '%;top:' + (60 + Math.random() * 50).toFixed(1) +
+      '%;--pc:' + cols[i % cols.length] + ';animation-duration:' + (9 + Math.random() * 16).toFixed(1) +
+      's;animation-delay:-' + (Math.random() * 20).toFixed(1) + 's;transform:scale(' + (0.6 + Math.random() * 1.8).toFixed(2) + ')"></div>';
+  }
+  f.innerHTML = h;
+})();
+
+/* micro-interazione: tasto 0-9 apre un gioco */
+addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT" || !/^[1-9]$/.test(e.key)) return;
+  const g = ARCADE[+e.key - 1]; if (g) location.href = g.file;
+});
+
+/* reveal on scroll */
+(function reveal() {
+  const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }), { threshold: .12 });
+  document.querySelectorAll(".rv").forEach(n => io.observe(n));
+})();
+
+/* boot */
+renderCoverMap();
+renderCards();
+applyFilter("all");
+</script>
+<style>
+/* piccoli movimenti dentro le illustrazioni di riserva */
+@keyframes pulsA{50%{opacity:.45;transform:scale(.94)}}
+.puls{transform-box:fill-box;transform-origin:50% 50%;animation:pulsA 1.9s ease-in-out infinite}
+@keyframes flameA{0%,100%{transform:scaleY(.86) scaleX(1.06)}50%{transform:scaleY(1.18) scaleX(.9)}}
+.flame{transform-box:fill-box;transform-origin:50% 0%;animation:flameA .28s ease-in-out infinite}
+@keyframes swayA{0%,100%{transform:translateX(-6px) rotate(-2deg)}50%{transform:translateX(6px) rotate(2deg)}}
+.sway{transform-box:fill-box;transform-origin:50% 0%;animation:swayA 3.4s ease-in-out infinite}
+.sway2{transform-box:fill-box;transform-origin:50% 0%;animation:swayA 4.2s ease-in-out .4s infinite}
+</style>
 </body>
 </html>
