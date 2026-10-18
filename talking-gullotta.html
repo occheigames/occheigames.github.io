@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gullotta · Taverna &amp; Xbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Caveat:wght@600;700&family=Nunito:ital,wght@0,400;0,700;0,900;1,800&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================
+   PALETTE / BASE
+   ========================================================== */
+:root{
+  --ink:#120c09;--wall:#3d2418;--wood:#6d4526;--wood-d:#2c1a11;
+  --copper:#cf8b3f;--copper-l:#f4c179;--cream:#fff2dd;--chalk:#ece5d4;
+  --fox:#ef8040;--fox-d:#c25a22;--green:#4d7a48;--berry:#7c3f78;--berry-l:#b56ac4;
+  --fire:#ff7a29;--amber:#ffc25c;--xg:#5fdc8a;--xg-d:#107c10;--xb:#3a8dff;--xy:#ffd23f;--xr:#ff5a5a;
+  --e:cubic-bezier(.22,.9,.24,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100%;color:var(--cream);
+  font-family:'Nunito',ui-sans-serif,system-ui,sans-serif;
+  background:
+    radial-gradient(120% 90% at 86% 76%,rgba(255,124,41,.20),transparent 62%),
+    radial-gradient(90% 70% at 12% 70%,rgba(93,220,138,.13),transparent 66%),
+    linear-gradient(180deg,#170f0b,#100b08 45%,#0a0705);
+  overflow-x:hidden;
+}
+body::before{content:"";position:fixed;inset:-10%;pointer-events:none;z-index:0;opacity:.5;
+  background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),
+  repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 2px,transparent 2px 5px);mix-blend-mode:overlay}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:70;
+  background:radial-gradient(115% 95% at 50% 42%,transparent 42%,rgba(6,3,2,.62) 100%)}
+::selection{background:var(--copper);color:#20140c}
+
+/* ==========================================================
+   LAYOUT
+   ========================================================== */
+.tavern{position:relative;z-index:2;max-width:1440px;margin:0 auto;
+  padding:clamp(14px,2.4vw,30px) clamp(12px,3vw,36px) 56px;
+  display:grid;gap:clamp(14px,1.8vw,22px);
+  grid-template-columns:minmax(0,1fr) 344px;
+  grid-template-areas:"beam beam" "stage side" "roll side" "foot foot";align-items:start}
+@media(max-width:1100px){.tavern{grid-template-columns:minmax(0,1fr);
+  grid-template-areas:"beam" "stage" "side" "roll" "foot"}}
+
+/* ---- TRAVE ---- */
+.beam{grid-area:beam;position:relative;display:flex;flex-wrap:wrap;gap:clamp(12px,2vw,24px);
+  align-items:center;justify-content:space-between;padding:14px clamp(14px,2vw,24px);border-radius:12px;
+  background:linear-gradient(180deg,#66401f,#452a18 42%,#2d1a10);
+  box-shadow:inset 0 1px 0 rgba(255,196,110,.28),inset 0 -12px 22px rgba(0,0,0,.5),0 20px 44px -22px #000,0 3px 0 #170e08}
+.beam::before,.beam::after{content:"";position:absolute;left:10px;right:10px;height:8px;
+  background-image:radial-gradient(circle,var(--copper-l) 0 2.2px,rgba(0,0,0,.35) 2.6px 3.4px,transparent 3.8px);
+  background-size:38px 8px;background-repeat:repeat-x;opacity:.85}
+.beam::before{top:5px}.beam::after{bottom:5px}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.mark{width:60px;height:60px;flex:0 0 auto;filter:drop-shadow(0 4px 0 rgba(0,0,0,.45))}
+.brand h1{margin:0;font-family:'Alfa Slab One',serif;font-weight:400;font-size:clamp(28px,5vw,52px);
+  line-height:.86;color:#ffeecf;text-shadow:0 1px 0 #b3712f,0 3px 0 #734018,0 5px 0 #4a2610,0 10px 20px rgba(0,0,0,.6)}
+.brand h1 span{color:var(--xg)}
+.tagline{margin:5px 0 0;font-family:'Caveat',cursive;font-weight:700;font-size:clamp(14px,1.6vw,20px);color:#ffd9a0;opacity:.9}
+.beamR{display:flex;align-items:center;gap:clamp(10px,1.6vw,20px);flex-wrap:wrap}
+.gauges{display:grid;grid-template-columns:repeat(2,minmax(132px,1fr));gap:8px 16px}
+.gauge{display:grid;grid-template-columns:1fr auto;gap:3px 8px;align-items:center}
+.gauge>span{font:900 9.5px/1 'Nunito';letter-spacing:.18em;text-transform:uppercase;color:#ffd9a8;opacity:.85}
+.gauge>b{font:800 11px/1 'Nunito';font-variant-numeric:tabular-nums;opacity:.8}
+.bar{grid-column:1/-1;height:11px;border-radius:99px;background:#1d1108;overflow:hidden;position:relative;
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.85),inset 0 -1px 0 rgba(255,220,170,.14)}
+.fill{position:absolute;inset:0 auto 0 0;width:50%;border-radius:99px;
+  background:linear-gradient(90deg,var(--c1),var(--c2));box-shadow:0 0 14px var(--c2);transition:width .5s var(--e)}
+.fill::after{content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(115deg,rgba(255,255,255,.22) 0 5px,transparent 5px 12px);animation:tread 1.5s linear infinite}
+@keyframes tread{to{transform:translateX(12px)}}
+.gauge.low .fill{animation:alarm .7s steps(2,end) infinite}
+@keyframes alarm{50%{filter:brightness(1.9)}}
+.gs{display:flex;flex-direction:column;align-items:flex-end;padding:6px 12px;border-radius:10px;
+  background:radial-gradient(120% 120% at 50% 0%,rgba(93,220,138,.22),rgba(0,0,0,.4));
+  border:1px solid rgba(93,220,138,.4);box-shadow:0 0 22px -6px rgba(93,220,138,.5)}
+.gs em{font:900 8.5px/1 'Nunito';letter-spacing:.22em;text-transform:uppercase;color:#a8f0bd;font-style:normal}
+.gs b{font-family:'Alfa Slab One',serif;font-size:20px;color:#eafff0;font-variant-numeric:tabular-nums}
+.tools{display:flex;gap:7px}
+.tool{width:42px;height:42px;border-radius:11px;border:1px solid rgba(255,206,140,.24);
+  background:linear-gradient(180deg,#4c2e1a,#2a180e);color:#ffe4bb;font-size:18px;cursor:pointer;display:grid;place-items:center;
+  transition:transform .16s var(--e),box-shadow .2s,background .2s;box-shadow:inset 0 1px 0 rgba(255,220,170,.22),0 4px 10px -4px #000}
+.tool:hover{transform:translateY(-3px) rotate(-3deg);box-shadow:0 10px 18px -8px #000,0 0 0 1px rgba(255,206,140,.4)}
+.tool[aria-pressed="true"]{background:linear-gradient(180deg,var(--amber),#c9761f);color:#2a1608;border-color:#ffe1ab}
+.live{display:flex;align-items:center;gap:8px;font:900 11px/1 'Nunito';letter-spacing:.14em;text-transform:uppercase;
+  color:#ffe6bd;background:rgba(0,0,0,.3);border:1px solid rgba(255,196,110,.28);padding:8px 12px;border-radius:99px}
+.live i{width:9px;height:9px;border-radius:50%;background:#78e05f;box-shadow:0 0 12px #78e05f;animation:pip 1.6s ease-in-out infinite}
+.live.match i{background:var(--xg);box-shadow:0 0 14px var(--xg);animation-duration:.6s}
+@keyframes pip{50%{opacity:.25;transform:scale(.7)}}
+.live b{font-variant-numeric:tabular-nums;font-weight:800;color:var(--amber)}
+
+/* ==========================================================
+   PALCO
+   ========================================================== */
+.stageWrap{grid-area:stage;position:relative}
+.stage{position:relative;aspect-ratio:10/7;border-radius:16px;overflow:hidden;isolation:isolate;background:#1a0f09;
+  box-shadow:0 0 0 3px #59331a,0 0 0 10px #2e1a0f,0 0 0 11px rgba(255,200,120,.22),0 40px 70px -30px #000,inset 0 0 90px rgba(0,0,0,.55)}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block}
+.layer{will-change:transform}
+.corner{position:absolute;width:26px;height:26px;border:3px solid rgba(255,200,120,.4);pointer-events:none;z-index:9}
+.corner.tl{top:8px;left:8px;border-right:0;border-bottom:0;border-radius:8px 0 0 0}
+.corner.tr{top:8px;right:8px;border-left:0;border-bottom:0;border-radius:0 8px 0 0}
+.corner.bl{bottom:8px;left:8px;border-right:0;border-top:0;border-radius:0 0 0 8px}
+.corner.br{bottom:8px;right:8px;border-left:0;border-top:0;border-radius:0 0 8px 0}
+
+/* ---- FUMETTO ---- */
+.bubble{position:absolute;left:52%;top:26%;transform:translate(-50%,-100%) scale(.86);transform-origin:50% 100%;
+  width:min(400px,56%);padding:13px 17px 14px;z-index:6;background:linear-gradient(180deg,#fffaf0,#ffeccd);color:#2b1a10;
+  border-radius:18px 18px 18px 6px;border:3px solid #2b1a10;box-shadow:0 10px 0 -4px rgba(0,0,0,.35),0 24px 40px -18px #000;
+  font-weight:800;font-size:clamp(13px,1.5vw,19px);line-height:1.28;opacity:0;pointer-events:none;transition:opacity .2s,transform .3s var(--e)}
+.bubble.show{opacity:1;transform:translate(-50%,-100%) scale(1)}
+.bubble::after{content:"";position:absolute;bottom:-13px;left:14%;width:22px;height:22px;background:inherit;
+  border:3px solid #2b1a10;border-top:0;border-right:0;transform:rotate(-16deg) skewX(-12deg);border-radius:0 0 0 6px}
+.bubble em{font-family:'Caveat',cursive;font-size:1.3em;font-weight:700;color:#a53c14}
+.bubble .x{color:var(--xg-d)}
+
+/* ---- PAROLE / CORIANDOLI ---- */
+.fx{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden}
+.word{position:absolute;left:52%;top:30%;transform:translate(-50%,0);font-family:'Alfa Slab One',serif;font-size:clamp(24px,4.4vw,54px);
+  line-height:.9;color:var(--wc,#ffd166);text-shadow:0 3px 0 #2b1a10;-webkit-text-stroke:2px #2b1a10;
+  animation:wordUp 1.25s var(--e) forwards;white-space:nowrap}
+@keyframes wordUp{0%{transform:translate(-50%,10px) scale(.4) rotate(var(--wr,-6deg));opacity:0}
+  22%{transform:translate(-50%,-14px) scale(1.18) rotate(var(--wr,-6deg));opacity:1}
+  100%{transform:translate(-50%,-120px) scale(.92) rotate(calc(var(--wr,-6deg)*2));opacity:0}}
+.conf{position:absolute;top:-8%;width:9px;height:14px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(118%) rotate(760deg);opacity:.1}}
+
+/* ---- OBIETTIVI XBOX ---- */
+.achs{position:absolute;right:12px;bottom:12px;z-index:12;display:grid;gap:8px;justify-items:end;pointer-events:none}
+.ach{display:flex;align-items:center;gap:11px;padding:9px 14px 9px 10px;border-radius:12px;min-width:230px;
+  background:linear-gradient(120deg,#0f1a12,#16241a 60%,#0d150f);border:1px solid rgba(93,220,138,.5);
+  box-shadow:0 14px 30px -12px #000,0 0 24px -8px rgba(93,220,138,.6);
+  animation:achIn .45s var(--e),achOut .5s 3.4s forwards}
+@keyframes achIn{from{transform:translateX(40px) scale(.9);opacity:0}}
+@keyframes achOut{to{transform:translateY(-10px);opacity:0}}
+.ach .ring{width:34px;height:34px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;font-size:16px;
+  background:radial-gradient(circle at 50% 40%,#1d3324,#0b120d);border:2px solid var(--xg);box-shadow:0 0 14px rgba(93,220,138,.6)}
+.ach div span{display:block;font:900 8.5px/1 'Nunito';letter-spacing:.22em;text-transform:uppercase;color:#8ee6a8}
+.ach div b{display:block;font:900 13px/1.25 'Nunito';color:#f2fff5;margin:3px 0 1px}
+.ach div em{font:800 10px 'Nunito';color:var(--xy);font-style:normal;letter-spacing:.1em}
+.tip{position:absolute;right:12px;bottom:12px;z-index:11;padding:8px 12px;border-radius:10px;font:900 11px/1.3 'Nunito';
+  letter-spacing:.06em;color:#2a170c;background:linear-gradient(180deg,var(--copper-l),#c07a2c);border:2px solid #2b1a10;
+  animation:achIn .4s var(--e),achOut .5s 2.6s forwards;pointer-events:none}
+
+/* ---- DASHBOARD XBOX ---- */
+.xdash{position:absolute;inset:0;z-index:14;display:grid;grid-template-rows:auto 1fr auto;gap:12px;padding:clamp(14px,2.4vw,26px);
+  background:radial-gradient(120% 100% at 12% 0%,#123021,#0a1610 55%,#050807);
+  opacity:0;pointer-events:none;transform:scale(1.02);transition:opacity .3s,transform .4s var(--e)}
+.xdash.open{opacity:1;pointer-events:auto;transform:none}
+.xdash::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 3px)}
+.xtop{display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:relative}
+.xlogo{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+  background:radial-gradient(circle at 40% 30%,#2b6b3f,#0d1c12);border:2px solid var(--xg);box-shadow:0 0 24px rgba(93,220,138,.5);
+  font-family:'Alfa Slab One',serif;color:#eafff0;font-size:22px}
+.xtop h2{margin:0;font-family:'Alfa Slab One',serif;font-size:clamp(20px,3vw,32px);color:#eafff0;letter-spacing:.01em}
+.xtop h2 small{display:block;font:800 9.5px 'Nunito';letter-spacing:.28em;text-transform:uppercase;color:#7fd39a;margin-top:5px}
+.xprof{margin-left:auto;display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:12px;
+  background:rgba(93,220,138,.09);border:1px solid rgba(93,220,138,.3)}
+.xprof img,.xav{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 40% 30%,#ef8040,#8d3d14);
+  display:grid;place-items:center;font-size:19px;border:2px solid var(--xg)}
+.xprof b{display:block;font:900 13px 'Nunito';color:#f2fff5}
+.xprof span{font:800 9.5px 'Nunito';letter-spacing:.16em;text-transform:uppercase;color:#8ee6a8}
+.xclose{border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.3);color:#dffbe6;border-radius:10px;
+  padding:9px 14px;font:900 11px 'Nunito';letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:.2s}
+.xclose:hover{background:var(--xr);border-color:#ff9a9a;color:#fff}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-content:start;overflow:auto;position:relative}
+.tile{position:relative;border:0;text-align:left;cursor:pointer;border-radius:14px;padding:14px;min-height:132px;
+  display:flex;flex-direction:column;gap:6px;color:#eafff0;overflow:hidden;
+  background:linear-gradient(150deg,rgba(255,255,255,.09),rgba(0,0,0,.35));
+  border:1px solid rgba(255,255,255,.14);box-shadow:0 14px 26px -16px #000;
+  transition:transform .22s var(--e),box-shadow .25s,border-color .25s}
+.tile::after{content:"";position:absolute;inset:auto -30% -60% -30%;height:80%;border-radius:50%;
+  background:radial-gradient(circle,var(--tc,#5fdc8a) 0,transparent 68%);opacity:.32;transition:opacity .3s}
+.tile:hover{transform:translateY(-6px) scale(1.02);border-color:var(--tc,#5fdc8a);box-shadow:0 22px 34px -18px #000,0 0 30px -10px var(--tc)}
+.tile:hover::after{opacity:.6}
+.tile .em{font-size:30px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.6))}
+.tile b{font-family:'Alfa Slab One',serif;font-size:15px;line-height:1.1;letter-spacing:.01em}
+.tile i{font:800 9px/1 'Nunito';letter-spacing:.2em;text-transform:uppercase;color:var(--tc,#5fdc8a);font-style:normal}
+.tile p{margin:auto 0 0;font:700 11px/1.35 'Nunito';color:#c9e6d2;position:relative;z-index:1}
+.tile .sc{position:absolute;top:10px;right:10px;font:900 9px 'Nunito';letter-spacing:.1em;color:#0a140d;
+  background:var(--tc,#5fdc8a);padding:3px 7px;border-radius:99px}
+.xfriends{display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:relative}
+.xfriends span{font:900 9px 'Nunito';letter-spacing:.24em;text-transform:uppercase;color:#7fd39a}
+.fr{display:flex;align-items:center;gap:7px;padding:6px 11px;border-radius:99px;background:rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.12);font:800 11px 'Nunito';color:#dffbe6}
+.fr i{width:8px;height:8px;border-radius:50%;background:var(--xg);box-shadow:0 0 8px var(--xg)}
+.fr.away i{background:var(--xy);box-shadow:0 0 8px var(--xy)}
+.fr.off i{background:#5c6b62;box-shadow:none}
+
+/* ---- HUD MINI-GIOCO ---- */
+.qte{position:absolute;inset:0;z-index:13;display:grid;place-items:center;
+  background:radial-gradient(90% 70% at 50% 50%,rgba(6,14,9,.5),rgba(4,8,6,.86));
+  opacity:0;pointer-events:none;transition:opacity .28s}
+.qte.open{opacity:1;pointer-events:auto}
+.qbox{width:min(560px,92%);border-radius:16px;padding:18px;text-align:center;
+  background:linear-gradient(160deg,rgba(20,40,26,.96),rgba(8,14,10,.96));border:1px solid rgba(93,220,138,.45);
+  box-shadow:0 30px 60px -24px #000,0 0 40px -14px rgba(93,220,138,.55)}
+.qbox h3{margin:0 0 4px;font-family:'Alfa Slab One',serif;font-size:clamp(17px,2.4vw,26px);color:#eafff0}
+.qbox .sub{font:800 11px 'Nunito';letter-spacing:.14em;text-transform:uppercase;color:#8ee6a8}
+.qmeta{display:flex;justify-content:center;gap:18px;margin:12px 0 14px;flex-wrap:wrap}
+.qmeta div{text-align:center}
+.qmeta b{display:block;font-family:'Alfa Slab One',serif;font-size:22px;color:var(--xy);font-variant-numeric:tabular-nums}
+.qmeta span{font:900 8.5px 'Nunito';letter-spacing:.2em;text-transform:uppercase;color:#7fd39a}
+.qbar{height:9px;border-radius:99px;background:#08130c;overflow:hidden;margin-bottom:16px;box-shadow:inset 0 2px 6px #000}
+.qbar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#5fdc8a,#ffd23f);transition:width .08s linear}
+.qbtns{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.qb{aspect-ratio:1;border-radius:16px;border:2px solid rgba(255,255,255,.18);background:rgba(0,0,0,.35);
+  font-family:'Alfa Slab One',serif;font-size:clamp(20px,3.4vw,30px);color:#dffbe6;cursor:pointer;
+  transition:transform .1s,box-shadow .2s,background .2s,color .2s}
+.qb:hover{transform:translateY(-3px)}
+.qb.hit{animation:qbHit .3s var(--e)}
+@keyframes qbHit{40%{transform:scale(.86) rotate(-6deg)}}
+.qb[data-k="A"]{--c:var(--xg)}.qb[data-k="B"]{--c:var(--xr)}.qb[data-k="X"]{--c:var(--xb)}.qb[data-k="Y"]{--c:var(--xy)}
+.qb.on{background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--c) 55%,#0a140d),#0a140d);
+  border-color:var(--c);color:#fff;box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 28%,transparent),0 0 34px -6px var(--c)}
+.qflash{margin-top:12px;font:900 13px 'Nunito';letter-spacing:.1em;color:#eafff0;min-height:19px}
+.qflash.good{color:var(--xg)}.qflash.bad{color:var(--xr)}
+
+/* ---- AIUTO ---- */
+.sheet{position:absolute;inset:0;z-index:16;display:grid;place-items:center;padding:18px;background:rgba(12,7,4,.8);
+  backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .25s}
+.sheet.open{opacity:1;pointer-events:auto}
+.sheetIn{max-width:580px;max-height:88%;overflow:auto;background:linear-gradient(180deg,#3b2417,#241510);border:3px solid var(--copper);
+  border-radius:16px;padding:20px 22px;box-shadow:0 30px 60px -20px #000;transform:translateY(14px) scale(.97);transition:transform .3s var(--e)}
+.sheet.open .sheetIn{transform:none}
+.sheetIn h2{margin:0 0 6px;font-family:'Alfa Slab One',serif;font-size:24px;color:var(--amber)}
+.sheetIn ul{margin:.4em 0 0;padding-left:1.05em;color:#ffe4bd;font-size:13.5px;line-height:1.65}
+.sheetIn b{color:#fff}
+.kbd{display:inline-block;min-width:19px;text-align:center;padding:1px 6px;border-radius:5px;background:#120b06;border:1px solid #6b4526;
+  box-shadow:0 2px 0 #000;font:800 11px 'Nunito';color:var(--amber)}
+
+/* ==========================================================
+   LAVAGNA LATERALE
+   ========================================================== */
+.side{grid-area:side;display:grid;gap:14px}
+.card{position:relative;border-radius:14px;padding:16px 15px;
+  background:radial-gradient(120% 60% at 20% 0%,rgba(255,255,255,.05),transparent 60%),linear-gradient(180deg,#22301f,#161d16 60%,#111509);
+  box-shadow:inset 0 0 40px rgba(0,0,0,.7),0 24px 44px -24px #000;border:9px solid transparent;background-clip:padding-box}
+.card::before{content:"";position:absolute;inset:-9px;border-radius:16px;z-index:-1;
+  background:linear-gradient(180deg,#7a4c26,#4a2c17 55%,#331d10);box-shadow:inset 0 1px 0 rgba(255,214,150,.35),0 0 0 2px #1c100a}
+.card.xcard::before{background:linear-gradient(180deg,#1d4c2c,#0e2417 55%,#08150e);box-shadow:inset 0 1px 0 rgba(150,255,190,.25),0 0 0 2px #06110a,0 0 26px -8px rgba(93,220,138,.55)}
+.card.xcard{background:radial-gradient(120% 70% at 20% 0%,rgba(93,220,138,.12),transparent 60%),linear-gradient(180deg,#12251a,#0b1710 60%,#070f0a)}
+.chead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px}
+.chead h2{margin:0;font-family:'Caveat',cursive;font-weight:700;font-size:29px;color:#f4f0e2;text-shadow:0 0 12px rgba(255,255,255,.16)}
+.card.xcard .chead h2{color:#d8ffe3;text-shadow:0 0 14px rgba(93,220,138,.5)}
+.chead small{font:800 9px 'Nunito';letter-spacing:.2em;text-transform:uppercase;color:#a9b8a2}
+.card.xcard .chead small{color:#7fd39a}
+.rule{height:2px;background:repeating-linear-gradient(90deg,rgba(244,240,226,.5) 0 8px,transparent 8px 14px);margin:8px 0 12px;border:0}
+.card.xcard .rule{background:repeating-linear-gradient(90deg,rgba(93,220,138,.55) 0 8px,transparent 8px 14px)}
+.acts{display:grid;gap:3px}
+.act{position:relative;display:flex;align-items:center;gap:11px;width:100%;padding:9px 10px;border:0;border-radius:11px;
+  background:transparent;color:#f1ecdc;font:900 12px/1.1 'Nunito';letter-spacing:.06em;text-transform:uppercase;cursor:pointer;
+  text-align:left;transition:transform .16s var(--e),background .18s,color .18s}
+.act .ic{font-size:19px;filter:drop-shadow(0 2px 1px rgba(0,0,0,.6));transition:transform .25s var(--e)}
+.act .kb{margin-left:auto;font:800 10px 'Nunito';color:#9fb098;border:1px solid rgba(255,255,255,.16);padding:2px 6px;border-radius:5px}
+.card.xcard .act{color:#dffbe6}
+.card.xcard .act .kb{color:#7fd39a;border-color:rgba(93,220,138,.3)}
+.act::before{content:"";position:absolute;left:2px;top:8%;bottom:8%;width:3px;border-radius:9px;background:var(--ac,var(--amber));
+  transform:scaleY(0);transform-origin:50% 100%;transition:transform .22s var(--e)}
+.act:hover{background:rgba(244,240,226,.09);transform:translateX(4px);color:#fff}
+.card.xcard .act:hover{background:rgba(93,220,138,.14);color:#fff}
+.act:hover::before{transform:scaleY(1)}
+.act:hover .ic{transform:rotate(-12deg) scale(1.2)}
+.act:active{transform:translateX(4px) scale(.97)}
+.act .sub{display:block;font:700 10px 'Nunito';letter-spacing:.02em;text-transform:none;color:#a9bba2;margin-top:2px}
+.card.xcard .act .sub{color:#88b797}
+.act.big{font-size:13px;padding:12px 12px;background:linear-gradient(120deg,rgba(93,220,138,.16),rgba(0,0,0,.2));
+  border:1px solid rgba(93,220,138,.35);border-radius:12px}
+.act.big:hover{background:linear-gradient(120deg,rgba(93,220,138,.3),rgba(0,0,0,.25))}
+.xstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.xstat{border-radius:10px;padding:8px 6px;text-align:center;background:rgba(0,0,0,.34);border:1px solid rgba(93,220,138,.22)}
+.xstat b{display:block;font-family:'Alfa Slab One',serif;font-size:19px;color:var(--xy);font-variant-numeric:tabular-nums}
+.xstat span{font:900 8px 'Nunito';letter-spacing:.16em;text-transform:uppercase;color:#7fd39a}
+.board{margin-top:10px;display:grid;gap:4px}
+.board .row{display:flex;align-items:center;gap:8px;font:800 11.5px 'Nunito';color:#dffbe6;padding:5px 8px;border-radius:8px;background:rgba(0,0,0,.25)}
+.board .row.me{background:linear-gradient(90deg,rgba(93,220,138,.25),transparent);border-left:3px solid var(--xg)}
+.board .row i{font-style:normal;width:16px;text-align:center;color:var(--xy);font-weight:900}
+.board .row em{margin-left:auto;font-style:normal;font-variant-numeric:tabular-nums;color:#a8f0bd;font-weight:900}
+.say{display:grid;gap:7px}
+.say label{font:900 9px 'Nunito';letter-spacing:.2em;text-transform:uppercase;color:#a9b8a2}
+.sayRow{display:flex;gap:6px}
+.say input{flex:1;min-width:0;border-radius:10px;border:2px dashed rgba(244,240,226,.3);background:rgba(0,0,0,.28);
+  color:#fff8e8;font:800 14px 'Nunito';padding:10px 12px;outline:none;transition:border-color .2s,background .2s}
+.say input:focus{border-color:var(--amber);background:rgba(0,0,0,.45)}
+.say input::placeholder{color:#8fa08a}
+.mini{border:2px solid rgba(244,240,226,.28);background:rgba(0,0,0,.2);color:#ffe9c4;border-radius:10px;padding:0 12px;
+  font:900 13px 'Nunito';cursor:pointer;transition:transform .15s var(--e),background .2s,border-color .2s}
+.mini:hover{background:var(--amber);border-color:#fff0cd;color:#2a170c;transform:translateY(-2px)}
+.hint{margin:9px 0 0;font-size:11px;line-height:1.5;color:#9db096}
+.hint b{color:#e9e3d1}
+.chalkStats{margin-top:10px;font-family:'Caveat',cursive;font-weight:700;font-size:19px;color:#e9e3d1;line-height:1.45}
+.chalkStats i{font-style:normal;color:#ffd98f}
+
+/* ---- REGISTRO ---- */
+.roll{grid-area:roll;border-radius:14px;padding:12px 14px 8px;background:linear-gradient(180deg,rgba(60,37,22,.9),rgba(28,17,10,.9));
+  border:1px solid rgba(255,196,110,.2);box-shadow:inset 0 1px 0 rgba(255,214,150,.18),0 18px 34px -22px #000}
+.roll h3{margin:0 0 8px;font:900 9px 'Nunito';letter-spacing:.24em;text-transform:uppercase;color:#ffcf94;opacity:.85;
+  display:flex;gap:10px;align-items:center}
+.roll h3::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,207,148,.4),transparent)}
+.rollList{list-style:none;margin:0;padding:0;display:flex;gap:10px;overflow-x:auto;scrollbar-width:thin}
+.rollList li{flex:0 0 auto;max-width:280px;border-radius:10px;padding:7px 11px;background:rgba(0,0,0,.34);
+  border-left:3px solid var(--tc,var(--copper));font-size:12px;line-height:1.35;color:#ffe7c6;animation:rollIn .45s var(--e)}
+.rollList li time{display:block;font:800 8.5px 'Nunito';letter-spacing:.16em;color:#b18d63;margin-bottom:1px}
+.rollList li b{color:#fff}
+@keyframes rollIn{from{opacity:0;transform:translateY(10px) scale(.94)}}
+.foot{grid-area:foot;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between;
+  font-size:11px;color:#a2865f;letter-spacing:.04em}
+.foot span{font-family:'Caveat',cursive;font-size:17px;color:#e0b981}
+
+/* ==========================================================
+   SCENA · animazioni ambiente
+   ========================================================== */
+#fireGlow{animation:glowPulse 3.4s ease-in-out infinite}
+@keyframes glowPulse{50%{opacity:.72;transform:scale(1.07)}}
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:flick 1.05s ease-in-out infinite alternate}
+@keyframes flick{from{transform:scaleY(.86) scaleX(1.05) skewX(-4deg)}to{transform:scaleY(1.14) scaleX(.92) skewX(5deg)}}
+.flame.f2{animation-duration:.78s;animation-delay:-.2s}.flame.f3{animation-duration:1.32s;animation-delay:-.5s}
+.star{animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{opacity:.15}}
+.mote{animation:drift linear infinite}
+@keyframes drift{0%{transform:translate(0,0);opacity:0}15%{opacity:.55}85%{opacity:.4}100%{transform:translate(var(--dx,30px),-150px);opacity:0}}
+.ember{animation:emb 2.4s ease-out forwards}
+@keyframes emb{to{opacity:0;transform:translate(var(--ex,14px),-130px) scale(.2)}}
+#lanternG{transform-box:fill-box;transform-origin:50% 2%;animation:pend 5.4s ease-in-out infinite}
+@keyframes pend{50%{transform:rotate(2.6deg)}}
+#pendulum{transform-box:fill-box;transform-origin:50% 0%;animation:pend 2s ease-in-out infinite alternate}
+.zz{font-family:'Nunito',sans-serif;font-weight:900;fill:#cfe6ff;animation:zzA 2.6s ease-out forwards}
+@keyframes zzA{0%{opacity:0;transform:translate(0,0) scale(.5) rotate(-8deg)}20%{opacity:.95}100%{opacity:0;transform:translate(34px,-92px) scale(1.5) rotate(14deg)}}
+.ht{animation:htA 1.5s ease-out forwards}
+@keyframes htA{0%{opacity:0;transform:translateY(6px) scale(.3)}25%{opacity:1}100%{opacity:0;transform:translateY(-74px) scale(1.2)}}
+.shard{animation:shardA .9s ease-out forwards}
+@keyframes shardA{to{opacity:0;transform:translate(var(--sx,0),var(--sy,60px)) rotate(var(--sr,180deg))}}
+.sline{animation:slineA .5s linear 2}
+@keyframes slineA{to{opacity:0;transform:translateX(40px)}}
+#fly{animation:flyA 7s ease-in-out infinite}
+@keyframes flyA{0%{transform:translate(0,0)}20%{transform:translate(26px,-18px)}40%{transform:translate(-14px,-30px)}
+  60%{transform:translate(18px,10px)}80%{transform:translate(-20px,-8px)}100%{transform:translate(0,0)}}
+#mousePeek{transition:transform .5s var(--e)}
+.mouse-out #mousePeek{transform:translateY(-9px)}
+.hot{cursor:pointer;transition:filter .22s}
+.hot:hover{filter:brightness(1.2) drop-shadow(0 0 14px rgba(255,214,140,.9))}
+.ping{animation:pingA .8s ease-out 3}
+@keyframes pingA{30%{filter:drop-shadow(0 0 24px rgba(255,225,150,1)) brightness(1.4)}}
+/* RGB + console */
+#rgbStrip{animation:rgbShift 6s linear infinite}
+@keyframes rgbShift{to{filter:hue-rotate(360deg)}}
+#ledRing{animation:ledPulse 2.2s ease-in-out infinite}
+@keyframes ledPulse{50%{opacity:.5;transform:scale(.9)}}
+#neonLag{opacity:.15;transition:opacity .18s}
+#neonLag.on{opacity:1;animation:neonFlick .3s steps(2,end) 4}
+@keyframes neonFlick{50%{opacity:.25}}
+.tvIdle #tvScreenG{animation:tvf 6s ease-in-out infinite}
+@keyframes tvf{50%{opacity:.86}}
+#tvBall{animation:tvBall 1.6s ease-in-out infinite alternate}
+@keyframes tvBall{to{transform:translateX(96px) translateY(10px)}}
+#tvCar1{animation:tvCar 1.1s ease-in-out infinite alternate}
+#tvCar2{animation:tvCar 1.1s ease-in-out .3s infinite alternate-reverse}
+@keyframes tvCar{to{transform:translateX(22px)}}
+#tvCircle{transform-box:fill-box;transform-origin:50% 50%;animation:tvCircle 3.4s ease-in-out infinite}
+@keyframes tvCircle{50%{transform:scale(.55)}}
+#tvGhost{animation:tvGhost 2.6s ease-in-out infinite}
+@keyframes tvGhost{0%,100%{opacity:.15;transform:translateY(4px)}50%{opacity:1;transform:translateY(-4px)}}
+#tvScan{animation:tvScan 4s linear infinite}
+@keyframes tvScan{to{transform:translateY(82px)}}
+.night #nightRect{opacity:.62}
+#nightRect{transition:opacity .6s}
+#dustLayer,#fxScene{pointer-events:none}
+#padG,#hachiG,#obiG,#headsetG{pointer-events:none}
+@media (prefers-reduced-motion:reduce){
+  .flame,.mote,.ember,#rgbStrip,#fireGlow,#star,.star,#tvBall,#neonLag{animation:none!important}
+}
+</style>
+</head>
+<body>
+<div class="tavern">
+
+  <!-- ==================== TRAVE ==================== -->
+  <header class="beam">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M14 44C10 24 16 12 22 8c6 6 12 14 14 22" fill="#c25a22"/>
+        <path d="M86 44c4-20-2-32-8-36-6 6-12 14-14 22" fill="#c25a22"/>
+        <path d="M50 16c22 0 34 16 34 34 0 22-16 34-34 34S16 72 16 50c0-18 12-34 34-34z" fill="#ef8040"/>
+        <path d="M50 46c14 0 22 8 22 18s-10 18-22 18-22-8-22-18 8-18 22-18z" fill="#fff2dd"/>
+        <circle cx="36" cy="46" r="6.5" fill="#2c1a12"/><circle cx="64" cy="46" r="6.5" fill="#2c1a12"/>
+        <circle cx="38" cy="44" r="2.2" fill="#fff"/><circle cx="66" cy="44" r="2.2" fill="#fff"/>
+        <path d="M50 62c5 0 8 3 8 6s-4 5-8 5-8-2-8-5 3-6 8-6z" fill="#2c1a12"/>
+        <path d="M42 78c3 3 13 3 16 0" stroke="#2c1a12" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <h1>GULLOTTA<span>.</span></h1>
+        <p class="tagline">volpe da taverna · uva, karate, smorfie e Xbox sempre accesa</p>
+      </div>
+    </div>
+    <div class="beamR">
+      <div class="gauges">
+        <div class="gauge" id="gMood"><span>Umore</span><b>72</b><div class="bar"><i class="fill" style="--c1:#ffb04a;--c2:#ff7a29;width:72%"></i></div></div>
+        <div class="gauge" id="gEnergy"><span>Energia</span><b>80</b><div class="bar"><i class="fill" style="--c1:#8be07a;--c2:#3fa86b;width:80%"></i></div></div>
+        <div class="gauge" id="gHype"><span>Hype</span><b>35</b><div class="bar"><i class="fill" style="--c1:#c58bff;--c2:#7c3f78;width:35%"></i></div></div>
+        <div class="gauge" id="gBelly"><span>Panzia</span><b>20</b><div class="bar"><i class="fill" style="--c1:#ffd08a;--c2:#c98b3f;width:20%"></i></div></div>
+      </div>
+      <div class="gs"><em>gamerscore</em><b id="gsVal">0</b></div>
+      <div class="tools">
+        <button class="tool" id="btnMic" title="Parla col microfono (M)">🎙</button>
+        <button class="tool" id="btnSound" aria-pressed="true" title="Audio (A)">🔊</button>
+        <button class="tool" id="btnLight" aria-pressed="false" title="Luci (L)">💡</button>
+        <button class="tool" id="btnHelp" title="Come si gioca (?)">?</button>
+      </div>
+      <div class="live" id="liveBox"><i></i><span id="liveTxt">Taverna aperta</span> · <b id="clockTop">--:--:--</b></div>
+    </div>
+  </header>
+
+  <!-- ==================== PALCO ==================== -->
+  <div class="stageWrap">
+    <div class="stage" id="stage">
+      <svg id="scene" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" role="img"
+           aria-label="La taverna di Gullotta: camino, finestra, postazione Xbox e la volpe al centro">
+        <defs>
+          <linearGradient id="gWall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a2c1c"/><stop offset=".55" stop-color="#3a2216"/><stop offset="1" stop-color="#26150e"/></linearGradient>
+          <linearGradient id="gFloor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5c3a20"/><stop offset="1" stop-color="#2a170d"/></linearGradient>
+          <linearGradient id="gWood" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7b4c27"/><stop offset=".5" stop-color="#96612f"/><stop offset="1" stop-color="#5e3619"/></linearGradient>
+          <linearGradient id="gStone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7c6f63"/><stop offset="1" stop-color="#463b33"/></linearGradient>
+          <linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d1a33"/><stop offset="1" stop-color="#243b62"/></linearGradient>
+          <radialGradient id="gGlow"><stop offset="0" stop-color="#ffae4a" stop-opacity=".95"/><stop offset=".45" stop-color="#ff7a29" stop-opacity=".42"/><stop offset="1" stop-color="#ff7a29" stop-opacity="0"/></radialGradient>
+          <radialGradient id="gMoon"><stop offset="0" stop-color="#fff8dc"/><stop offset=".6" stop-color="#ffe9ad"/><stop offset="1" stop-color="#ffe9ad" stop-opacity="0"/></radialGradient>
+          <linearGradient id="gTv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#123a2c"/><stop offset=".5" stop-color="#1f6f4a"/><stop offset="1" stop-color="#0c2a1f"/></linearGradient>
+          <linearGradient id="gRug" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b2f3c"/><stop offset="1" stop-color="#3f1c25"/></linearGradient>
+          <linearGradient id="gFox" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f79450"/><stop offset="1" stop-color="#d9642a"/></linearGradient>
+          <linearGradient id="gRgb" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#5fdc8a"/><stop offset=".25" stop-color="#3a8dff"/><stop offset=".5" stop-color="#b56ac4"/>
+            <stop offset=".75" stop-color="#ffd23f"/><stop offset="1" stop-color="#ff5a5a"/></linearGradient>
+          <radialGradient id="gVig"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#12080a" stop-opacity=".8"/></radialGradient>
+          <clipPath id="clipWin"><path d="M90 250V146a90 66 0 0 1 180 0v104Z"/></clipPath>
+          <clipPath id="clipTv"><rect x="88" y="404" width="164" height="82" rx="6"/></clipPath>
+          <clipPath id="clipEye"><ellipse rx="17" ry="19"/></clipPath>
+          <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="9"/></filter>
+        </defs>
+
+        <!-- PARETE -->
+        <g class="layer" id="lWall" data-depth="3">
+          <rect width="1000" height="480" fill="url(#gWall)"/>
+          <g id="planks"></g>
+          <rect width="1000" height="46" fill="#2b1a11"/><rect y="42" width="1000" height="10" fill="#1c100a" opacity=".8"/>
+          <g id="garland"></g>
+
+          <g id="win">
+            <path d="M90 250V146a90 66 0 0 1 180 0v104Z" fill="url(#gSky)"/>
+            <g clip-path="url(#clipWin)">
+              <g id="stars"></g>
+              <circle cx="204" cy="132" r="46" fill="url(#gMoon)" opacity=".55"/><circle cx="204" cy="132" r="21" fill="#fff5d6"/>
+              <circle cx="196" cy="126" r="4" fill="#e6d6ac" opacity=".7"/><circle cx="211" cy="140" r="5.5" fill="#e6d6ac" opacity=".55"/>
+              <path d="M0 0 L74 0 L0 62 Z" transform="translate(90,80)" fill="#c9d8e8" opacity=".07"/>
+              <g id="cobweb" stroke="#dfe8f2" stroke-opacity=".38" fill="none" stroke-width="1.4" transform="translate(270,80) scale(-1,1)">
+                <path d="M0 0 L44 0 M0 0 L34 28 M0 0 L20 40 M0 0 L4 46"/><path d="M10 0 Q9 9 4 12 M22 0 Q19 18 8 26 M34 0 Q28 26 12 38"/></g>
+            </g>
+            <path d="M90 250V146a90 66 0 0 1 180 0v104Z" fill="none" stroke="#20130c" stroke-width="9"/>
+            <path d="M180 84v166 M90 190h180" stroke="#20130c" stroke-width="7"/>
+            <rect x="74" y="248" width="212" height="14" rx="4" fill="url(#gWood)"/>
+            <g transform="translate(120,248)"><rect x="-11" y="-20" width="22" height="20" rx="3" fill="#8e5a2c"/>
+              <path d="M0 -20 C -14 -34 -8 -48 0 -52 C 8 -48 14 -34 0 -20Z" fill="#4d7a48"/>
+              <path d="M0 -22 C -20 -28 -26 -42 -22 -50 C -10 -46 -2 -34 0 -24Z" fill="#3f6b3c"/></g>
+            <g transform="translate(246,248)"><rect x="-7" y="-26" width="14" height="26" fill="#f0e0bd"/>
+              <path d="M0 -26 q6 -8 0 -14 q-6 6 0 14Z" fill="#ffcf6a" class="flame f3"/><circle cy="-30" r="18" fill="url(#gGlow)" opacity=".5"/></g>
+          </g>
+
+          <!-- orologio -->
+          <g transform="translate(398,146)">
+            <circle r="52" fill="#3a2418"/><circle r="46" fill="#f4e7cd"/>
+            <circle r="46" fill="none" stroke="#c98b3f" stroke-width="7"/>
+            <g id="ticks" stroke-linecap="round"></g>
+            <text y="-16" text-anchor="middle" font-family="Caveat" font-size="19" font-weight="700" fill="#8d5b2b">taverna</text>
+            <line id="hH" y2="14" stroke="#2c1a12" stroke-width="5" stroke-linecap="round"/>
+            <line id="hM" y2="26" stroke="#2c1a12" stroke-width="3.4" stroke-linecap="round"/>
+            <line id="hS" y2="30" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round"/>
+            <circle r="4" fill="#2c1a12"/>
+            <g id="pendulum" transform="translate(0,52)"><line y2="52" stroke="#8d5b2b" stroke-width="3"/><circle cy="56" r="9" fill="#c98b3f"/></g>
+          </g>
+
+          <!-- lanterna -->
+          <g id="lanternG" transform="translate(636,46)">
+            <line y2="66" stroke="#7c5a33" stroke-width="3"/>
+            <path d="M-20 66 h40 l-6 -10 h-28Z" fill="#b3752c"/>
+            <path d="M-17 66 h34 v34 h-34Z" fill="#f6d089" opacity=".92"/>
+            <path d="M-17 66 h34 v34 h-34Z" fill="none" stroke="#8d5b2b" stroke-width="4"/>
+            <path d="M-20 100 h40 l-4 9 h-32Z" fill="#b3752c"/>
+            <circle cy="84" r="7" fill="#fff3c4"/><circle cy="86" r="60" fill="url(#gGlow)" opacity=".55" filter="url(#soft)"/>
+          </g>
+          <!-- poster esports -->
+          <g id="poster" class="hot" transform="translate(58,268)">
+            <rect width="112" height="104" rx="4" fill="#12241a" stroke="#2f5b3c" stroke-width="3"/>
+            <circle cx="56" cy="40" r="22" fill="none" stroke="#5fdc8a" stroke-width="3"/>
+            <path d="M48 30 l16 10 -16 10z" fill="#5fdc8a"/>
+            <text x="56" y="76" text-anchor="middle" font-family="Alfa Slab One" font-size="12" fill="#d8ffe3">GULLOTTA</text>
+            <text x="56" y="90" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="9" letter-spacing="2" fill="#7fd39a">ESPORTS</text>
+          </g>
+          <!-- mini lavagna classifica -->
+          <g transform="translate(188,272)">
+            <rect width="106" height="100" rx="4" fill="#141d16" stroke="#4a2c17" stroke-width="6"/>
+            <text x="53" y="20" text-anchor="middle" font-family="Caveat" font-weight="700" font-size="16" fill="#e9e3d1">CLASSIFICA</text>
+            <g id="lbMini" font-family="Nunito" font-weight="800" font-size="10" fill="#cfe0d4"></g>
+          </g>
+          <!-- neon LAG -->
+          <g id="neonLag" transform="translate(150,362)">
+            <rect x="-30" y="-11" width="60" height="20" rx="5" fill="#1a0d0d" stroke="#ff5a5a" stroke-width="1.6"/>
+            <text y="4" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="11" letter-spacing="3" fill="#ff8a8a">LAG</text>
+          </g>
+        </g>
+
+        <!-- CAMINO -->
+        <g class="layer" id="lHearth" data-depth="6">
+          <rect x="700" y="46" width="300" height="150" fill="url(#gStone)"/>
+          <rect x="666" y="188" width="334" height="26" rx="5" fill="url(#gWood)"/>
+          <path d="M684 470V214h316v256Z" fill="#514639"/><g id="stones"></g>
+          <path d="M742 470V356a90 74 0 0 1 180 0v114Z" fill="#1a0f0a"/>
+          <path d="M742 470V356a90 74 0 0 1 180 0v114" fill="none" stroke="#372f28" stroke-width="8"/>
+          <ellipse id="fireGlow" cx="832" cy="430" rx="230" ry="150" fill="url(#gGlow)" opacity=".8" filter="url(#soft)"/>
+          <g transform="translate(832,462)">
+            <path d="M-62 4 C -30 -12 30 -12 62 4 C 40 16 -40 16 -62 4Z" fill="#5c3418"/>
+            <path d="M-46 -6 C -18 -18 22 -16 48 -4 C 22 6 -22 6 -46 -6Z" fill="#754220"/>
+            <path d="M-30 -14 h60 l-6 8 h-48z" fill="#3c2210"/></g>
+          <g transform="translate(832,458)">
+            <path class="flame" d="M0 0 C -26 -18 -20 -52 0 -78 C 20 -52 26 -18 0 0Z" fill="#ff7a29" opacity=".95"/>
+            <path class="flame f2" d="M-18 0 C -34 -14 -30 -38 -14 -56 C -4 -36 -4 -16 -18 0Z" fill="#ffa53d"/>
+            <path class="flame f3" d="M18 0 C 34 -12 30 -34 15 -50 C 5 -32 6 -14 18 0Z" fill="#ffc25c"/>
+            <path class="flame f2" d="M0 0 C -13 -12 -11 -32 0 -48 C 11 -32 13 -12 0 0Z" fill="#fff0b8"/></g>
+          <g id="embers"></g>
+          <g transform="translate(770,214)">
+            <path d="M0 0 q22 4 22 22 q0 18 -22 20" fill="none" stroke="#3a2a1c" stroke-width="4"/>
+            <path d="M-16 42 h34 l-6 26 h-22Z" fill="#3f3a33"/><ellipse cy="42" rx="17" ry="5" fill="#585049"/></g>
+          <g transform="translate(692,188)"><rect x="-9" y="-30" width="18" height="30" fill="#f0e0bd"/>
+            <path d="M0 -30 q6 -9 0 -16 q-6 7 0 16Z" class="flame" fill="#ffcf6a"/><circle cy="-36" r="16" fill="url(#gGlow)" opacity=".5"/></g>
+          <g transform="translate(964,188)"><rect x="-8" y="-24" width="16" height="24" fill="#f0e0bd"/>
+            <path d="M0 -24 q5 -8 0 -14 q-5 6 0 14Z" class="flame f3" fill="#ffcf6a"/></g>
+          <g transform="translate(742,188)"><rect x="-30" y="-56" width="60" height="56" rx="3" fill="#6b4526"/>
+            <rect x="-24" y="-50" width="48" height="44" fill="#efe0c2"/><circle cy="-30" r="11" fill="#7c3f78"/>
+            <circle cx="-6" cy="-38" r="6" fill="#9a54a0"/><circle cx="7" cy="-37" r="6" fill="#5f2c63"/>
+            <path d="M0 -44 q6 -10 12 -12" stroke="#4d7a48" stroke-width="3" fill="none"/></g>
+          <g transform="translate(818,188)"><path d="M-16 -34 h32 l-4 20 h-24Z" fill="#c98b3f"/>
+            <ellipse cy="-34" rx="18" ry="6" fill="#f4c179"/><path d="M-22 -30 q-10 8 2 14" fill="none" stroke="#c98b3f" stroke-width="4"/>
+            <path d="M22 -30 q10 8 -2 14" fill="none" stroke="#c98b3f" stroke-width="4"/><rect x="-13" y="-14" width="26" height="14" fill="#8d5b2b"/>
+            <circle cx="0" cy="-42" r="9" fill="#3fa86b"/><path d="M-4 -46 l8 8 M4 -46 l-8 8" stroke="#e9f7ee" stroke-width="2"/></g>
+          <g id="grapeJar" class="hot" transform="translate(900,188)" data-click="jar">
+            <path d="M-24 -8 q0 -34 24 -34 q24 0 24 34 z" fill="#bfd6cf" opacity=".38"/>
+            <g><circle cx="-9" cy="-22" r="8" fill="#7c3f78"/><circle cx="8" cy="-24" r="8" fill="#9a54a0"/><circle cx="0" cy="-13" r="8.5" fill="#6a3168"/>
+              <circle cx="-12" cy="-11" r="7" fill="#9a54a0"/><circle cx="12" cy="-11" r="7" fill="#7c3f78"/><circle cx="0" cy="-27" r="6.5" fill="#b56ac4"/></g>
+            <path d="M-24 -8 q0 -34 24 -34 q24 0 24 34 z" fill="none" stroke="#e8f2ec" stroke-opacity=".55" stroke-width="3"/>
+            <rect x="-16" y="-48" width="32" height="8" rx="3" fill="#8d5b2b"/><path d="M-16 -34 h32" stroke="#fff" stroke-opacity=".22" stroke-width="2"/></g>
+        </g>
+
+        <!-- PAVIMENTO -->
+        <g class="layer" id="lFloor" data-depth="10">
+          <rect y="470" width="1000" height="230" fill="url(#gFloor)"/>
+          <g id="boards"></g>
+          <ellipse cx="540" cy="596" rx="248" ry="62" fill="url(#gRug)"/>
+          <ellipse cx="540" cy="596" rx="248" ry="62" fill="none" stroke="#c98b3f" stroke-width="4" opacity=".55"/>
+          <ellipse cx="540" cy="596" rx="200" ry="48" fill="none" stroke="#e0b070" stroke-width="2.5" opacity=".33"/>
+          <ellipse cx="540" cy="596" rx="120" ry="26" fill="none" stroke="#e0b070" stroke-width="2.5" opacity=".22"/>
+          <g id="fringe" stroke="#e0b070" stroke-width="2" opacity=".45"></g>
+        </g>
+
+        <!-- PROP -->
+        <g class="layer" id="lProps" data-depth="14">
+          <!-- ===== POSTAZIONE XBOX ===== -->
+          <g id="xcorner">
+            <rect id="rgbStrip" x="54" y="368" width="232" height="7" rx="4" fill="url(#gRgb)" opacity=".9"/>
+            <rect x="52" y="498" width="236" height="20" rx="5" fill="url(#gWood)"/>
+            <path d="M70 518 l10 52 M270 518 l-10 52" stroke="#5e3619" stroke-width="9"/>
+            <rect x="62" y="376" width="216" height="118" rx="12" fill="#2b2523"/>
+            <rect x="62" y="376" width="216" height="118" rx="12" fill="none" stroke="#171312" stroke-width="5"/>
+            <g id="tvScreenG" clip-path="url(#clipTv)">
+              <rect x="88" y="404" width="164" height="82" fill="url(#gTv)"/>
+              <!-- home -->
+              <g id="tvHome"><rect x="96" y="414" width="46" height="30" rx="4" fill="#107c10"/><rect x="148" y="414" width="46" height="30" rx="4" fill="#1f4f8f"/>
+                <rect x="200" y="414" width="44" height="30" rx="4" fill="#7c3f78"/><rect x="96" y="450" width="148" height="26" rx="4" fill="#123021"/>
+                <text x="170" y="467" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="10" fill="#8ee6a8">SCEGLI. SONO PRONTA</text></g>
+              <!-- calcio -->
+              <g id="tvCalcio" style="display:none"><rect x="88" y="404" width="164" height="82" fill="#2f9c63"/>
+                <rect x="88" y="404" width="164" height="82" fill="none" stroke="#e9f7ee" stroke-opacity=".5" stroke-width="2"/>
+                <path d="M170 404v82 M88 445h164" stroke="#e9f7ee" stroke-opacity=".45" stroke-width="2"/><circle cx="170" cy="445" r="16" fill="none" stroke="#e9f7ee" stroke-opacity=".45" stroke-width="2"/>
+                <circle cx="120" cy="430" r="6" fill="#1b4d3a"/><circle cx="140" cy="462" r="6" fill="#1b4d3a"/><circle cx="212" cy="436" r="6" fill="#c0392b"/><circle cx="230" cy="458" r="6" fill="#c0392b"/>
+                <circle id="tvBall" cx="170" cy="446" r="5" fill="#fff8ec"/>
+                <text id="tvScore" x="170" y="418" text-anchor="middle" font-family="Alfa Slab One" font-size="11" fill="#fff8ec">1 - 0</text></g>
+              <!-- battaglia -->
+              <g id="tvBattaglia" style="display:none"><rect x="88" y="404" width="164" height="82" fill="#1d3a2c"/>
+                <path d="M88 470 q40 -26 82 -14 q42 12 82 -12 v42 h-164z" fill="#2f5b3c"/>
+                <circle id="tvCircle" cx="170" cy="444" r="34" fill="none" stroke="#3a8dff" stroke-width="3"/>
+                <rect x="150" y="428" width="12" height="12" rx="2" fill="#ffd23f"/><rect x="196" y="452" width="10" height="10" rx="2" fill="#ff5a5a"/>
+                <text id="tvAlive" x="96" y="418" font-family="Nunito" font-weight="900" font-size="11" fill="#eafff0">12 RIMASTI</text></g>
+              <!-- corrida -->
+              <g id="tvCorrida" style="display:none"><rect x="88" y="404" width="164" height="82" fill="#1a2233"/>
+                <path d="M118 486 L156 424 h28 L222 486 z" fill="#3a3f4c"/><path d="M170 486 V424" stroke="#ffd23f" stroke-width="2" stroke-dasharray="8 10"/>
+                <rect id="tvCar1" x="132" y="452" width="24" height="14" rx="4" fill="#ef8040"/><rect id="tvCar2" x="184" y="440" width="22" height="13" rx="4" fill="#3a8dff"/>
+                <text id="tvSpeed" x="244" y="418" text-anchor="end" font-family="Alfa Slab One" font-size="12" fill="#5fdc8a">212</text></g>
+              <!-- brividi -->
+              <g id="tvBrividi" style="display:none"><rect x="88" y="404" width="164" height="82" fill="#080a0c"/>
+                <rect x="88" y="404" width="164" height="82" fill="url(#gVig)"/>
+                <g id="tvGhost"><circle cx="150" cy="440" r="4" fill="#cfe6ff"/><circle cx="172" cy="440" r="4" fill="#cfe6ff"/>
+                  <path d="M146 458 q16 12 32 0" stroke="#cfe6ff" stroke-width="2.4" fill="none"/></g>
+                <text x="170" y="474" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="9" letter-spacing="2" fill="#5c6b78">QUALCUNO E IN CASA</text></g>
+              <g id="tvScan" opacity=".2"><rect x="88" y="404" width="164" height="14" fill="#dffbe6"/></g>
+            </g>
+            <path d="M108 376 L86 336 M232 376 L254 336" stroke="#8f8a86" stroke-width="4"/>
+            <circle cx="86" cy="334" r="5" fill="#c9c4c0"/><circle cx="256" cy="334" r="5" fill="#c9c4c0"/>
+            <!-- console -->
+            <g id="consoleG" class="hot" data-click="console" transform="translate(112,486)">
+              <rect x="-46" y="-14" width="92" height="26" rx="7" fill="#1c1c1c"/><rect x="-46" y="-14" width="92" height="26" rx="7" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+              <g id="ledRing" style="transform-box:fill-box;transform-origin:50% 50%"><circle cx="0" cy="-1" r="8" fill="none" stroke="#5fdc8a" stroke-width="3"/><circle r="15" fill="url(#gGlow)" opacity=".5"/></g>
+              <rect x="24" y="-8" width="14" height="3" rx="1.5" fill="#3a3a3a"/></g>
+            <!-- controller sul tavolo -->
+            <g id="padTable" class="hot" data-click="pad" transform="translate(240,490)">
+              <path d="M-26 -8 q26 -11 52 0 q7 17 -5 23 q-11 4 -14 -5 h-14 q-3 9 -14 5 q-12 -6 -5 -23Z" fill="#242424"/>
+              <circle cx="-14" cy="0" r="3.4" fill="#5fdc8a"/><circle cx="14" cy="0" r="3.4" fill="#ff5a5a"/>
+              <path d="M-30 2 h8 M-26 -2 v8" stroke="#777" stroke-width="2.2"/></g>
+            <!-- cuffie appese -->
+            <g id="headsetHook" transform="translate(300,452)">
+              <path d="M-16 0 a16 16 0 0 1 32 0" fill="none" stroke="#1c1c1c" stroke-width="6"/>
+              <rect x="-22" y="-2" width="12" height="18" rx="5" fill="#107c10"/><rect x="10" y="-2" width="12" height="18" rx="5" fill="#107c10"/>
+              <path d="M16 12 q10 8 4 16" fill="none" stroke="#1c1c1c" stroke-width="3"/><circle cx="20" cy="30" r="3" fill="#3a3a3a"/>
+              <path d="M0 -16 v-14" stroke="#6b4526" stroke-width="4"/></g>
+            <!-- lattine -->
+            <g id="fridge" class="hot" data-click="can" transform="translate(38,486)">
+              <rect x="-11" y="-30" width="22" height="30" rx="4" fill="#123a2c"/><rect x="-11" y="-30" width="22" height="8" rx="4" fill="#5fdc8a"/>
+              <text y="-8" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="7" fill="#d8ffe3">XYN</text>
+              <g transform="translate(24,4)"><rect x="-11" y="-30" width="22" height="30" rx="4" fill="#3a1f38"/><rect x="-11" y="-30" width="22" height="8" rx="4" fill="#ffd23f"/>
+                <text y="-8" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="7" fill="#ffeaa0">XYN</text></g></g>
+            <!-- sedia/cassa gamer -->
+            <g transform="translate(300,556)"><rect x="-30" y="-24" width="60" height="52" rx="5" fill="#5e3619"/>
+              <path d="M-30 -8 h60 M-30 8 h60" stroke="#3f2411" stroke-width="4"/>
+              <rect x="-32" y="-34" width="64" height="12" rx="5" fill="#242a26"/></g>
+          </g>
+
+          <!-- cassa dell'uva -->
+          <g id="crateG">
+            <g id="grapeBunch" class="hot" transform="translate(380,494)" data-click="bunch">
+              <path d="M0 -34 q10 -12 22 -14" stroke="#4d7a48" stroke-width="5" fill="none"/>
+              <path d="M-4 -32 q-18 -6 -26 4 q14 8 26 -4Z" fill="#5b8f52"/>
+              <circle cx="-13" cy="-14" r="11" fill="#8b4a86"/><circle cx="10" cy="-16" r="11" fill="#6a3168"/><circle cx="-2" cy="0" r="12" fill="#9a54a0"/>
+              <circle cx="-22" cy="2" r="10" fill="#7c3f78"/><circle cx="18" cy="2" r="10" fill="#8b4a86"/><circle cx="-10" cy="17" r="10.5" fill="#6a3168"/>
+              <circle cx="10" cy="18" r="10.5" fill="#9a54a0"/><circle cx="0" cy="32" r="9" fill="#7c3f78"/>
+              <g fill="#fff" opacity=".35"><circle cx="-16" cy="-18" r="3"/><circle cx="6" cy="-20" r="3"/><circle cx="-5" cy="-4" r="3.4"/><circle cx="-13" cy="13" r="3"/><circle cx="7" cy="14" r="3"/></g></g>
+            <g transform="translate(380,556)"><rect x="-58" y="-30" width="116" height="86" rx="5" fill="#7b4c27"/>
+              <path d="M-58 -18 h116 M-58 0 h116 M-58 18 h116 M-58 36 h116" stroke="#5a3418" stroke-width="4"/>
+              <rect x="-58" y="-30" width="116" height="86" rx="5" fill="none" stroke="#4a2a13" stroke-width="5"/>
+              <text y="46" text-anchor="middle" font-family="Caveat" font-weight="700" font-size="26" fill="#ffe4bb">UVA · 1€</text></g>
+            <g id="fly" transform="translate(420,470)"><ellipse rx="4" ry="2.6" fill="#2c1a12"/>
+              <path d="M-2 -3 l-6 -6 M2 -3 l6 -6" stroke="#cfd8dc" stroke-width="1.4"/></g>
+          </g>
+
+          <g transform="translate(936,600)"><path d="M-52 -70 C -70 -30 -70 30 -52 70 h104 C 68 30 68 -30 52 -70Z" fill="#6b4526"/>
+            <path d="M-56 -40 h112 M-60 0 h120 M-56 40 h112" stroke="#3f2715" stroke-width="7"/><ellipse cy="-70" rx="52" ry="14" fill="#8c5c31"/></g>
+          <g transform="translate(664,470)"><path d="M0 0 l-16 96" stroke="#8d5b2b" stroke-width="6"/><path d="M-22 96 l14 -8 l8 16 z" fill="#d8b25a"/></g>
+          <g transform="translate(30,452)"><path d="M0 40 a20 22 0 0 1 40 0Z" fill="#160d08"/>
+            <g id="mousePeek" transform="translate(20,40)"><ellipse cy="-4" rx="11" ry="9" fill="#8f8a86"/>
+              <circle cx="-8" cy="-12" r="5" fill="#a9a39e"/><circle cx="4" cy="-12" r="5" fill="#a9a39e"/>
+              <circle cx="-4" cy="-5" r="1.8" fill="#2c1a12"/><circle cx="3" cy="-5" r="1.8" fill="#2c1a12"/><circle cx="0" cy="-1" r="2" fill="#f0908c"/></g></g>
+        </g>
+
+        <g class="layer" id="dustLayer" data-depth="18"></g>
+
+        <!-- ==================== GULLOTTA (rig a pivot) ==================== -->
+        <g class="layer" id="foxLayer" data-depth="16">
+          <g id="fox" transform="translate(520,452)">
+            <ellipse id="shadow" cx="0" cy="142" rx="104" ry="17" fill="rgba(24,10,4,.42)" filter="url(#soft)"/>
+            <g id="pRoot">
+              <!-- CODA -->
+              <g transform="translate(40,18)"><g id="pTail"><g id="pTail2">
+                <path d="M-8 -28 C 42 -48 98 -34 122 -2 C 142 26 130 58 100 64 C 62 72 16 46 -2 16 C -12 -2 -12 -14 -8 -28Z" fill="#c25a22"/>
+                <path d="M-4 -22 C 40 -40 90 -26 112 2 C 128 24 118 50 94 54 C 62 60 22 38 6 12 C -3 -3 -6 -12 -4 -22Z" fill="url(#gFox)"/>
+                <path d="M94 54 C 116 46 126 24 116 4 C 132 22 130 52 104 62 C 98 64 92 60 94 54Z" fill="#fff2dd"/>
+                <path d="M-2 16 C -18 12 -26 0 -24 -12 C -14 -6 -6 2 -2 10Z" fill="#c25a22"/>
+              </g></g></g>
+              <!-- GAMBE -->
+              <g transform="translate(-30,40)"><g id="pLegL">
+                <path d="M-17 -8 C 12 -12 20 8 19 42 C 18 76 10 98 -2 98 C -16 98 -22 74 -22 42 C -22 10 -20 -2 -17 -8Z" fill="#c25a22"/>
+                <path d="M-22 66 C -24 88 -12 98 0 98 C 14 98 22 88 19 66 C 8 78 -12 78 -22 66Z" fill="#2c1a12"/>
+                <path d="M-9 92 v6 M0 94 v6 M9 92 v6" stroke="#5c3a22" stroke-width="2.4" fill="none"/></g></g>
+              <g transform="translate(30,40)"><g id="pLegR">
+                <path d="M-19 -8 C 10 -12 17 8 22 42 C 24 76 16 98 4 98 C -10 98 -20 74 -19 42 C -19 10 -22 -2 -19 -8Z" fill="url(#gFox)"/>
+                <path d="M-19 66 C -22 88 -10 98 2 98 C 16 98 24 88 22 66 C 10 78 -9 78 -19 66Z" fill="#2c1a12"/>
+                <path d="M-8 92 v6 M2 94 v6 M11 92 v6" stroke="#5c3a22" stroke-width="2.4" fill="none"/></g></g>
+              <!-- BRACCIO SX (dietro) -->
+              <g transform="translate(-52,-56)"><g id="pArmL">
+                <path d="M-12 -8 C 12 -10 17 8 15 34 C 13 58 7 70 -1 70 C -10 70 -15 56 -16 34 C -17 10 -14 -6 -12 -8Z" fill="#c25a22"/>
+                <path d="M-16 44 C -17 64 -8 72 -1 72 C 8 72 15 62 15 44 C 6 54 -8 54 -16 44Z" fill="#2c1a12"/></g></g>
+              <!-- CORPO -->
+              <g id="pTorso">
+                <path d="M0 -104 C 44 -104 66 -70 68 -30 C 70 8 56 44 34 54 C 16 62 -16 62 -34 54 C -56 44 -70 8 -68 -30 C -66 -70 -44 -104 0 -104Z" fill="url(#gFox)"/>
+                <path class="hot" data-hit="belly" d="M0 -84 C 26 -84 40 -58 40 -26 C 40 8 24 34 0 34 C -24 34 -40 8 -40 -26 C -40 -58 -26 -84 0 -84Z" fill="#fff2dd"/>
+                <path d="M-46 -96 C -30 -76 30 -76 46 -96 C 40 -68 -40 -68 -46 -96Z" fill="#ffe7c6"/>
+                <g id="obiG" style="opacity:0"><path d="M-52 20 C -20 30 20 30 52 20 l0 14 C 20 44 -20 44 -52 34Z" fill="#20242b"/>
+                  <path d="M-6 28 l-16 26 l8 4 l14 -24Z" fill="#20242b"/><circle cy="30" r="7" fill="#2f3540"/></g>
+                <g id="collarG" class="hot" data-hit="collar" transform="translate(0,-88)">
+                  <path d="M-40 -6 C -18 12 18 12 40 -6 C 36 10 18 22 0 22 C -18 22 -36 10 -40 -6Z" fill="#a5342c"/>
+                  <g id="bellG"><circle cy="24" r="9" fill="#cf8b3f"/><circle cy="24" r="9" fill="none" stroke="#7d4d18" stroke-width="2"/>
+                    <path d="M-5 26 h10" stroke="#7d4d18" stroke-width="2"/><circle cx="-3" cy="21" r="2.4" fill="#f4c179"/></g></g>
+                <!-- controller in zampa -->
+                <g id="padG" style="opacity:0" transform="translate(0,-30)">
+                  <path d="M-32 -8 q32 -12 64 0 q8 20 -7 26 q-11 4 -14 -6 h-22 q-3 10 -14 6 q-15 -6 -7 -26Z" fill="#242424"/>
+                  <circle cx="-16" cy="2" r="4" fill="#5fdc8a"/><circle cx="16" cy="2" r="4" fill="#ff5a5a"/>
+                  <circle cx="0" cy="-2" r="3.4" fill="#3a8dff"/><path d="M-28 4 h8 M-24 0 v8" stroke="#8a8a8a" stroke-width="2.2"/></g>
+              </g>
+              <!-- BRACCIO DX -->
+              <g transform="translate(52,-56)"><g id="pArmR">
+                <path d="M-15 -8 C 9 -10 17 8 16 34 C 15 58 8 70 0 70 C -9 70 -14 56 -15 34 C -17 10 -17 -6 -15 -8Z" fill="url(#gFox)"/>
+                <path d="M-15 44 C -16 64 -8 72 0 72 C 9 72 16 62 16 44 C 6 54 -8 54 -15 44Z" fill="#2c1a12"/>
+                <circle cy="56" r="4.6" fill="#5c3a22"/></g></g>
+              <!-- TESTA -->
+              <g transform="translate(0,-96)"><g id="pHead">
+                <!-- orecchie -->
+                <g transform="translate(-40,-104)"><g id="pEarL">
+                  <path d="M-24 6 C -30 -24 -18 -50 2 -64 C 22 -50 28 -22 24 6 C 8 14 -8 14 -24 6Z" fill="#c25a22"/>
+                  <path d="M-15 3 C -20 -20 -11 -41 2 -52 C 15 -40 20 -19 16 3 C 6 9 -6 9 -15 3Z" fill="#3a2018"/></g></g>
+                <g transform="translate(40,-104)"><g id="pEarR">
+                  <path d="M-24 6 C -30 -24 -18 -50 2 -64 C 22 -50 28 -22 24 6 C 8 14 -8 14 -24 6Z" fill="#c25a22"/>
+                  <path d="M-15 3 C -20 -20 -11 -41 2 -52 C 15 -40 20 -19 16 3 C 6 9 -6 9 -15 3Z" fill="#3a2018"/></g></g>
+                <!-- cranio -->
+                <path d="M0 -122 C 44 -122 74 -94 76 -54 C 78 -14 62 14 36 26 C 24 32 12 34 0 34 C -12 34 -24 32 -36 26 C -62 14 -78 -14 -76 -54 C -74 -94 -44 -122 0 -122Z" fill="url(#gFox)"/>
+                <path class="hot" data-hit="cheek" d="M-76 -32 C -96 -24 -104 -4 -96 12 C -86 4 -78 6 -72 14 C -76 -6 -76 -20 -76 -32Z" fill="#c25a22"/>
+                <path class="hot" data-hit="cheek" d="M76 -32 C 96 -24 104 -4 96 12 C 86 4 78 6 72 14 C 76 -6 76 -20 76 -32Z" fill="#c25a22"/>
+                <path d="M0 -118 C -22 -118 -38 -106 -46 -88 C -30 -100 -12 -104 0 -104 C 12 -104 30 -100 46 -88 C 38 -106 22 -118 0 -118Z" fill="#f79450" opacity=".7"/>
+                <path d="M-42 -34 C -36 2 -20 22 0 22 C 20 22 36 2 42 -34 C 26 -18 -26 -18 -42 -34Z" fill="#fff2dd"/>
+                <path d="M-27 -74 C -15 -62 15 -62 27 -74 C 29 -46 -29 -46 -27 -74Z" fill="#ffe7c6" opacity=".5"/>
+                <!-- sopracciglia -->
+                <g transform="translate(-26,-88)"><g id="pBrowL"><path d="M-15 0 C -7 -6 8 -6 15 -1" fill="none" stroke="#5e2f11" stroke-width="6" stroke-linecap="round"/></g></g>
+                <g transform="translate(26,-88)"><g id="pBrowR"><path d="M-15 -1 C -8 -6 7 -6 15 0" fill="none" stroke="#5e2f11" stroke-width="6" stroke-linecap="round"/></g></g>
+                <!-- occhi -->
+                <g transform="translate(-26,-62)"><g id="eyeL">
+                  <ellipse rx="17" ry="19" fill="#fff8ec"/>
+                  <g clip-path="url(#clipEye)"><g id="pupL">
+                    <ellipse cx="1" cy="1" rx="11.5" ry="13.5" fill="#8a5a1e"/><ellipse cx="1" cy="1" rx="9" ry="11" fill="#c98b3f"/>
+                    <ellipse cx="1" cy="2" rx="5.4" ry="7.2" fill="#241105"/>
+                    <circle cx="-4" cy="-5" r="3.8" fill="#fff" opacity=".95"/><circle cx="5" cy="6" r="2" fill="#fff" opacity=".7"/></g>
+                    <g id="lidL"><path d="M-20 -22 H20 V16 C 9 25 -9 25 -20 16 Z" fill="url(#gFox)"/>
+                      <path d="M-20 16 C -9 25 9 25 20 16" fill="none" stroke="#5e2f11" stroke-width="3" id="lidLineL"/></g></g>
+                  <ellipse rx="17" ry="19" fill="none" stroke="#2c1a12" stroke-width="3"/>
+                  <path d="M-17 -8 C -23 -14 -20 -20 -13 -20" fill="none" stroke="#2c1a12" stroke-width="3" stroke-linecap="round"/></g></g>
+                <g transform="translate(26,-62)"><g id="eyeR">
+                  <ellipse rx="17" ry="19" fill="#fff8ec"/>
+                  <g clip-path="url(#clipEye)"><g id="pupR">
+                    <ellipse cx="-1" cy="1" rx="11.5" ry="13.5" fill="#8a5a1e"/><ellipse cx="-1" cy="1" rx="9" ry="11" fill="#c98b3f"/>
+                    <ellipse cx="-1" cy="2" rx="5.4" ry="7.2" fill="#241105"/>
+                    <circle cx="-6" cy="-5" r="3.8" fill="#fff" opacity=".95"/><circle cx="3" cy="6" r="2" fill="#fff" opacity=".7"/></g>
+                    <g id="lidR"><path d="M-20 -22 H20 V16 C 9 25 -9 25 -20 16 Z" fill="url(#gFox)"/>
+                      <path d="M-20 16 C -9 25 9 25 20 16" fill="none" stroke="#5e2f11" stroke-width="3" id="lidLineR"/></g></g>
+                  <ellipse rx="17" ry="19" fill="none" stroke="#2c1a12" stroke-width="3"/>
+                  <path d="M17 -8 C 23 -14 20 -20 13 -20" fill="none" stroke="#2c1a12" stroke-width="3" stroke-linecap="round"/></g></g>
+                <ellipse id="blushL" cx="-48" cy="-24" rx="12" ry="6.5" fill="#ff8a7a" opacity="0"/>
+                <ellipse id="blushR" cx="48" cy="-24" rx="12" ry="6.5" fill="#ff8a7a" opacity="0"/>
+                <!-- muso -->
+                <g class="hot" data-hit="mouth">
+                  <path d="M-14 -20 C -14 -31 -7 -36 0 -36 C 7 -36 14 -31 14 -20 C 14 -10 7 -3 0 -3 C -7 -3 -14 -10 -14 -20Z" fill="#2c1a12"/>
+                  <ellipse cx="-5" cy="-27" rx="3.6" ry="2.6" fill="#6b4a3a" opacity=".8"/></g>
+                <g transform="translate(0,-2)">
+                  <path id="smileLine" d="M-16 2 C -9 10 9 10 16 2" fill="none" stroke="#2c1a12" stroke-width="3" stroke-linecap="round"/>
+                  <g id="pMouth">
+                    <path d="M-18 0 C -18 24 -8 32 0 32 C 8 32 18 24 18 0Z" fill="#5d1f28"/>
+                    <g id="pTongue"><path d="M-10 18 C -10 29 -4 33 0 33 C 4 33 10 29 10 18 C 5 24 -5 24 -10 18Z" fill="#f0908c"/></g>
+                    <path d="M-13 0 L-9 9 L-4 0Z M4 0 L9 9 L13 0Z" fill="#fff8ec"/></g></g>
+                <path id="drool" d="M12 8 C 19 18 15 28 8 32" fill="none" stroke="#bfe4ff" stroke-width="4" stroke-linecap="round" opacity="0"/>
+                <!-- baffi -->
+                <g id="pWhisk" stroke="#fff2dd" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".85">
+                  <path d="M-32 -2 C -54 -8 -66 -12 -74 -18"/><path d="M-32 4 C -56 4 -68 6 -78 8"/>
+                  <path d="M32 -2 C 54 -8 66 -12 74 -18"/><path d="M32 4 C 56 4 68 6 78 8"/></g>
+                <!-- fascia karate -->
+                <g id="hachiG" style="opacity:0">
+                  <path d="M-77 -60 C -48 -74 48 -74 77 -60 l0 16 C 48 -56 -48 -56 -77 -44Z" fill="#e8eef5"/>
+                  <path d="M-77 -60 C -48 -74 48 -74 77 -60 l0 5 C 48 -69 -48 -69 -77 -55Z" fill="#c33a3a"/>
+                  <g transform="translate(-70,-52)"><path d="M0 0 l-26 -8 l6 12z" fill="#e8eef5"/><path d="M0 4 l-24 10 l12 6z" fill="#e8eef5"/></g>
+                  <circle cx="0" cy="-58" r="9" fill="#c33a3a"/><path d="M-4 -58 h8" stroke="#fff" stroke-width="2.4"/></g>
+                <!-- cuffie gaming -->
+                <g id="headsetG" style="opacity:0">
+                  <path d="M-72 -66 C -60 -110 60 -110 72 -66" fill="none" stroke="#141414" stroke-width="9"/>
+                  <path d="M-72 -66 C -60 -104 60 -104 72 -66" fill="none" stroke="#107c10" stroke-width="3"/>
+                  <rect x="-86" y="-70" width="20" height="30" rx="9" fill="#141414"/><rect x="66" y="-70" width="20" height="30" rx="9" fill="#141414"/>
+                  <rect x="-83" y="-66" width="6" height="22" rx="3" fill="#5fdc8a"/><rect x="77" y="-66" width="6" height="22" rx="3" fill="#5fdc8a"/>
+                  <path d="M72 -44 C 82 -30 74 -18 60 -16" fill="none" stroke="#141414" stroke-width="5"/><circle cx="58" cy="-15" r="4" fill="#3a3a3a"/></g>
+              </g></g>
+            </g>
+          </g>
+        </g>
+
+        <g class="layer" id="fxScene" data-depth="16"></g>
+        <g id="lVig"><rect id="nightRect" width="1000" height="700" fill="#0b1830" opacity="0" style="mix-blend-mode:multiply"/>
+          <rect width="1000" height="700" fill="url(#gVig)"/></g>
+      </svg>
+
+      <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+      <div class="bubble" id="bubble" aria-live="polite"></div>
+      <div class="fx" id="fxDom"></div>
+      <div class="achs" id="achs"></div>
+
+      <!-- DASHBOARD -->
+      <div class="xdash" id="xdash">
+        <div class="xtop">
+          <div class="xlogo">X</div>
+          <h2>DASHBOARD<small>gullotta · taverna hub</small></h2>
+          <div class="xprof"><div class="xav">🦊</div><div><b>Gullotta_FF</b><span id="xlevel">livello 42 · 1.280 G</span></div></div>
+          <button class="xclose" id="xdashClose">Chiudi · Esc</button>
+        </div>
+        <div class="tiles" id="tiles"></div>
+        <div class="xfriends">
+          <span>lobby</span>
+          <div class="fr"><i></i>Fra (tu)</div>
+          <div class="fr"><i></i>Ronaldo_Siuu</div>
+          <div class="fr away"><i></i>Il topo della taverna</div>
+          <div class="fr off"><i></i>Uva_Bot_3000</div>
+        </div>
+      </div>
+
+      <!-- HUD MINI-GIOCO -->
+      <div class="qte" id="qte">
+        <div class="qbox">
+          <h3 id="qTitle">RE DELLA TAVERNA</h3>
+          <div class="sub" id="qSub">premi il tasto illuminato prima che scada</div>
+          <div class="qmeta">
+            <div><b id="qScore">0</b><span>punti</span></div>
+            <div><b id="qCombo">x0</b><span>combo</span></div>
+            <div><b id="qRound">1/8</b><span>round</span></div>
+            <div><b id="qBest">0</b><span>record</span></div>
+          </div>
+          <div class="qbar"><i id="qBar"></i></div>
+          <div class="qbtns">
+            <button class="qb" data-k="A">A</button><button class="qb" data-k="B">B</button>
+            <button class="qb" data-k="X">X</button><button class="qb" data-k="Y">Y</button>
+          </div>
+          <div class="qflash" id="qFlash">in arrivo…</div>
+        </div>
+      </div>
+
+      <!-- AIUTO -->
+      <div class="sheet" id="sheet">
+        <div class="sheetIn">
+          <h2>Come si gioca nella taverna</h2>
+          <ul>
+            <li><b>🍇 Dai l'uva</b> — la cerca, la trova, la sgranocchia. Puoi cliccare anche il <b>vaso</b> sul camino o la <b>cassa</b>.</li>
+            <li><b>⚽ Siuuu</b> — rincorsa, salto con giro, atterraggio alla Ronaldo.</li>
+            <li><b>🥋 Karate</b> — asse spezzata, calcio rotante, combinazioni, kata.</li>
+            <li><b>😜 Smorfia</b> — otto facce strane.</li>
+            <li><b>🎮 Xbox</b> — apre la <b>dashboard</b>: cinque partite, due delle quali con QTE da giocare davvero (tasti A/B/X/Y).</li>
+            <li><b>🥤 Lattina</b> — clicca le lattine vicino alla TV: energia e hype.</li>
+            <li><b>💤</b> Se non fai nulla per ~20s crolla <b>tutta storta con la bocca aperta</b>; al risveglio dice <b>“Occhei”</b>. Se stava giocando, si porta il controller nella nanna.</li>
+            <li><b>Parla</b> — scrivi o usa il microfono: <b>ripete</b> tutto. Se nella frase c’è “uva / siuu / xbox / karate”, scatena l’attività.</li>
+          </ul>
+          <p style="margin-top:10px">Tasti: <span class="kbd">1</span>…<span class="kbd">9</span> attività · <span class="kbd">Invio</span> parla · <span class="kbd">M</span> mic · <span class="kbd">L</span> luci · <span class="kbd">A</span> audio · <span class="kbd">Esc</span> chiudi</p>
+          <p style="margin-top:10px"><button class="mini" id="sheetClose">Occhei, chiudi</button></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LATO ==================== -->
+  <aside class="side">
+    <div class="card">
+      <div class="chead"><h2>Menù della taverna</h2><small>attività</small></div>
+      <hr class="rule">
+      <div class="acts" id="acts">
+        <button class="act" data-act="grape" style="--ac:#b56ac4"><span class="ic">🍇</span><span>Dai l'uva<span class="sub">la sta cercando, giuro</span></span><span class="kb">1</span></button>
+        <button class="act" data-act="siu" style="--ac:#ffd166"><span class="ic">⚽</span><span>Siuuu di Ronaldo<span class="sub">salto, giro, atterraggio</span></span><span class="kb">2</span></button>
+        <button class="act" data-act="karate" style="--ac:#ff6b5a"><span class="ic">🥋</span><span>Karate<span class="sub">colpi &amp; calci rotanti</span></span><span class="kb">3</span></button>
+        <button class="act" data-act="smorfia" style="--ac:#8be07a"><span class="ic">😜</span><span>Smorfia strana<span class="sub">otto facce a caso</span></span><span class="kb">4</span></button>
+        <button class="act" data-act="pet" style="--ac:#ffb04a"><span class="ic">👋</span><span>Accarezza<span class="sub">la testa, la testa!</span></span><span class="kb">6</span></button>
+        <button class="act" data-act="tickle" style="--ac:#79c7ff"><span class="ic">🪶</span><span>Solletico<span class="sub">ahaha, il solletico no</span></span><span class="kb">7</span></button>
+        <button class="act" data-act="nap" style="--ac:#c2b6a0"><span class="ic">💤</span><span>Ninna nanna<span class="sub">pennica storta</span></span><span class="kb">8</span></button>
+      </div>
+      <div class="say" style="margin-top:12px">
+        <label for="sayTxt">Dille qualcosa · lei ripete</label>
+        <div class="sayRow">
+          <input id="sayTxt" maxlength="90" placeholder="es. fra, l'uva dov'è?" autocomplete="off">
+          <button class="mini" id="sayGo">↵</button><button class="mini" id="micGo">🎙</button>
+        </div>
+        <p class="hint"><b>Consiglio:</b> lasciala sola venti secondi e guarda come dorme. Gli occhi seguono sempre il mouse.</p>
+      </div>
+      <div class="chalkStats">
+        uva <i id="stGrape">0</i> · siuuu <i id="stSiu">0</i> · kata <i id="stKar">0</i><br>
+        penniche <i id="stNap">0</i> · parole <i id="stWord">0</i>
+      </div>
+    </div>
+
+    <div class="card xcard">
+      <div class="chead"><h2>Xbox · Taverna Hub</h2><small>online</small></div>
+      <hr class="rule">
+      <div class="acts">
+        <button class="act big" data-act="xbox" style="--ac:#5fdc8a"><span class="ic">🎮</span><span>Apri la dashboard<span class="sub">“no fra, devo giocare all'Xbox”</span></span><span class="kb">5</span></button>
+        <button class="act" data-act="can" style="--ac:#ffd23f"><span class="ic">🥤</span><span>Lattina energetica<span class="sub">+energia, +hype, -dignità</span></span><span class="kb">9</span></button>
+        <button class="act" data-act="trash" style="--ac:#ff5a5a"><span class="ic">🗣</span><span>Trash talk<span class="sub">la insulta piano, lei risponde</span></span><span class="kb">T</span></button>
+      </div>
+      <div class="xstats">
+        <div class="xstat"><b id="stPartite">0</b><span>partite</span></div>
+        <div class="xstat"><b id="stVinte">0</b><span>vinte</span></div>
+        <div class="xstat"><b id="stGol">0</b><span>gol</span></div>
+      </div>
+      <div class="board" id="board"></div>
+    </div>
+  </aside>
+
+  <section class="roll">
+    <h3>Registro degli ospiti</h3>
+    <ul class="rollList" id="roll"></ul>
+  </section>
+
+  <footer class="foot">
+    <span>la taverna apre quando vuoi · Gullotta ripete tutto, non è colpa sua</span>
+    <span id="footMood">umore: curiosa</span>
+  </footer>
+</div>
+
+<script>
+/* ============================================================================
+   GULLOTTA · motore a pivot (ogni fotogramma) + taverna + Xbox
+   ========================================================================= */
+const NS = "http://www.w3.org/2000/svg";
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.prototype.slice.call(r.querySelectorAll(s));
+const mk = (n, a, p) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+const rnd = (a, b) => a + Math.random() * (b - a);
+const ri  = (a, b) => Math.floor(rnd(a, b + 1));
+const pick = a => a[ri(0, a.length - 1)];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const RM = matchMedia("(prefers-reduced-motion:reduce)").matches;
+const ease = { out: p => 1 - Math.pow(1 - p, 3), in: p => p * p * p, io: p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2 };
+
+/* ---------------------------------------------------------------- 1. ARREDAMENTO */
+(function room() {
+  const pl = $("#planks");
+  for (let y = 46; y < 480; y += 44) {
+    mk("rect", { x: 0, y: y, width: 1000, height: 42, fill: y % 88 ? "#3d2418" : "#442819", opacity: .9 }, pl);
+    mk("rect", { x: 0, y: y + 40, width: 1000, height: 4, fill: "#1d100a", opacity: .75 }, pl);
+    for (let i = 0; i < 7; i++) {
+      const x = ri(20, 980);
+      mk("rect", { x: x, y: y + 6, width: ri(60, 180), height: 2, rx: 1, fill: "#2a170e", opacity: .5 }, pl);
+      mk("circle", { cx: x, cy: y + 22, r: 2, fill: "#1a0f08", opacity: .6 }, pl);
+    }
+  }
+  const bd = $("#boards"); let y = 470, h = 18;
+  while (y < 700) {
+    mk("rect", { x: 0, y: y, width: 1000, height: h - 3, fill: "hsl(" + ri(22, 28) + " 42% " + ri(16, 24) + "%)" }, bd);
+    mk("rect", { x: 0, y: y + h - 4, width: 1000, height: 3, fill: "#150c07", opacity: .8 }, bd);
+    for (let i = 0; i < 5; i++) mk("rect", { x: ri(0, 900), y: y + 2, width: ri(40, 140), height: 2, fill: "#000", opacity: .22 }, bd);
+    y += h; h = Math.min(46, h * 1.22);
+  }
+  for (let i = 0; i < 34; i++) {
+    const a = (-88 + i * 2.6) * Math.PI / 180;
+    mk("line", { x1: 540 + Math.cos(a) * 248, y1: 596 + Math.sin(a) * 62, x2: 540 + Math.cos(a) * 262, y2: 596 + Math.sin(a) * 68 }, $("#fringe"));
+    mk("line", { x1: 540 - Math.cos(a) * 248, y1: 596 + Math.sin(a) * 62, x2: 540 - Math.cos(a) * 262, y2: 596 + Math.sin(a) * 68 }, $("#fringe"));
+  }
+  const st = $("#stars");
+  for (let i = 0; i < 30; i++) mk("circle", { class: "star", cx: rnd(96, 264), cy: rnd(88, 244), r: rnd(.8, 2.1), fill: "#fff6d8",
+    style: "animation-delay:" + rnd(0, 3) + "s;animation-duration:" + rnd(2, 4.6) + "s" }, st);
+  const tk = $("#ticks");
+  for (let i = 0; i < 12; i++) {
+    const a = i * 30 * Math.PI / 180;
+    mk("line", { x1: Math.sin(a) * 38, y1: -Math.cos(a) * 38, x2: Math.sin(a) * 43, y2: -Math.cos(a) * 43,
+      stroke: i % 3 ? "#8d5b2b" : "#4a2a13", "stroke-width": i % 3 ? 2 : 4 }, tk);
+  }
+  const ga = $("#garland");
+  [[0, 60, 250, 120, 500, 60], [500, 60, 750, 124, 1000, 58]].forEach(function (s) {
+    const x0 = s[0], y0 = s[1], cx = s[2], cy = s[3], x1 = s[4], y1 = s[5];
+    mk("path", { d: "M" + x0 + " " + y0 + " Q" + cx + " " + cy + " " + x1 + " " + y1, fill: "none", stroke: "#3f5c37", "stroke-width": 4 }, ga);
+    for (let i = 0; i <= 26; i++) {
+      const t = i / 26, mt = 1 - t;
+      const px = mt * mt * x0 + 2 * mt * t * cx + t * t * x1;
+      const py = mt * mt * y0 + 2 * mt * t * cy + t * t * y1;
+      if (i % 3 === 0) {
+        mk("circle", { cx: px, cy: py + 7, r: 4.6, fill: i % 6 ? "#7c3f78" : "#6a3168" }, ga);
+        mk("circle", { cx: px + 5, cy: py + 11, r: 4, fill: "#9a54a0" }, ga);
+        mk("circle", { cx: px - 3, cy: py - 2, r: 1.4, fill: "#fff", opacity: .4 }, ga);
+      }
+      mk("path", { d: "M" + px + " " + py + " q9 3 12 12 q-11 1 -12 -12Z", fill: i % 2 ? "#4d7a48" : "#3f6b3c" }, ga);
+    }
+  });
+  const du = $("#dustLayer");
+  for (let i = 0; i < 26; i++) mk("circle", { class: "mote", cx: rnd(30, 970), cy: rnd(140, 660), r: rnd(1.2, 3), fill: "#ffe0a8", opacity: .4,
+    style: "--dx:" + rnd(-60, 60) + "px;animation-duration:" + rnd(9, 20) + "s;animation-delay:-" + rnd(0, 18) + "s" }, du);
+  const sn = $("#stones");
+  for (let i = 0; i < 40; i++) mk("rect", { x: rnd(686, 994), y: rnd(218, 466), width: rnd(26, 54), height: rnd(14, 24), rx: 4,
+    fill: "hsl(28 12% " + ri(24, 38) + "%)", opacity: .55 }, sn);
+})();
+
+/* ---------------------------------------------------------------- 2. STATO */
+const S = {
+  mood: 72, energy: 80, hype: 35, belly: 20, gs: 0,
+  grapes: 0, siu: 0, karate: 0, naps: 0, words: 0, partite: 0, vinte: 0, gol: 0, best: 0, rage: 0,
+  asleep: false, busy: false, night: false, muted: false, xboxing: false, game: null,
+  last: performance.now(), timer: 0, pupilLock: 0
+};
+const LB = [{ n: "Ronaldo_Siuu", p: 9812 }, { n: "Gullotta_FF", p: 1280, me: true }, { n: "Fra (tu)", p: 40 }, { n: "Il topo", p: 12 }];
+
+/* ---------------------------------------------------------------- 3. RIG */
+const KEYS = ["x","y","rot","sx","sy","tail","tail2","legL","legR","torso","torsoSx","torsoSy",
+  "armL","armR","head","headX","headY","earL","earR","lidL","lidR","mouth","tongue","browL","browR",
+  "browY","blush","px","py","drool","whisk","padBob"];
+const P = {}, T = {}, EX = {}, SPD = {};
+KEYS.forEach(function (k) { P[k] = 0; T[k] = 0; EX[k] = 0; SPD[k] = 9; });
+P.sx = T.sx = 1; P.sy = T.sy = 1; P.torsoSx = T.torsoSx = 1; P.torsoSy = T.torsoSy = 1;
+P.mouth = T.mouth = .1; P.tongue = T.tongue = .3;
+["lidL","lidR","mouth","tongue","blush","browL","browR","browY","px","py","drool"].forEach(k => SPD[k] = 14);
+
+const el = {
+  root: $("#pRoot"), tail: $("#pTail"), tail2: $("#pTail2"), legL: $("#pLegL"), legR: $("#pLegR"),
+  torso: $("#pTorso"), armL: $("#pArmL"), armR: $("#pArmR"), head: $("#pHead"),
+  earL: $("#pEarL"), earR: $("#pEarR"), pupL: $("#pupL"), pupR: $("#pupR"),
+  lidL: $("#lidL"), lidR: $("#lidR"), llL: $("#lidLineL"), llR: $("#lidLineR"),
+  mouth: $("#pMouth"), tongue: $("#pTongue"), browL: $("#pBrowL"), browR: $("#pBrowR"),
+  whisk: $("#pWhisk"), blushL: $("#blushL"), blushR: $("#blushR"), drool: $("#drool"),
+  smile: $("#smileLine"), shadow: $("#shadow"), bell: $("#bellG"), pad: $("#padG"),
+  hachi: $("#hachiG"), obi: $("#obiG"), headset: $("#headsetG")
+};
+function setT(o) { for (const k in o) T[k] = o[k]; }
+async function mv(o, ms) {
+  const prev = {};
+  for (const k in o) { prev[k] = SPD[k]; SPD[k] = Math.max(4, 3.4 / (ms / 1000)); }
+  setT(o); await sleep(ms);
+  for (const k in prev) SPD[k] = prev[k];
+}
+function fx(dur, fn) {
+  return new Promise(function (res) {
+    if (RM) { fn(1); return res(); }
+    const t0 = performance.now();
+    function step(now) {
+      const p = Math.min(1, (now - t0) / dur); fn(p);
+      if (p < 1) requestAnimationFrame(step); else res();
+    }
+    requestAnimationFrame(step);
+  });
+}
+function resetEX() { KEYS.forEach(k => EX[k] = 0); }
+
+const MOUTH = { x: 520, y: 352 }, HEADPT = { x: 520, y: 300 };
+let mx = 0, my = 0, tx = 0, ty = 0, lastHead = 0;
+
+function render(dt, t) {
+  for (const k of KEYS) P[k] += (T[k] - P[k]) * Math.min(1, SPD[k] * dt);
+  const A = {};
+  for (const k of KEYS) A[k] = P[k] + EX[k];
+  ["sx","sy","torsoSx","torsoSy"].forEach(k => { A[k] = P[k] + (EX[k] ? EX[k] - 1 : 0); });
+
+  /* oscillatori continui: la volpe è SEMPRE viva */
+  const amp = S.asleep ? 1 : 1;
+  if (S.asleep) {
+    const s = Math.sin(t * 0.0016);
+    A.torsoSy += 0.055 * s; A.torsoSx += 0.045 * s; A.headY += 2.6 * s;
+    A.tail += 8 + 3 * s; A.earL += 4 * s; A.earR += 3 * s;
+    A.px += 1.5; A.py += 5; A.mouth += 0.06 * (s + 1);
+  } else {
+    const b = Math.sin(t * 0.0022);
+    A.torsoSy += 0.016 * b; A.torsoSx += 0.011 * b; A.headY += -1.8 * b;
+    A.tail += Math.sin(t * 0.0026) * 7; A.tail2 += Math.sin(t * 0.0026 - .9) * 6;
+    A.rot += Math.sin(t * 0.0011) * 1.1; A.x += Math.sin(t * 0.0008) * 2.4;
+    A.earL += Math.sin(t * 0.0031) * 3; A.earR += Math.sin(t * 0.0027 + 1) * 3;
+    A.legL += Math.sin(t * 0.0019) * .8; A.legR += Math.sin(t * 0.0019 + 2) * .8;
+    A.headX += mx * 9; A.head += mx * 5 + my * 3;
+    A.px += clamp(mx * 7, -7, 7); A.py += clamp(my * 6, -5, 7);
+    A.whisk += Math.sin(t * 0.004) * 1.4;
+    if (S.xboxing) { A.padBob += Math.sin(t * 0.02) * 1.6; A.armL += Math.sin(t * 0.02) * 2; A.armR += Math.sin(t * 0.021 + 1) * 2; }
+  }
+  A.px = clamp(A.px, -8, 8); A.py = clamp(A.py, -6, 8);
+  A.lidL = clamp(A.lidL, 0, 1); A.lidR = clamp(A.lidR, 0, 1);
+  A.mouth = clamp(A.mouth, 0, 1.05);
+
+  /* trasformazioni */
+  el.root.setAttribute("transform", "translate(" + A.x.toFixed(2) + "," + A.y.toFixed(2) + ") rotate(" + A.rot.toFixed(2) +
+    ") translate(0,142) scale(" + A.sx.toFixed(3) + "," + A.sy.toFixed(3) + ") translate(0,-142)");
+  el.tail.setAttribute("transform", "rotate(" + A.tail.toFixed(2) + ")");
+  el.tail2.setAttribute("transform", "rotate(" + A.tail2.toFixed(2) + ")");
+  el.legL.setAttribute("transform", "rotate(" + A.legL.toFixed(2) + ")");
+  el.legR.setAttribute("transform", "rotate(" + A.legR.toFixed(2) + ")");
+  el.torso.setAttribute("transform", "rotate(" + A.torso.toFixed(2) + ") translate(0,54) scale(" +
+    A.torsoSx.toFixed(3) + "," + A.torsoSy.toFixed(3) + ") translate(0,-54)");
+  el.armL.setAttribute("transform", "rotate(" + A.armL.toFixed(2) + ")");
+  el.armR.setAttribute("transform", "rotate(" + A.armR.toFixed(2) + ")");
+  el.head.setAttribute("transform", "translate(" + A.headX.toFixed(2) + "," + A.headY.toFixed(2) + ") rotate(" + A.head.toFixed(2) + ")");
+  el.earL.setAttribute("transform", "rotate(" + A.earL.toFixed(2) + ")");
+  el.earR.setAttribute("transform", "rotate(" + A.earR.toFixed(2) + ")");
+  el.pupL.setAttribute("transform", "translate(" + A.px.toFixed(1) + "," + A.py.toFixed(1) + ")");
+  el.pupR.setAttribute("transform", "translate(" + A.px.toFixed(1) + "," + A.py.toFixed(1) + ")");
+  el.lidL.setAttribute("transform", "translate(0,-22) scale(1," + A.lidL.toFixed(3) + ") translate(0,22)");
+  el.lidR.setAttribute("transform", "translate(0,-22) scale(1," + A.lidR.toFixed(3) + ") translate(0,22)");
+  el.llL.setAttribute("opacity", A.lidL > .12 ? 1 : 0);
+  el.llR.setAttribute("opacity", A.lidR > .12 ? 1 : 0);
+  el.mouth.setAttribute("transform", "scale(1," + A.mouth.toFixed(3) + ")");
+  el.tongue.setAttribute("transform", "scale(1," + A.tongue.toFixed(3) + ")");
+  el.smile.setAttribute("opacity", A.mouth < .18 ? 1 : 0);
+  el.browL.setAttribute("transform", "translate(0," + A.browY.toFixed(1) + ") rotate(" + A.browL.toFixed(1) + ")");
+  el.browR.setAttribute("transform", "translate(0," + A.browY.toFixed(1) + ") rotate(" + A.browR.toFixed(1) + ")");
+  el.whisk.setAttribute("transform", "rotate(" + A.whisk.toFixed(2) + ")");
+  el.blushL.setAttribute("opacity", clamp(A.blush, 0, 1).toFixed(2));
+  el.blushR.setAttribute("opacity", clamp(A.blush, 0, 1).toFixed(2));
+  el.drool.setAttribute("opacity", clamp(A.drool, 0, 1).toFixed(2));
+  el.drool.setAttribute("transform", "translate(0," + (A.drool * 6).toFixed(1) + ")");
+  el.pad.setAttribute("transform", "translate(0," + (-30 + A.padBob).toFixed(1) + ")");
+  const dh = Math.abs(A.head - lastHead); lastHead = A.head;
+  el.bell.setAttribute("transform", "rotate(" + clamp((A.head * .6) + Math.sin(t * 0.004) * 3, -22, 22).toFixed(1) + " 0 0)");
+  const lift = clamp(-A.y / 130, 0, 1);
+  el.shadow.setAttribute("rx", (104 * (1 - lift * .3)).toFixed(1));
+  el.shadow.setAttribute("opacity", (0.42 * (1 - lift * .55)).toFixed(2));
+  el.shadow.setAttribute("cy", 142);
+}
+let prev = performance.now();
+function loop(now) {
+  const dt = Math.min(.05, (now - prev) / 1000); prev = now;
+  render(dt, now);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* ---------------------------------------------------------------- 4. FACCE */
+const FACES = {
+  calm:    { lidL:0,   lidR:0,   mouth:.10, tongue:.30, browL:-8,  browR:8,  browY:0,  blush:0,   earL:-8,  earR:8 },
+  happy:   { lidL:.5,  lidR:.5,  mouth:.52, tongue:.5,  browL:-14, browR:14, browY:-3, blush:.55, earL:-18, earR:18 },
+  joy:     { lidL:.86, lidR:.86, mouth:.8,  tongue:.9,  browL:-20, browR:20, browY:-5, blush:.8,  earL:-24, earR:24 },
+  surprise:{ lidL:0,   lidR:0,   mouth:.95, tongue:.2,  browL:-24, browR:24, browY:-8, blush:.15, earL:-26, earR:26 },
+  focus:   { lidL:.24, lidR:.24, mouth:.06, tongue:.25, browL:-2,  browR:2,  browY:4,  blush:0,   earL:-4,  earR:4 },
+  angry:   { lidL:.3,  lidR:.3,  mouth:.22, tongue:.2,  browL:18,  browR:-18,browY:5,  blush:.2,  earL:22,  earR:-22 },
+  sleepy:  { lidL:.68, lidR:.68, mouth:.34, tongue:.3,  browL:-2,  browR:2,  browY:6,  blush:.3,  earL:10,  earR:-8 },
+  asleep:  { lidL:.94, lidR:.86, mouth:.55, tongue:.75, browL:0,   browR:0,  browY:7,  blush:.4,  earL:14,  earR:-6 },
+  sad:     { lidL:.34, lidR:.34, mouth:.14, tongue:.25, browL:-22, browR:22, browY:-4, blush:.1,  earL:14,  earR:-12 },
+  love:    { lidL:.55, lidR:.55, mouth:.4,  tongue:.4,  browL:-16, browR:16, browY:-2, blush:.95, earL:-20, earR:20 },
+  scared:  { lidL:0,   lidR:0,   mouth:.85, tongue:.15, browL:-28, browR:28, browY:-10,blush:.05, earL:30,  earR:-30 },
+  smug:    { lidL:.15, lidR:.6,  mouth:.3,  tongue:.9,  browL:-24, browR:2,  browY:-2, blush:.3,  earL:-14, earR:6 }
+};
+let faceName = "calm";
+function setFace(n, ms) {
+  const f = FACES[n]; if (!f) return;
+  faceName = n; mv(f, ms || 220);
+}
+setFace("calm", 1);
+
+/* ---------------------------------------------------------------- 5. AUDIO */
+const AU = { ctx: null, g: null };
+function actx() {
+  if (!AU.ctx) { const C = window.AudioContext || window.webkitAudioContext; AU.ctx = new C(); AU.g = AU.ctx.createGain(); AU.g.gain.value = .5; AU.g.connect(AU.ctx.destination); }
+  if (AU.ctx.state === "suspended") AU.ctx.resume();
+  return AU.ctx;
+}
+function tone(o) {
+  if (S.muted) return;
+  const f = o.f || 440, f2 = o.f2, type = o.type || "sine", d = o.d || .16, v = o.v || .2, delay = o.delay || 0;
+  const c = actx(), t = c.currentTime + delay, osc = c.createOscillator(), g = c.createGain();
+  osc.type = type; osc.frequency.setValueAtTime(f, t);
+  if (f2) osc.frequency.exponentialRampToValueAtTime(Math.max(30, f2), t + d);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+  osc.connect(g); g.connect(AU.g); osc.start(t); osc.stop(t + d + .02);
+}
+function noise(o) {
+  if (S.muted) return;
+  const d = o.d || .2, v = o.v || .16, delay = o.delay || 0, hp = o.hp || 400, lp = o.lp || 2600;
+  const c = actx(), t = c.currentTime + delay, len = Math.ceil(c.sampleRate * d);
+  const b = c.createBuffer(1, len, c.sampleRate), ch = b.getChannelData(0);
+  for (let i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * (1 - i / len);
+  const s = c.createBufferSource(); s.buffer = b;
+  const g = c.createGain(); g.gain.value = v;
+  const f = c.createBiquadFilter(); f.type = "bandpass"; f.frequency.value = (hp + lp) / 2; f.Q.value = .7;
+  s.connect(f); f.connect(g); g.connect(AU.g); s.start(t);
+}
+const SFX = {
+  step: () => tone({ f: 520, f2: 900, type: "triangle", d: .07, v: .1 }),
+  blip: () => tone({ f: 880, f2: 1320, type: "square", d: .06, v: .05 }),
+  munch: () => { noise({ d: .1, v: .16, hp: 700, lp: 3200 }); tone({ f: 180, f2: 90, d: .1, v: .13 }); },
+  chop: () => { noise({ d: .14, v: .22, hp: 1200, lp: 6000 }); tone({ f: 420, f2: 120, type: "sawtooth", d: .12, v: .12 }); },
+  kick: () => { noise({ d: .2, v: .2, hp: 300, lp: 1600 }); tone({ f: 120, f2: 60, d: .24, v: .18 }); },
+  jump: () => tone({ f: 300, f2: 900, d: .24, v: .12 }),
+  land: () => { tone({ f: 150, f2: 70, d: .2, v: .2 }); noise({ d: .12, v: .1, hp: 200, lp: 900 }); },
+  crowd: () => { noise({ d: 1.1, v: .14, hp: 300, lp: 3000 }); for (let i = 0; i < 4; i++) tone({ f: 330 + i * 80, type: "triangle", d: .5, v: .06, delay: i * .08 }); },
+  bell: () => { tone({ f: 1400, d: .4, v: .08 }); tone({ f: 2100, d: .28, v: .05, delay: .02 }); },
+  purr: () => { for (let i = 0; i < 5; i++) tone({ f: 120 + i * 6, f2: 90, d: .1, v: .1, delay: i * .09 }); },
+  laugh: () => { for (let i = 0; i < 6; i++) tone({ f: 640 + ri(-90, 160), f2: 400, type: "triangle", d: .08, v: .1, delay: i * .085 }); },
+  beep: () => tone({ f: ri(500, 1400), type: "square", d: .06, v: .05 }),
+  hit: () => { tone({ f: 700, f2: 1200, type: "square", d: .09, v: .09 }); },
+  miss: () => { tone({ f: 240, f2: 90, type: "sawtooth", d: .22, v: .12 }); },
+  snore: () => { tone({ f: 96, f2: 150, type: "sawtooth", d: .7, v: .07 }); tone({ f: 70, f2: 52, d: .9, v: .05, delay: .6 }); },
+  wake: () => { tone({ f: 420, f2: 1250, type: "triangle", d: .2, v: .14 }); tone({ f: 900, f2: 1600, d: .16, v: .08, delay: .12 }); },
+  pop: () => tone({ f: 220, f2: 1400, d: .12, v: .12 }),
+  yawn: () => tone({ f: 300, f2: 140, d: .7, v: .07 }),
+  can: () => { noise({ d: .3, v: .12, hp: 1600, lp: 7000 }); tone({ f: 900, f2: 1600, type: "square", d: .1, v: .06 }); },
+  ach: () => { [523, 659, 784, 1046].forEach((f, i) => tone({ f: f, type: "triangle", d: .3, v: .09, delay: i * .09 })); }
+};
+
+/* ---------------------------------------------------------------- 6. VOCE + FUMETTO */
+let itVoice = null;
+function voices() {
+  if (!("speechSynthesis" in window)) return;
+  const v = speechSynthesis.getVoices();
+  itVoice = v.find(x => /it[_-]IT/i.test(x.lang) && /giulia|cosimo|alice|federica/i.test(x.name))
+    || v.find(x => /^it/i.test(x.lang)) || v.find(x => /^es/i.test(x.lang)) || null;
+}
+if ("speechSynthesis" in window) { voices(); speechSynthesis.onvoiceschanged = voices; }
+let flapT = null;
+function flapStart() {
+  flapStop();
+  flapT = setInterval(function () { EX.mouth = Math.random() < .28 ? .06 : rnd(.3, .95); }, RM ? 150 : 78);
+}
+function flapStop() { clearInterval(flapT); flapT = null; EX.mouth = 0; }
+function speak(txt, o) {
+  o = o || {};
+  if (S.muted || !("speechSynthesis" in window)) return;
+  try {
+    speechSynthesis.cancel();
+    const clean = String(txt).replace(/[🍇⚽😜🎮👋🪶💤🥤🎙]/gu, "").replace(/[^\wàèéìòóùúç .!?,'%-]/gu, "").trim();
+    if (!clean) return;
+    const u = new SpeechSynthesisUtterance(clean);
+    if (itVoice) u.voice = itVoice;
+    u.lang = "it-IT"; u.pitch = o.pitch || 1.72; u.rate = o.rate || 1.06; u.volume = .95;
+    u.onstart = flapStart; u.onend = flapStop; u.onerror = flapStop;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+let typeT = null, sayCancel = null;
+function say(raw, opt) {
+  opt = opt || {};
+  const voice = opt.voice !== false, pitch = opt.pitch || 1.72, rate = opt.rate || 1.06;
+  const hold = opt.hold || 1500, txt = String(raw);
+  clearTimeout(typeT);
+  if (sayCancel) sayCancel(); bubble.innerHTML = ""; bubble.classList.add("show");
+  const words = txt.split(" "); let i = 0, j = 0;
+  const cd = RM ? 4 : 18;
+  return new Promise(function (res) {
+    sayCancel = res;
+    (function step() {
+      if (i >= words.length) {
+        if (voice) speak(txt, { pitch: pitch, rate: rate });
+        typeT = setTimeout(function () { bubble.classList.remove("show"); res(); }, hold + txt.length * 15);
+        return;
+      }
+      const w = words[i++];
+      const em = /^(siu+|hia+|wraa+|kia+|ahaha|mmm+|zz+|occhei|no+|gg|lag)$/i.test(w.replace(/[.!?,]/g, ""));
+      const node = document.createElement(em ? "em" : "span");
+      node.textContent = (j > 1 ? " " : "") + w; bubble.appendChild(node); j++;
+      SFX.blip();
+      let k = 1;
+      (function letter() {
+        if (k <= w.length) { node.textContent = (j > 1 ? " " : "") + w.slice(0, k++) + "▌"; typeT = setTimeout(letter, cd); }
+        else { node.textContent = (j > 1 ? " " : "") + w; typeT = setTimeout(step, w.length * cd + 34); }
+      })();
+    })();
+  });
+}
+const bubble = $("#bubble");
+
+/* ---------------------------------------------------------------- 7. FX */
+const fxDom = $("#fxDom"), fxS = $("#fxScene"), stage = $("#stage"), scene = $("#scene");
+function floatWord(txt, color, rot, size) {
+  const w = document.createElement("div"); w.className = "word"; w.textContent = txt;
+  w.style.setProperty("--wc", color || "#ffd166"); w.style.setProperty("--wr", (rot == null ? -6 : rot) + "deg");
+  if (size) w.style.fontSize = size; w.style.left = rnd(40, 62) + "%";
+  fxDom.appendChild(w); setTimeout(() => w.remove(), 1400);
+}
+function confetti(n) {
+  n = n || 44;
+  for (let i = 0; i < n; i++) {
+    const c = document.createElement("i"); c.className = "conf"; c.style.left = rnd(0, 100) + "%";
+    c.style.background = pick(["#ffd166", "#ef8040", "#5fdc8a", "#b56ac4", "#79c7ff", "#fff2dd"]);
+    c.style.animationDuration = rnd(1.1, 2.3) + "s"; c.style.animationDelay = rnd(0, .35) + "s";
+    c.style.transform = "rotate(" + rnd(0, 360) + "deg)";
+    fxDom.appendChild(c); setTimeout(() => c.remove(), 2900);
+  }
+}
+function sceneNode(tag, attrs, cls) { const e = mk(tag, attrs || {}); if (cls) e.setAttribute("class", cls); fxS.appendChild(e); return e; }
+function hearts(n) {
+  for (let i = 0; i < (n || 5); i++) setTimeout(function () {
+    const g = sceneNode("g", { transform: "translate(" + rnd(470, 570) + "," + rnd(270, 330) + ")" }, "ht");
+    mk("path", { d: "M0 6 C -8 -4 -18 4 0 18 C 18 4 8 -4 0 6Z", fill: pick(["#ff6b8a", "#ffb04a", "#f0908c", "#5fdc8a"]) }, g);
+    setTimeout(() => g.remove(), 1600);
+  }, i * 150);
+}
+function zzz() {
+  const t = sceneNode("text", { x: rnd(556, 606), y: rnd(246, 292), "font-size": ri(22, 40) }, "zz");
+  t.textContent = pick(["Z", "Zz", "Zzz"]); setTimeout(() => t.remove(), 2800);
+}
+function speedLines() {
+  for (let i = 0; i < 5; i++) {
+    const y = rnd(280, 470), x = rnd(420, 620);
+    const l = sceneNode("line", { x1: x, y1: y, x2: x + 60, y2: y + rnd(-12, 12), stroke: "#fff2dd", "stroke-width": 3, "stroke-linecap": "round", opacity: .85 }, "sline");
+    setTimeout(() => l.remove(), 1100);
+  }
+}
+function dustRing() {
+  for (let i = 0; i < 12; i++) {
+    const a = rnd(0, Math.PI * 2), r = rnd(20, 90);
+    const c = sceneNode("circle", { cx: 520 + Math.cos(a) * r, cy: 596 + Math.sin(a) * r * .3, r: rnd(3, 9), fill: "#c9a06a", opacity: .7 }, "shard");
+    c.style.setProperty("--sx", (Math.cos(a) * 60) + "px"); c.style.setProperty("--sy", (-rnd(20, 70)) + "px");
+    c.style.setProperty("--sr", "0deg"); setTimeout(() => c.remove(), 950);
+  }
+}
+function embers() {
+  const e = sceneNode("circle", { cx: rnd(790, 876), cy: rnd(430, 458), r: rnd(1.4, 3.2), fill: pick(["#ffd166", "#ff7a29", "#ffb04a"]) }, "ember");
+  e.style.setProperty("--ex", rnd(-40, 40) + "px"); setTimeout(() => e.remove(), 2500);
+}
+async function grapeFly(from) {
+  const s = from === "jar" ? { x: 900, y: 162 } : { x: 380, y: 486 };
+  const cx = (s.x + MOUTH.x) / 2, cy = Math.min(s.y, MOUTH.y) - 160;
+  const g = sceneNode("g", {});
+  mk("circle", { r: 11, fill: "#8b4a86" }, g); mk("circle", { cx: -4, cy: -4, r: 3.4, fill: "#fff", opacity: .5 }, g);
+  await fx(520, function (p) {
+    const mt = 1 - p;
+    g.setAttribute("transform", "translate(" + (mt * mt * s.x + 2 * mt * p * cx + p * p * MOUTH.x) + "," +
+      (mt * mt * s.y + 2 * mt * p * cy + p * p * MOUTH.y) + ") scale(" + (1 - p * .35) + ")");
+  });
+  g.remove();
+}
+function seeds() {
+  for (let i = 0; i < 6; i++) {
+    const s = sceneNode("ellipse", { cx: MOUTH.x, cy: MOUTH.y - 6, rx: 3, ry: 4.6, fill: "#e8dcc0" }, "shard");
+    s.style.setProperty("--sx", rnd(-70, 70) + "px"); s.style.setProperty("--sy", rnd(30, 110) + "px");
+    s.style.setProperty("--sr", rnd(-320, 320) + "deg"); setTimeout(() => s.remove(), 1000);
+  }
+}
+async function boardBreak() {
+  const g = sceneNode("g", { transform: "translate(632,392)" });
+  mk("rect", { x: -14, y: -70, width: 28, height: 140, rx: 3, fill: "#d9b271", stroke: "#8d5b2b", "stroke-width": 3 }, g);
+  const t = mk("text", { x: 0, y: 6, "text-anchor": "middle", "font-family": "Caveat", "font-size": 22, fill: "#8d3d14", transform: "rotate(-90)" }, g);
+  t.textContent = "URA";
+  await sleep(320); g.remove();
+  for (let i = 0; i < 9; i++) {
+    const s = sceneNode("path", { d: "M0 0 l" + rnd(8, 22) + " " + rnd(-8, 8) + " l" + rnd(-6, 4) + " " + rnd(10, 22) + " z",
+      fill: pick(["#d9b271", "#c49a5c", "#8d5b2b"]), transform: "translate(632," + rnd(330, 450) + ")" }, "shard");
+    s.style.setProperty("--sx", rnd(30, 150) + "px"); s.style.setProperty("--sy", rnd(60, 180) + "px");
+    s.style.setProperty("--sr", rnd(-540, 540) + "deg"); setTimeout(() => s.remove(), 1000);
+  }
+}
+function tvShow(which) {
+  ["tvHome", "tvCalcio", "tvBattaglia", "tvCorrida", "tvBrividi"].forEach(function (id) {
+    const n = $("#" + id); if (n) n.style.display = (id === "tv" + which.charAt(0).toUpperCase() + which.slice(1)) ? "" : "none";
+  });
+}
+function lagFlash() { const n = $("#neonLag"); n.classList.add("on"); setTimeout(() => n.classList.remove("on"), 1400); }
+
+/* ---------------------------------------------------------------- 8. FRASI */
+const PH = {
+  hi: ["Oh, fra! Sono Gullotta.", "Bella sta taverna, eh?", "Occhei, ci sei anche tu.", "Fra, stavo per dormire io per prima."],
+  grapeAsk: ["Fra, hai visto l'uva?", "Cerco l'uva. L'UVA.", "Dov'e l'uva? Io la sento l'uva.", "Uva uva uva. Dammi l'uva."],
+  grapeEat: ["Mmh! Occhei, questa era buona.", "Un acino, due acini, tre acini, quattro.", "Siuu, luva e vita.", "Croccante. Prossimo acino, grazie.", "Fra, ne voglio ancora. E un problema."],
+  full: ["No fra, la pancia scoppia.", "Ho troppa uva dentro, mi muovo a stento.", "Piu uva? Dopo la partita, giuro."],
+  siu: ["Siuuuum!", "SIUUU! Come Ronaldo, ma con la coda.", "Occhei, un altro salto ci sta.", "Siuu siuuu, hai visto?"],
+  karate: ["Hi-yah! Cintura nera della taverna.", "Calcio rotante: occhei.", "Fra, io karate lo faccio pure da sveglia.", "Kia! Attento alla lampada.", "Blocco, pugno, occhei, finito."],
+  smorfia: ["Questa e la faccia della Xbox scarica.", "Guardami bene. GUARDAMI.", "Eh, lo so che sono bella.", "Smorfia livello fra."],
+  bored: ["Fra? Ci sei?", "Mi annoio, e la colpa e tua.", "Niente uva? Niente di niente?", "Sto contando le assi del soffitto: quarantadue."],
+  sleepy: ["Mi viene da dormire... storto.", "Un occhio solo aperto, occhei.", "Se mi addormento non e colpa mia.", "Fra, il pavimento mi chiama."],
+  wake: ["Occhei.", "Occhei, che ore sono fra?", "Non dormivo, meditando.", "Fra, mi e scesa la bava, vero?", "Occhei, rifacciamo tutto."],
+  pet: ["Mmmh, fra, continua.", "La testa, la testa! Occhei.", "Mi si chiudono gli occhi, eh.", "Si, li, bravo."],
+  tickle: ["Ahaha! No fra, il solletico no!", "Basta basta, cado sulla coda.", "Ahaha, occhei, mi arrendo."],
+  idle: ["La taverna e casa mia.", "Sono la volpe piu veloce di sta stanza.", "Ho sentito un rumore. Era la mia pancia.", "Fra, ripeto tutto quello che dici. E un dono.", "Le bottiglie sul camino le conto io."],
+  tail: ["Ehi, la coda no!", "La coda e zona vietata.", "Fra, mi fai il solletico alla coda."],
+  ear: ["Lorecchio, eh? Occhei.", "Sento tutto, sono una volpe.", "Un orecchio alla volta, per favore."],
+  belly: ["La pancia no fra, e piena duva.", "Non toccare la pancia.", "Ho luva dentro, senti."],
+  mouth: ["Uva? Se dici uva vengo.", "Sto per dire siuuu, attento."],
+  foot: ["Ah, i piedi! Solletico!", "Le zampe sono opera darte."],
+  low: ["Fra, sono cotta.", "Mi serve uva o sonno, scegli tu.", "Umore a terra, come le mie orecchie."],
+  /* ---- XBOX ---- */
+  xstart: ["No fra, devo giocare allXbox.", "Un attimo, sono in partita.", "Finalmente. Il pad e mio.", "Occhei, si gioca. Tu guardi e impari."],
+  xmid: ["Fra sei camperato.", "Lag! Sempre lag!", "GG.", "Rivivimi, ho 12 HP.", "Microfono: fra, ma ti senti?", "Chi ha spento la luce?", "Uno contro uno? Split screen?", "Il controller non si tocca.", "Posizionati, fra.", "Che puzza duva sul pad.", "Ronaldo e nella mia lobby.", "Ho solo nove vite, come i gatti. Ma io sono una volpe."],
+  xwin: ["HH! Troppo facile.", "Occhei, vittoria. normale.", "Fra, hai visto quel clutch?", "Voi umani. Io volpe. Distacco tecnico."],
+  xlose: ["Lag, giuro. Era lag.", "Il pad e bagnato duva.", "Refuso. Solo refuso.", "Rivincita. Subito."],
+  xgoal: ["GOOOL! SIUUU!", "Angolo, angolo! Fra, passa luva.", "Portiere? Mia nonna. Anzi, mio nonno."],
+  can: ["Brrap. Occhei, ora volo.", "Xyn! La benzina dei campioni.", "Fra, una lattina e sono un altro animale."],
+  trash: ["Fra, io ti blocco. Poi ti rivivo. Poi ti blocco di nuovo.", "Hai meno punti del topo.", "Siediti. Guarda. Impara.", "Ti faccio fare un giro? In panchina."]
+};
+
+/* ---------------------------------------------------------------- 9. UI */
+const roll = $("#roll");
+function log(html, color) {
+  const li = document.createElement("li"); li.style.setProperty("--tc", color || "#cf8b3f");
+  const d = new Date();
+  li.innerHTML = "<time>" + String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0") + "</time>" + html;
+  roll.prepend(li); while (roll.children.length > 16) roll.lastChild.remove();
+}
+function tip(t) {
+  const d = document.createElement("div"); d.className = "tip"; d.textContent = t;
+  $("#achs").appendChild(d); setTimeout(() => d.remove(), 3200);
+}
+function ach(title, icon, pts) {
+  S.gs += pts;
+  const d = document.createElement("div"); d.className = "ach";
+  d.innerHTML = '<div class="ring">' + icon + '</div><div><span>Obiettivo sbloccato</span><b>' + title + '</b><em>+' + pts + ' G</em></div>';
+  $("#achs").appendChild(d); setTimeout(() => d.remove(), 4200);
+  SFX.ach(); log("<b>Obiettivo:</b> " + title + " +" + pts + " G", "#5fdc8a");
+  $("#gsVal").textContent = S.gs;
+}
+const GM = { mood: $("#gMood"), energy: $("#gEnergy"), hype: $("#gHype"), belly: $("#gBelly") };
+const MOODS = [[95, "euforica"], [75, "curiosa"], [55, "ok ok"], [35, "un po' giu"], [15, "mogia"], [0, "distrutta"]];
+function bump(k, d) { S[k] = clamp(S[k] + d, 0, 100); ui(); }
+function ui() {
+  for (const k in GM) {
+    const g = GM[k], v = Math.round(S[k]);
+    g.querySelector(".fill").style.width = v + "%"; g.querySelector("b").textContent = v;
+    g.classList.toggle("low", v < 22);
+  }
+  $("#stGrape").textContent = S.grapes; $("#stSiu").textContent = S.siu; $("#stKar").textContent = S.karate;
+  $("#stNap").textContent = S.naps; $("#stWord").textContent = S.words;
+  $("#stPartite").textContent = S.partite; $("#stVinte").textContent = S.vinte; $("#stGol").textContent = S.gol;
+  $("#gsVal").textContent = S.gs; $("#xlevel").textContent = "livello " + (42 + Math.floor(S.gs / 60)) + " · " + (1280 + S.gs) + " G";
+  const w = MOODS.find(m => S.mood >= m[0])[1];
+  $("#footMood").textContent = "umore: " + (S.asleep ? "dormente storta" : w) + (S.belly > 62 ? " · panzia piena" : "") + (S.xboxing ? " · in partita" : "");
+  renderBoard();
+  if (!S.busy && !flapT) setFace(S.asleep ? "asleep" : S.mood < 30 ? "sad" : S.energy < 25 ? "sleepy" : S.mood > 82 ? "happy" : "calm", 400);
+}
+function renderBoard() {
+  LB.sort((a, b) => b.p - a.p);
+  $("#board").innerHTML = LB.map(function (r, i) {
+    return '<div class="row' + (r.me ? " me" : "") + '"><i>' + (i + 1) + '</i>' + r.n + '<em>' + r.p + '</em></div>';
+  }).join("");
+  const mini = $("#lbMini"); mini.innerHTML = "";
+  LB.slice(0, 4).forEach(function (r, i) {
+    const t = mk("text", { x: 8, y: 38 + i * 15, fill: r.me ? "#5fdc8a" : "#cfe0d4", "font-weight": r.me ? 900 : 800 }, mini);
+    t.textContent = (i + 1) + " " + r.n.slice(0, 11) + " · " + r.p;
+  });
+}
+function addScore(pts) {
+  const me = LB.find(r => r.me); me.p += pts;
+  const others = LB.filter(r => !r.me);
+  if (Math.random() < .5) others[ri(0, others.length - 1)].p += ri(0, Math.max(1, Math.round(pts * .6)));
+  renderBoard();
+}
+ui();
+
+/* ---------------------------------------------------------------- 10. SONNO */
+function touched() { S.last = performance.now(); }
+async function wake(withPhrase) {
+  if (!S.asleep) return;
+  S.asleep = false; clearInterval(S.timer);
+  resetEX(); setFace("surprise", 120);
+  el.headset.style.opacity = 0; el.pad.style.opacity = 0;
+  await fx(620, function (p) {
+    const e = ease.out(p);
+    EX.rot = -60 * (1 - e); EX.y = 20 * (1 - e);
+    EX.mouth = .5 * (1 - e); EX.drool = 1 - e;
+  });
+  EX.rot = 0; EX.y = 0; EX.mouth = 0; EX.drool = 0;
+  SFX.wake(); bump("energy", 14); bump("mood", 6);
+  log("Si sveglia di scatto: <b>Occhei.</b>", "#79c7ff");
+  if (withPhrase !== false) await say(pick(PH.wake), { pitch: 1.5, rate: .98 });
+  setFace("calm", 300); ui();
+}
+async function fallSleep(voluntary) {
+  if (S.asleep || (S.busy && !voluntary)) return;
+  S.busy = true; S.asleep = true; S.naps++;
+  setFace("asleep", 700);
+  if (S.xboxing || Math.random() < .5) { el.pad.style.opacity = 1; el.headset.style.opacity = .9; }
+  await fx(1500, function (p) {
+    const e = ease.io(p);
+    EX.rot = -60 * e; EX.y = 22 * e; EX.mouth = .55 * e; EX.drool = e;
+    EX.armL = 18 * e; EX.armR = -22 * e; EX.legL = -30 * e; EX.head = 22 * e;
+  });
+  SFX.snore();
+  log(voluntary ? "Pennica <b>di proposito</b>, tutta storta." : "Si addormenta <b>tutta storta</b>, bocca aperta.", "#c2b6a0");
+  if (!voluntary) await say(pick(["Fra... luva... zzZz...", "Mi viene da dormire storto... occhei...", "No fra... devo giocare... zzz"]), { pitch: 1.3, rate: .7, hold: 900 });
+  S.busy = false; bump("mood", -2); ui(); checkAch();
+  S.timer = setInterval(function () {
+    if (!S.asleep) return;
+    zzz(); if (Math.random() < .6) SFX.snore();
+    bump("energy", 2.6); bump("belly", -.4);
+    if (S.energy >= 99) wake(true);
+  }, 1700);
+}
+
+/* ---------------------------------------------------------------- 11. BRAINO IDLE */
+const MICRO = [
+  () => fx(1500, p => { EX.torso = Math.sin(p * Math.PI * 2) * 2; EX.head = Math.sin(p * Math.PI) * 6; }),
+  () => { fx(900, p => { EX.earL = Math.sin(p * Math.PI * 4) * 14; }); fx(900, p => { EX.earR = Math.sin(p * Math.PI * 4 + 1) * 12; }); },
+  () => fx(1500, p => { EX.head = Math.sin(p * Math.PI * 2) * 16; EX.tail = Math.sin(p * Math.PI) * 10; }),
+  () => fx(1200, p => { EX.head = Math.sin(p * Math.PI * 3) * 8; EX.whisk = Math.sin(p * Math.PI * 6) * 8; }),
+  () => { fx(820, p => { EX.rot = -360 * ease.io(p); EX.y = -Math.sin(p * Math.PI) * 16; }); fx(2600, p => { EX.tail = Math.sin(p * Math.PI * 6) * 14; }); SFX.step(); },
+  () => fx(1000, p => { EX.armR = Math.sin(p * Math.PI * 5) * -50; EX.head = Math.sin(p * Math.PI * 2) * 6; }),
+  () => { SFX.bell(); fx(700, p => { EX.head = Math.sin(p * Math.PI * 4) * 7; }); },
+  () => fx(700, p => { EX.head = Math.sin(p * Math.PI * 3) * -12; }),
+  () => fx(600, p => { EX.tail = -18 * Math.sin(p * Math.PI); EX.tail2 = -14 * Math.sin(p * Math.PI); }),
+  () => { fx(520, p => { EX.y = -Math.sin(p * Math.PI) * 26; EX.sy = 1 + .05 * Math.sin(p * Math.PI); }); SFX.land(); }
+];
+async function idleBrain() {
+  if (S.asleep || S.busy || document.hidden) return;
+  const idle = performance.now() - S.last;
+  const sleepAfter = S.energy < 32 ? 13000 : S.energy < 55 ? 18000 : 23000;
+  if (idle > sleepAfter) { fallSleep(false); return; }
+  if (idle > 17000 && Math.random() < .5) {
+    setFace("sleepy", 300); SFX.yawn();
+    await fx(2100, p => { EX.mouth = Math.sin(p * Math.PI) * .8; EX.head = Math.sin(p * Math.PI) * -6; EX.torso = Math.sin(p * Math.PI) * 4; });
+    EX.mouth = 0; EX.head = 0; EX.torso = 0;
+    if (Math.random() < .6) await say(pick(PH.sleepy), { pitch: 1.4, rate: .9 });
+    setFace("calm", 300); return;
+  }
+  if (idle > 9500 && Math.random() < .55) {
+    const pool = PH.bored.concat(Math.random() < .5 ? PH.grapeAsk : [], S.xboxing ? PH.xmid : []);
+    await say(pick(pool), { pitch: 1.6, rate: 1 }); return;
+  }
+  pick(MICRO)();
+  if (Math.random() < .26) await say(pick(PH.idle), { pitch: rnd(1.55, 1.85) });
+}
+setInterval(idleBrain, 7000);
+setInterval(function () {
+  if (document.hidden || S.asleep) return;
+  bump("energy", -1); bump("hype", -.9); bump("mood", -.7); bump("belly", -.8);
+  if (S.belly < 12 && Math.random() < .3) {
+    $("#grapeJar").classList.add("ping"); setTimeout(() => $("#grapeJar").classList.remove("ping"), 2600);
+    fx(1500, p => { EX.head = Math.sin(p * Math.PI * 2) * 16; });
+    if (Math.random() < .6) say(pick(PH.grapeAsk), { pitch: 1.7 });
+  }
+  if (S.energy < 18 && Math.random() < .4) say(pick(PH.low), { pitch: 1.4, rate: .92 });
+}, 3400);
+
+/* ---------------------------------------------------------------- 12. GUARD */
+async function guard(name) {
+  touched();
+  if (S.asleep) { await wake(false); await sleep(360); }
+  if (S.busy) {
+    if (S.xboxing) { say(pick(PH.xmid), { pitch: 1.78 }); }
+    else { floatWord("aspetta", "#c2b6a0", 4, "clamp(17px,2.2vw,28px)"); SFX.blip(); }
+    return false;
+  }
+  return true;
+}
+
+/* ---------------------------------------------------------------- 13. ATTIVITÀ */
+const ACT = {};
+
+/* 🍇 UVA */
+ACT.grape = async function () {
+  if (!(await guard("grape"))) return;
+  if (S.belly > 88) {
+    S.busy = true; setFace("sad", 200);
+    await fx(900, p => { EX.sy = 1 - .2 * Math.sin(p * Math.PI); EX.sx = 1 + .24 * Math.sin(p * Math.PI); });
+    EX.sy = 0; EX.sx = 0; await say(pick(PH.full), { pitch: 1.5, rate: .95 });
+    setFace("calm", 200); S.busy = false; return;
+  }
+  S.busy = true; resetEX();
+  setFace("surprise", 200);
+  await fx(1500, p => { EX.head = Math.sin(p * Math.PI * 3) * 18; EX.whisk = Math.sin(p * Math.PI * 6) * 9; });
+  EX.whisk = 0;
+  await say(pick(PH.grapeAsk), { pitch: 1.85, rate: 1.08 });
+  const src = Math.random() < .55 ? "jar" : "bunch";
+  const node = $(src === "jar" ? "#grapeJar" : "#grapeBunch");
+  node.classList.add("ping");
+  await mv({ armR: -96, head: src === "jar" ? 16 : -16 }, 320);
+  SFX.blip(); await grapeFly(src);
+  await mv({ armR: 0, head: 0 }, 260);
+  node.classList.remove("ping");
+  setFace("joy", 160);
+  for (let i = 0; i < 4; i++) {
+    SFX.munch();
+    await fx(230, p => { EX.mouth = Math.abs(Math.sin(p * Math.PI * 2)) * .7; EX.torso = Math.sin(p * Math.PI) * 2; });
+  }
+  EX.mouth = 0; EX.torso = 0; seeds(); SFX.bell();
+  S.grapes++; bump("belly", 13); bump("mood", 9); bump("hype", 4);
+  floatWord("gnam gnam", "#b56ac4", -8);
+  await say(pick(PH.grapeEat), { pitch: 1.8, rate: 1.05 });
+  log("Sgrana un acino d'<b>uva</b> (" + S.grapes + ").", "#b56ac4");
+  setFace("calm", 260); S.busy = false; checkAch();
+};
+
+/* ⚽ SIUUU */
+ACT.siu = async function () {
+  if (!(await guard("siu"))) return;
+  S.busy = true; resetEX();
+  setFace("focus", 200);
+  await mv({ armL: 26, armR: -26, head: -6 }, 260);
+  await fx(340, p => { EX.y = 12 * Math.sin(p * Math.PI); EX.sy = 1 - .18 * Math.sin(p * Math.PI); EX.sx = 1 + .12 * Math.sin(p * Math.PI); });
+  EX.y = 0; EX.sy = 0; EX.sx = 0;
+  /* rincorsa */
+  for (let i = 0; i < 3; i++) {
+    SFX.step();
+    await fx(120, p => { EX.legL = (i % 2 ? 1 : -1) * 34 * Math.sin(p * Math.PI); EX.legR = (i % 2 ? -1 : 1) * 34 * Math.sin(p * Math.PI); EX.x = (i % 2 ? 4 : -4) * Math.sin(p * Math.PI); });
+  }
+  EX.legL = 0; EX.legR = 0; EX.x = 0;
+  SFX.jump();
+  fx(1600, p => { EX.tail = Math.sin(p * Math.PI * 8) * 16; });
+  await fx(1150, p => {
+    EX.y = -Math.sin(p * Math.PI) * 132;
+    EX.rot = -360 * ease.io(Math.min(1, p / .78));
+    EX.sy = 1 + .07 * Math.sin(p * Math.PI);
+    EX.armL = 40 * Math.sin(p * Math.PI); EX.armR = -40 * Math.sin(p * Math.PI);
+    if (p > .55 && p < .75) speedLines();
+  });
+  EX.rot = 0;
+  SFX.land(); SFX.crowd(); dustRing(); confetti(60);
+  await fx(260, p => { EX.sy = 1 - .22 * Math.sin(p * Math.PI); EX.sx = 1 + .26 * Math.sin(p * Math.PI); });
+  EX.sy = 0; EX.sx = 0;
+  /* posa Ronaldo */
+  await mv({ legL: -22, legR: 22, armL: -34, armR: 34, head: -14, torso: 0 }, 260);
+  setFace("joy", 150);
+  floatWord("SIUUU!", "#ffd166", -7, "clamp(36px,7.4vw,92px)");
+  speak("Suuuum!", { pitch: 1.3, rate: .85 });
+  bubble.classList.add("show"); bubble.innerHTML = "<em>SIUUUUU</em>M!";
+  S.siu++; bump("hype", 22); bump("mood", 12); bump("energy", -9);
+  await sleep(1600); bubble.classList.remove("show");
+  log("Atterraggio alla Ronaldo: <b>SIUUU</b> n." + S.siu, "#ffd166");
+  await mv({ legL: 0, legR: 0, armL: 0, armR: 0, head: 0 }, 320);
+  await say(pick(PH.siu), { pitch: 1.8 });
+  setFace("calm", 260); S.busy = false; checkAch();
+};
+
+/* 🥋 KARATE */
+ACT.karate = async function () {
+  if (!(await guard("karate"))) return;
+  S.busy = true; resetEX();
+  el.hachi.style.opacity = 1; el.obi.style.opacity = 1;
+  setFace("angry", 180);
+  await mv({ armL: 62, armR: -62, torso: -6, legL: -12, head: -4 }, 300);
+  const move = ri(1, 4);
+  if (move === 1) {
+    floatWord("HI-YAH!", "#ff6b5a", -9, "clamp(28px,5.8vw,70px)"); speak("Hi-yah!", { pitch: 1.5, rate: 1 });
+    boardBreak();
+    await mv({ armR: -148 }, 130); SFX.chop();
+    await fx(240, p => { EX.torso = 12 * Math.sin(p * Math.PI); EX.x = 22 * Math.sin(p * Math.PI); });
+    await mv({ armR: 0 }, 200);
+    EX.torso = 0; EX.x = 0; confetti(18); speedLines();
+    log("Colpo di karate: <b>asse spezzata</b>.", "#ff6b5a");
+  } else if (move === 2) {
+    floatWord("WRAA!", "#79c7ff", 7, "clamp(26px,5.4vw,64px)"); speak("Wraa!", { pitch: 1.4, rate: .95 });
+    SFX.jump();
+    await fx(860, p => {
+      EX.y = -Math.sin(p * Math.PI) * 74; EX.rot = -360 * ease.io(p);
+      EX.legR = -104 * Math.sin(p * Math.PI); EX.tail = Math.sin(p * Math.PI * 4) * 20;
+      if (p > .3 && p < .6) speedLines();
+    });
+    EX.rot = 0; EX.legR = 0; EX.y = 0; SFX.kick(); SFX.land(); dustRing(); confetti(24);
+    log("Calcio <b>rotante</b> della volpe.", "#79c7ff");
+  } else if (move === 3) {
+    floatWord("KIA!", "#ffd166", -4, "clamp(24px,5vw,58px)"); speak("Kia! Kia!", { pitch: 1.6, rate: 1.1 });
+    await mv({ armL: 88 }, 120); SFX.chop();
+    await mv({ armR: -88, armL: 0 }, 120); SFX.chop();
+    await mv({ armL: -70, armR: 70 }, 140); SFX.chop(); confetti(16);
+    await mv({ armL: 0, armR: 0 }, 240);
+    log("Combinazione: <b>blocco, pugno, colpo</b>.", "#ffd166");
+  } else {
+    speak("Kata della volpe.", { pitch: 1.6, rate: .95 });
+    bubble.classList.add("show"); bubble.textContent = "Kata della volpe... shhh.";
+    for (let i = 0; i < 3; i++) {
+      await mv(i % 2 ? { armR: -120, armL: 40, head: 8 } : { armR: 30, armL: -110, head: -8 }, 420);
+      SFX.step();
+    }
+    await sleep(700); bubble.classList.remove("show");
+    await mv({ torso: 26, head: 16, armL: 12, armR: -12 }, 420); SFX.bell();
+    await sleep(420); await mv({ torso: 0, head: 0, armL: 0, armR: 0 }, 380);
+    floatWord("OSU", "#8be07a", 3);
+    log("Kata lento + inchino finale.", "#8be07a");
+  }
+  S.karate++; bump("hype", 12); bump("energy", -8); bump("mood", 7); bump("belly", -3);
+  await sleep(280); setFace("happy", 200);
+  await say(pick(PH.karate), { pitch: 1.78 });
+  el.hachi.style.opacity = 0; el.obi.style.opacity = 0;
+  resetEX(); setFace("calm", 260); S.busy = false; checkAch();
+};
+
+/* 😜 SMORFIE */
+const SMORFIE = [
+  { n: "occhi incrociati", f: { px: 9, py: 0, mouth: .42, tongue: .85, browL: -20, browR: 20 }, w: "pop", t: "Smorfia: occhi incrociati, occhei." },
+  { n: "muso a banana", f: { mouth: .06, browL: 24, browR: -24, earL: 34, earR: -34, lidL: .3, lidR: .3 }, w: "squish", t: "Smorfia numero due: il muso a banana." },
+  { n: "occhio strizzato", f: { lidL: 1, lidR: .05, mouth: .6, browY: -6, browR: -28 }, w: "wob", t: "Un occhio solo. Dall'altro ti scanno." },
+  { n: "lingua lunga", f: { mouth: .62, tongue: 1.5, lidL: .2, lidR: .2, px: -6 }, w: "wob", t: "La lingua esce da sola, fra." },
+  { n: "sorpresa cosmica", f: { mouth: 1, lidL: 0, lidR: 0, browY: -11, browL: -30, browR: 30, earL: -34, earR: 34 }, w: "pop", t: "OH. CHE. COSA." },
+  { n: "guance gonfie", f: { mouth: .05, lidL: .55, lidR: .55, blush: 1, browY: 3 }, w: "puff", t: "Trattengo il fiato come luva in pancia." },
+  { n: "orecchie a sventola", f: { earL: -50, earR: 50, mouth: .3, browL: 16, browR: -16 }, w: "shake", t: "Antenne attive. Sento la cucina." },
+  { n: "sghigno storto", f: { mouth: .24, browL: -32, browR: 2, lidR: .72, tongue: 1, px: -6 }, w: "wob", t: "Sghigno livello: fra." }
+];
+ACT.smorfia = async function () {
+  if (!(await guard("smorfia"))) return;
+  S.busy = true; resetEX();
+  const s = pick(SMORFIE);
+  const backup = {}; Object.keys(s.f).forEach(k => backup[k] = T[k]);
+  setFace("smug", 120);
+  await mv(s.f, 200);
+  const w = s.w;
+  if (w === "pop") await fx(700, p => { EX.sy = 1 + .16 * Math.sin(p * Math.PI); EX.sx = 1 - .1 * Math.sin(p * Math.PI); EX.head = Math.sin(p * Math.PI * 2) * 8; });
+  if (w === "squish") await fx(900, p => { EX.sy = 1 - .22 * Math.sin(p * Math.PI); EX.sx = 1 + .26 * Math.sin(p * Math.PI); });
+  if (w === "wob") await fx(900, p => { EX.rot = Math.sin(p * Math.PI * 4) * 9; EX.head = Math.sin(p * Math.PI * 4 + 1) * 10; });
+  if (w === "puff") { await fx(1000, p => { EX.torsoSx = 1 + .14 * Math.sin(p * Math.PI); EX.torsoSy = 1 + .08 * Math.sin(p * Math.PI); }); }
+  if (w === "shake") await fx(700, p => { EX.x = Math.sin(p * Math.PI * 8) * 9; EX.head = Math.sin(p * Math.PI * 8) * -8; });
+  EX.x = 0; EX.rot = 0; EX.sy = 0; EX.sx = 0; EX.head = 0; EX.torsoSx = 0; EX.torsoSy = 0;
+  fx(900, p => { EX.armR = Math.sin(p * Math.PI * 6) * 34; });
+  floatWord(s.n, "#8be07a", ri(-10, 10), "clamp(19px,3.2vw,40px)"); SFX.pop();
+  bump("hype", 8); bump("mood", 5);
+  await sleep(700); await say(s.t, { voice: false }); speak(s.t, { pitch: 1.9, rate: 1.15 });
+  await sleep(700);
+  await mv(backup, 260);
+  log("Smorfia: <b>" + s.n + "</b>.", "#8be07a");
+  setFace("calm", 260); S.busy = false; ui();
+};
+
+/* 🥤 LATTINA */
+ACT.can = async function () {
+  if (!(await guard("can"))) return;
+  S.busy = true; resetEX();
+  await mv({ armR: -120, head: -8 }, 260); SFX.can();
+  await fx(700, p => { EX.armR = -120 + 60 * Math.sin(p * Math.PI); EX.head = -8 + 26 * Math.sin(p * Math.PI); EX.mouth = .5 * Math.sin(p * Math.PI); });
+  EX.mouth = 0; await mv({ armR: 0, head: 0 }, 240);
+  bump("energy", 22); bump("hype", 14); bump("mood", 6);
+  floatWord("BRRAP", "#ffd23f", 6);
+  for (let i = 0; i < 4; i++) setTimeout(() => fx(160, p => { EX.legL = Math.sin(p * Math.PI) * 12; EX.rot = Math.sin(p * Math.PI) * 3; }), i * 170);
+  await say(pick(PH.can), { pitch: 1.9, rate: 1.16 });
+  log("Lattina di <b>Xyn</b>: energia e hype su.", "#ffd23f");
+  setFace("calm", 300); S.busy = false;
+};
+
+/* 🗣 TRASH TALK */
+ACT.trash = async function () {
+  if (!(await guard("trash"))) return;
+  S.busy = true; resetEX();
+  setFace("smug", 180);
+  await fx(900, p => { EX.head = Math.sin(p * Math.PI * 2) * -10; EX.armL = 30 * Math.sin(p * Math.PI); });
+  EX.head = 0; EX.armL = 0;
+  await say(pick(PH.trash), { pitch: 1.66, rate: 1.02 });
+  bump("hype", 8); bump("mood", 3);
+  floatWord("GG", "#5fdc8a", -5);
+  setFace("calm", 260); S.busy = false;
+};
+
+/* 👋 ACCAREZZA / 🪶 SOLLETICO / 💤 NINNA */
+ACT.pet = async function () {
+  if (!(await guard("pet"))) return;
+  S.busy = true; resetEX(); setFace("love", 220);
+  await fx(1500, p => { EX.head = -16 * Math.sin(p * Math.PI); EX.earL = Math.sin(p * Math.PI * 3) * 10; EX.earR = Math.sin(p * Math.PI * 3 + 1) * 8; });
+  EX.head = 0;
+  fx(1900, p => { EX.tail = Math.sin(p * Math.PI * 8) * 16; });
+  SFX.purr(); SFX.bell(); hearts(6);
+  bump("mood", 12); bump("hype", 3); bump("energy", 2);
+  await say(pick(PH.pet), { pitch: 1.55, rate: .95 });
+  log("Carezza sulla testa: <b>fusa di volpe</b>.", "#ffb04a");
+  setFace("calm", 280); S.busy = false;
+};
+ACT.tickle = async function () {
+  if (!(await guard("tickle"))) return;
+  S.busy = true; resetEX(); setFace("joy", 160); SFX.laugh();
+  await fx(1800, p => {
+    EX.rot = Math.sin(p * Math.PI * 9) * 8; EX.x = Math.sin(p * Math.PI * 9) * 9;
+    EX.mouth = .5 + Math.abs(Math.sin(p * Math.PI * 6)) * .4;
+    EX.armL = Math.sin(p * Math.PI * 7) * 34; EX.armR = -Math.sin(p * Math.PI * 7) * 34;
+    EX.tail = Math.sin(p * Math.PI * 10) * 16;
+  });
+  EX.mouth = 0; EX.rot = 0; EX.x = 0; EX.armL = 0; EX.armR = 0; EX.tail = 0;
+  floatWord("ahaha", "#79c7ff", 8); hearts(3);
+  bump("hype", 12); bump("mood", 9); bump("energy", -5);
+  await say(pick(PH.tickle), { pitch: 1.95, rate: 1.16 });
+  log("Solletico: <b>risate</b> nella taverna.", "#79c7ff");
+  setFace("calm", 280); S.busy = false;
+};
+ACT.nap = async function () {
+  touched();
+  if (S.asleep) { await wake(true); return; }
+  if (S.busy) return;
+  S.busy = false; resetEX();
+  setFace("sleepy", 300); SFX.yawn();
+  await fx(2100, p => { EX.mouth = Math.sin(p * Math.PI) * .8; EX.head = Math.sin(p * Math.PI) * -8; });
+  EX.mouth = 0; EX.head = 0;
+  await say("Occhei, cinque minuti... storta.", { pitch: 1.4, rate: .86 });
+  fallSleep(true);
+};
+
+/* ---------------------------------------------------------------- 14. XBOX: DASHBOARD + GAMES */
+const GAMES = [
+  { id: "calcio", name: "CALCIO PRO 26", tag: "sport · 1v1", icon: "⚽", color: "#5fdc8a", pts: 40, desc: "Dribbling, tiro, e se segna lei e SIUUU." },
+  { id: "battaglia", name: "BATTAGLIA ISOLA", tag: "battle · QTE", icon: "🪂", color: "#3a8dff", pts: 60, desc: "8 round a tempo: sopravvivi al cerchio." },
+  { id: "corrida", name: "CORRIDA TURBO", tag: "race · QTE", icon: "🏁", color: "#ffd23f", pts: 55, desc: "Sterza, stacca la scia, taglia il traguardo." },
+  { id: "brividi", name: "BRIVIDI IN TAVERNA", tag: "horror", icon: "👻", color: "#b56ac4", pts: 30, desc: "Buio, rumori, e una volpe che si spaventa." },
+  { id: "rene", name: "RE DELLA TAVERNA", tag: "reflessi · record", icon: "👑", color: "#ff7a29", pts: 70, desc: "Colpisci al volo. Il record resta sulla lavagna." }
+];
+function buildTiles() {
+  $("#tiles").innerHTML = GAMES.map(function (g) {
+    return '<button class="tile" data-game="' + g.id + '" style="--tc:' + g.color + '">' +
+      '<span class="sc">+' + g.pts + ' G</span><span class="em">' + g.icon + '</span>' +
+      '<b>' + g.name + '</b><i>' + g.tag + '</i><p>' + g.desc + '</p></button>';
+  }).join("");
+}
+buildTiles();
+function openDash() {
+  touched();
+  if (S.asleep) { wake(false); }
+  $("#xdash").classList.add("open");
+  tvShow("home"); SFX.beep();
+  log("Dashboard <b>Xbox</b> aperta.", "#5fdc8a");
+  if (!S.xboxing) say(pick(PH.xstart), { pitch: 1.72, rate: 1.02 });
+}
+function closeDash() { $("#xdash").classList.remove("open"); }
+$("#xdashClose").onclick = function () { closeDash(); say("Fra, ho scelto male. Esci di nuovo.", { pitch: 1.75 }); };
+$("#tiles").addEventListener("click", function (e) {
+  const b = e.target.closest(".tile"); if (!b) return;
+  closeDash(); playGame(b.dataset.game);
+});
+ACT.xbox = function () { if (S.busy && S.xboxing) { say(pick(PH.xmid), { pitch: 1.78 }); return; } openDash(); };
+
+/* QTE engine */
+const QT = { on: false, key: null, deadline: 0, dur: 0, resolve: null };
+const QKEYS = ["A", "B", "X", "Y"];
+function qShow(on) { $("#qte").classList.toggle("open", on); }
+function qPrompt(round, total, speed) {
+  return new Promise(function (res) {
+    const k = pick(QKEYS); QT.done = res; QT.key = k; QT.dur = speed; QT.deadline = performance.now() + speed; QT.on = true;
+    $("#qRound").textContent = round + "/" + total;
+    $$(".qb").forEach(b => b.classList.toggle("on", b.dataset.k === k));
+    $("#qFlash").textContent = "adesso!"; $("#qFlash").className = "qflash";
+    const t0 = performance.now();
+    (function tick() {
+      if (!QT.on) return;
+      const left = QT.deadline - performance.now();
+      $("#qBar").style.width = clamp(left / speed * 100, 0, 100) + "%";
+      if (left <= 0) { QT.on = false; $$(".qb").forEach(b => b.classList.remove("on")); const r0 = QT.resolve; QT.resolve = null; if (r0) r0(false); QT.done = null; res(false); return; }
+      requestAnimationFrame(tick);
+    })();
+  });
+}
+function qAnswer(k) {
+  if (!QT.on) return;
+  const ok = k === QT.key; QT.on = false;
+  $$(".qb").forEach(b => b.classList.remove("on"));
+  const btn = $('.qb[data-k="' + k + '"]');
+  if (btn) { btn.classList.add("hit"); setTimeout(() => btn.classList.remove("hit"), 320); }
+  const r = QT.resolve; QT.resolve = null;
+  if (r) r(ok);
+  if (QT.done) { const d = QT.done; QT.done = null; d(ok); }
+}
+$$(".qb").forEach(b => b.addEventListener("pointerdown", () => qAnswer(b.dataset.k)));
+async function qte(cfg) {
+  S.xboxing = true; $("#liveBox").classList.add("match");
+  $("#liveTxt").textContent = cfg.title;
+  $("#qTitle").textContent = cfg.title; $("#qSub").textContent = cfg.sub;
+  $("#qBest").textContent = S.best;
+  qShow(true);
+  let score = 0, combo = 0, bestCombo = 0, hits = 0;
+  setFace("focus", 200);
+  await mv({ armL: 34, armR: -34, head: 4, lidL: .2, lidR: .2 }, 240);
+  for (let i = 1; i <= cfg.rounds; i++) {
+    QT.resolve = function (ok) {
+      if (ok) { hits++; combo++; bestCombo = Math.max(bestCombo, combo); score += Math.round(100 * (1 + combo * .15)); }
+      else { combo = 0; score = Math.max(0, score - 30); }
+      $("#qScore").textContent = score; $("#qCombo").textContent = "x" + combo;
+      $("#qFlash").textContent = ok ? pick(["SIU!", "presTO!", "bellissimo!", "continua!"]) : pick(["no fra...", "refuso", "lag!", "ahi"]);
+      $("#qFlash").className = "qflash " + (ok ? "good" : "bad");
+      ok ? SFX.hit() : SFX.miss();
+      fx(220, p => { EX.mouth = (ok ? .6 : .1) * Math.sin(p * Math.PI); EX.head = (ok ? -6 : 8) * Math.sin(p * Math.PI); });
+    };
+    const speed = Math.max(340, cfg.speed - i * cfg.decay);
+    const ok = await qPrompt(i, cfg.rounds, speed);
+    await sleep(180);
+  }
+  qShow(false);
+  await mv({ armL: 0, armR: 0, head: 0, lidL: 0, lidR: 0 }, 240);
+  const prevBest = S.best; S.best = Math.max(S.best, score);
+  return { prev: prevBest, score: score, hits: hits, rounds: cfg.rounds, bestCombo: bestCombo };
+}
+
+async function playGame(id) {
+  if (!(await guard("xbox"))) return;
+  const g = GAMES.find(x => x.id === id); if (!g) return;
+  S.busy = true; S.xboxing = true; S.game = id; S.partite++;
+  resetEX();
+  el.headset.style.opacity = 1; el.pad.style.opacity = 1;
+  await mv({ armL: 34, armR: -34, head: 6, torso: 2 }, 320);
+  setFace("focus", 200);
+  stage.classList.add("playing");
+  log("Parte <b>" + g.name + "</b>.", g.color);
+  await say(pick(PH.xstart), { pitch: 1.74, rate: 1.04, hold: 1400 });
+  let win = false, extra = "", doSiu = false;
+
+  if (id === "calcio") {
+    tvShow("calcio");
+    let home = 0, away = 0;
+    for (let m = 0; m < 4; m++) {
+      SFX.beep();
+      await fx(900, p => { EX.armL = 34 + Math.sin(p * Math.PI * 6) * 8; EX.armR = -34 - Math.sin(p * Math.PI * 6 + 1) * 8; EX.head = 6 + Math.sin(p * Math.PI * 3) * 4; });
+      const r = Math.random();
+      if (r < .45) { home++; S.gol++; SFX.crowd(); floatWord("GOOOL!", "#5fdc8a", -6, "clamp(28px,5.6vw,66px)"); confetti(30);
+        $("#tvScore").textContent = home + " - " + away;
+        await say(pick(PH.xgoal), { pitch: 1.9, rate: 1.1 }); }
+      else if (r < .62) { away++; $("#tvScore").textContent = home + " - " + away; lagFlash(); SFX.miss();
+        await say(pick(["Arbitro! Fallo!", "Fra, il mio portiere dorme.", "Occasione loro. Normale."]), { pitch: 1.7 }); }
+      else if (r < .78) { lagFlash(); SFX.miss(); await say("Lag! Sempre lag!", { pitch: 1.85, rate: 1.15 }); }
+      else { await say(pick(["Cross! Colpo di testa!", "Rinvio, rinvio.", "Fuorigioco? Mai esistito."]), { pitch: 1.8 }); }
+      await sleep(280);
+    }
+    EX.armL = 0; EX.armR = 0; EX.head = 0;
+    win = home >= away; extra = home + " - " + away;
+    if (win && home > 0) doSiu = true;
+  } else if (id === "battaglia") {
+    tvShow("battaglia");
+    const res = await qte({ title: "BATTAGLIA ISOLA", sub: "8 round · cerchio che stringe", rounds: 8, speed: 900, decay: 55 });
+    win = res.hits >= 5;
+    $("#tvAlive").textContent = Math.max(1, 12 - res.hits) + " RIMASTI";
+    extra = res.hits + "/8 · combo x" + res.bestCombo;
+    if (win) { confetti(40); SFX.crowd(); floatWord("VITTORIA", "#3a8dff", -5); }
+    else { SFX.miss(); lagFlash(); }
+  } else if (id === "corrida") {
+    tvShow("corrida");
+    const res = await qte({ title: "CORRIDA TURBO", sub: "stacca la scia, non sbattere", rounds: 8, speed: 780, decay: 48 });
+    win = res.hits >= 6;
+    $("#tvSpeed").textContent = 180 + res.hits * 14;
+    extra = (180 + res.hits * 14) + " km/h · combo x" + res.bestCombo;
+    if (win) { floatWord("🏁 1° POSTO", "#ffd23f", -4); confetti(36); SFX.crowd(); }
+    else { floatWord("MURO", "#ff5a5a", 6); SFX.kick(); dustRing(); }
+  } else if (id === "brividi") {
+    tvShow("brividi");
+    document.body.classList.add("night"); stage.classList.add("night");
+    setFace("scared", 200);
+    await fx(2400, p => { EX.head = Math.sin(p * Math.PI * 8) * 6; EX.rot = Math.sin(p * Math.PI * 4) * 2; EX.lidL = .1; EX.lidR = .1; });
+    await say(pick(["Fra... chi ha spento?", "Ho sentito qualcosa. ERA LA MIA CODA.", "Io non ho paura. Io sono prudente."]), { pitch: 1.9, rate: 1.1 });
+    SFX.miss(); noise({ d: .5, v: .16, hp: 200, lp: 900 });
+    setFace("surprise", 120);
+    await fx(520, p => { EX.y = -Math.sin(p * Math.PI) * 60; EX.rot = Math.sin(p * Math.PI * 2) * 12; EX.armL = 60; EX.armR = -60; });
+    EX.y = 0; EX.rot = 0; EX.armL = 0; EX.armR = 0;
+    floatWord("AH!", "#b56ac4", 8); SFX.laugh();
+    document.body.classList.toggle("night", S.night); stage.classList.toggle("night", S.night);
+    win = Math.random() < .5; extra = win ? "sopravvissuta" : "spenta lei";
+    if (!win) { S.rage++; await say("Fra, chiudo tutto. Non si fa.", { pitch: 1.6, rate: .95 }); }
+    else await say(pick(PH.xwin), { pitch: 1.8 });
+  } else {
+    tvShow("home");
+    const res = await qte({ title: "RE DELLA TAVERNA", sub: "reflessi puri · battere il record", rounds: 10, speed: 640, decay: 34 });
+    win = res.hits >= 8 || (res.prev > 0 && res.score > res.prev);
+    extra = res.score + " pt · " + res.hits + "/10";
+    if (res.hits >= 8) { confetti(44); floatWord("RE!", "#ff7a29", -6, "clamp(30px,6vw,72px)"); SFX.crowd(); }
+  }
+
+  /* esito */
+  await mv({ armL: 0, armR: 0, head: 0, torso: 0, lidL: 0, lidR: 0 }, 260);
+  if (win) {
+    S.vinte++; setFace("joy", 200); bump("mood", 12); bump("hype", 18);
+    await say(pick(PH.xwin), { pitch: 1.86, rate: 1.06 });
+    ach("Re della taverna · " + g.name, g.icon, g.pts);
+    addScore(g.pts * 4);
+  } else {
+    setFace("angry", 200); S.rage++; bump("mood", -8); bump("hype", 6);
+    await say(pick(PH.xlose), { pitch: 1.62, rate: .98 });
+    if (S.rage >= 3 && !got.rage) { got.rage = 1; ach("Rage quit professionale", "🤬", 45); }
+    addScore(Math.round(g.pts / 2));
+  }
+  bump("energy", -10); bump("belly", -4);
+  log("<b>" + g.name + "</b> · " + (win ? "vinta" : "persa") + " " + extra, g.color);
+  if (S.best > 0) $("#qBest").textContent = S.best;
+  if (win && id === "calcio" && S.gol >= 5 && !got.bomb) { got.bomb = 1; ach("Bombardiere d'uva", "⚽", 50); }
+  if (S.partite >= 5 && !got.cinque) { got.cinque = 1; ach("Cinque partite di fila", "🎮", 40); }
+  tvShow("home");
+  el.headset.style.opacity = 0;
+  stage.classList.remove("playing");
+  S.xboxing = false; S.game = null;
+  $("#liveBox").classList.remove("match"); $("#liveTxt").textContent = "Taverna aperta";
+  resetEX(); setFace("calm", 300); S.busy = false; ui(); checkAch();
+  if (doSiu) setTimeout(() => ACT.siu(), 400);
+}
+
+/* ---------------------------------------------------------------- 15. OBIETTIVI */
+const ACHS = [
+  { k: "grapes", n: 8, t: "Soma della taverna", i: "🍇", g: 30 },
+  { k: "siu", n: 5, t: "Cris: cinque SIUUU", i: "⚽", g: 35 },
+  { k: "karate", n: 6, t: "Cintura nera di volpe", i: "🥋", g: 40 },
+  { k: "naps", n: 3, t: "Dormigliona storta", i: "💤", g: 25 },
+  { k: "words", n: 12, t: "Pappagallo con la coda", i: "🎙", g: 30 },
+  { k: "best", n: 900, t: "Reflessi da volpe (900 pt)", i: "👑", g: 60 }
+];
+const got = {};
+function checkAch() {
+  ACHS.forEach(function (a) {
+    if (S[a.k] >= a.n && !got[a.t]) { got[a.t] = 1; ach(a.t, a.i, a.g); }
+  });
+}
+
+/* ---------------------------------------------------------------- 16. INPUT */
+$("#acts").addEventListener("click", function (e) {
+  const b = e.target.closest(".act"); if (!b) return;
+  SFX.step(); const f = ACT[b.dataset.act]; if (f) f();
+});
+$$(".xcard .act").forEach(function (b) {
+  b.addEventListener("click", function () { SFX.step(); const f = ACT[b.dataset.act]; if (f) f(); });
+});
+
+const inp = $("#sayTxt");
+async function tellYou(txt) {
+  txt = String(txt || "").trim(); if (!txt) return;
+  touched(); if (S.asleep) await wake(false);
+  if (S.busy) { floatWord("dopo fra", "#c2b6a0", 4, "clamp(17px,2.4vw,30px)"); return; }
+  S.busy = true; S.words++; resetEX();
+  setFace("surprise", 180);
+  fx(700, p => { EX.head = Math.sin(p * Math.PI * 2) * 8; EX.tail = Math.sin(p * Math.PI * 3) * 12; });
+  let out = txt, low = txt.toLowerCase(), follow = null;
+  if (/^(occhei|ok|okey)/.test(low)) out = "Occhei, " + txt.replace(/^(occhei|ok|okey)\W*/i, "").trim();
+  else if (/uva/.test(low)) follow = ACT.grape;
+  else if (/siu+|ronaldo/.test(low)) follow = ACT.siu;
+  else if (/xbox|gioca|partita/.test(low)) follow = ACT.xbox;
+  else if (/karate|pugno/.test(low)) follow = ACT.karate;
+  else if (/\?$/.test(txt) && Math.random() < .5) out = pick(["Mah, fra. ", "Occhei. ", "Boh. "]) + txt;
+  else if (Math.random() < .2) { const w = txt.split(" "); out = txt + " " + w[w.length - 1]; }
+  await say(out, { pitch: rnd(1.6, 1.9), rate: rnd(.98, 1.14) });
+  bump("hype", 5); bump("mood", 3);
+  log("Tu: “" + txt + "” → lei: <b>“" + out + "”</b>", "#ffd9a8");
+  setFace("calm", 260); S.busy = false; ui(); checkAch();
+  if (follow) setTimeout(follow, 300);
+}
+$("#sayGo").onclick = function () { tellYou(inp.value); inp.value = ""; };
+inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { tellYou(inp.value); inp.value = ""; } });
+
+/* microfono */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, recording = false;
+function mic() {
+  if (!SR) { tip("🎙 microfono non supportato"); inp.focus(); log("Microfono non disponibile: usa la tastiera.", "#c2b6a0"); return; }
+  if (recording) { if (rec) rec.stop(); return; }
+  rec = new SR(); rec.lang = "it-IT"; rec.interimResults = true; rec.continuous = false;
+  const st = $("#btnMic"); st.setAttribute("aria-pressed", "true"); recording = true; tip("🎙 parla pure…");
+  rec.onresult = function (e) {
+    let t = "", fin = false;
+    for (let i = e.resultIndex; i < e.results.length; i++) { t += e.results[i][0].transcript; if (e.results[i].isFinal) fin = true; }
+    inp.value = t;
+    if (fin) { recording = false; st.setAttribute("aria-pressed", "false"); inp.value = ""; tellYou(t); }
+  };
+  rec.onend = function () { recording = false; st.setAttribute("aria-pressed", "false"); };
+  rec.onerror = function () { recording = false; st.setAttribute("aria-pressed", "false"); tip("Non ti ho sentito, fra"); };
+  rec.start();
+}
+$("#btnMic").onclick = mic; $("#micGo").onclick = mic;
+
+$("#btnSound").onclick = function (e) {
+  S.muted = !S.muted; e.currentTarget.setAttribute("aria-pressed", String(!S.muted));
+  e.currentTarget.textContent = S.muted ? "🔇" : "🔊";
+  if (S.muted && "speechSynthesis" in window) { speechSynthesis.cancel(); flapStop(); }
+  log(S.muted ? "Audio off." : "Audio on.", "#c2b6a0");
+};
+$("#btnLight").onclick = function (e) {
+  S.night = !S.night;
+  document.body.classList.toggle("night", S.night); stage.classList.toggle("night", S.night);
+  e.currentTarget.setAttribute("aria-pressed", String(S.night));
+  e.currentTarget.textContent = S.night ? "🕯" : "💡";
+  log(S.night ? "Luci basse: resta il camino e il RGB." : "Luci accese nella taverna.", "#79c7ff");
+  if (!S.asleep && Math.random() < .6) say(S.night ? "Oh, buio. Io vedo, fra." : "Ehi, la luce! Occhei.", { pitch: 1.85 });
+};
+const sheet = $("#sheet");
+$("#btnHelp").onclick = function () { sheet.classList.add("open"); };
+$("#sheetClose").onclick = function () { sheet.classList.remove("open"); };
+sheet.addEventListener("click", function (e) { if (e.target === sheet) sheet.classList.remove("open"); });
+
+addEventListener("keydown", function (e) {
+  if (QT.on && QKEYS.indexOf(e.key.toUpperCase()) >= 0) { qAnswer(e.key.toUpperCase()); e.preventDefault(); return; }
+  if (e.target.tagName === "INPUT") { if (e.key === "Escape") e.target.blur(); return; }
+  if ($("#xdash").classList.contains("open") && e.key !== "Escape") return;
+  const map = { "1": "grape", "2": "siu", "3": "karate", "4": "smorfia", "5": "xbox", "6": "pet", "7": "tickle", "8": "nap", "9": "can" };
+  if (map[e.key]) { e.preventDefault(); ACT[map[e.key]](); return; }
+  if (e.key.toLowerCase() === "t") { ACT.trash(); return; }
+  const k = e.key.toLowerCase();
+  if (k === "m") mic();
+  else if (k === "l") $("#btnLight").click();
+  else if (k === "a") $("#btnSound").click();
+  else if (e.key === "?") sheet.classList.toggle("open");
+  else if (e.key === "Escape") { if ($("#xdash").classList.contains("open")) closeDash(); else sheet.classList.remove("open"); }
+  else if (k === "enter") inp.focus();
+});
+
+/* click sulla volpe */
+const HOT = {
+  cheek: () => ACT.pet(),
+  collar: () => { SFX.bell(); fx(600, p => { EX.head = Math.sin(p * Math.PI * 5) * 8; }); say("Il campanello e mio, fra.", { pitch: 1.9 }); },
+  mouth: () => { SFX.munch(); fx(700, p => { EX.mouth = Math.abs(Math.sin(p * Math.PI * 4)) * .8; }); setTimeout(() => EX.mouth = 0, 720); say(pick(PH.mouth), { pitch: 1.85 }); },
+  belly: () => { fx(1000, p => { EX.torsoSx = 1 + .14 * Math.sin(p * Math.PI); EX.torsoSy = 1 + .08 * Math.sin(p * Math.PI); });
+    setFace("angry", 160); say(S.belly > 40 ? pick(PH.belly) : "La pancia e solo per luva.", { pitch: 1.6 });
+    setTimeout(() => { EX.torsoSx = 0; EX.torsoSy = 0; setFace("calm", 240); }, 1100); bump("mood", -2); }
+};
+$$("#fox [data-hit]").forEach(function (g) {
+  g.addEventListener("pointerdown", function (ev) {
+    ev.stopPropagation(); touched();
+    if (S.asleep) { wake(true); return; }
+    const h = g.dataset.hit;
+    if (h === "cheek" || h === "collar" || h === "mouth" || h === "belly") { (HOT[h] || ACT.pet)(); return; }
+    ACT.pet();
+  });
+});
+/* code / orecchie / zampe cliccabili tramite zone sul corpo */
+el.tail.parentElement.addEventListener("pointerdown", function (ev) {
+  ev.stopPropagation(); touched(); if (S.asleep) { wake(true); return; }
+  setFace("angry", 160); fx(900, p => { EX.tail = Math.sin(p * Math.PI * 8) * 22; });
+  say(pick(PH.tail), { pitch: 1.85 }); setTimeout(() => setFace("calm", 260), 900);
+});
+$$("#xcorner [data-click], #crateG [data-click], #grapeJar").forEach(function (n) {
+  n.addEventListener("pointerdown", function (e) {
+    e.stopPropagation(); touched();
+    const w = n.dataset.click || "jar";
+    if (w === "jar" || w === "bunch") ACT.grape();
+    else if (w === "can") ACT.can();
+    else if (w === "console" || w === "pad") ACT.xbox();
+  });
+});
+$("#poster").addEventListener("pointerdown", function (e) {
+  e.stopPropagation(); touched();
+  say(pick(["Quel poster sono io. Fra, e arte.", "Gullotta Esports. Sponsor: luva.", "Firmato: io. Con la zampa."]), { pitch: 1.85 });
+  SFX.blip();
+});
+stage.addEventListener("pointerdown", touched);
+stage.addEventListener("pointermove", touched, { passive: true });
+
+/* parallasse + occhi */
+const layers = $$("#scene .layer");
+stage.addEventListener("pointermove", function (e) {
+  const r = stage.getBoundingClientRect();
+  tx = (e.clientX - r.left) / r.width * 2 - 1; ty = (e.clientY - r.top) / r.height * 2 - 1;
+});
+stage.addEventListener("pointerleave", function () { tx = 0; ty = 0; });
+(function parallax() {
+  mx += (tx - mx) * .06; my += (ty - my) * .06;
+  layers.forEach(function (l) {
+    const d = parseFloat(l.dataset.depth || 0);
+    const f = (l.id === "foxLayer" || l.id === "fxScene") ? .42 : .5;
+    l.style.transform = "translate(" + (-mx * d * f).toFixed(2) + "px," + (-my * d * .28).toFixed(2) + "px)";
+  });
+  requestAnimationFrame(parallax);
+})();
+
+/* battito di palpebre casuale */
+(function blinkLoop() {
+  setTimeout(function () {
+    if (!S.asleep && !flapT) {
+      const one = Math.random() < .12;
+      if (one) { EX.lidR = 1; setTimeout(() => EX.lidR = 0, 150); if (!S.busy && Math.random() < .4) say("Ti vedo, fra.", { pitch: 1.95, rate: 1.1 }); }
+      else { EX.lidL = 1; EX.lidR = 1; setTimeout(function () { EX.lidL = 0; EX.lidR = 0; }, 100); }
+    }
+    blinkLoop();
+  }, ri(1900, 5400));
+})();
+setInterval(function () { if (!document.hidden && !S.asleep && Math.random() < .6) embers(); }, 780);
+setInterval(function () {
+  if (Math.random() < .35) { document.body.classList.add("mouse-out"); setTimeout(() => document.body.classList.remove("mouse-out"), 1900); }
+}, 9000);
+setInterval(function () {
+  const d = new Date(), s = d.getSeconds(), m = d.getMinutes() + s / 60, h = (d.getHours() % 12) + m / 60;
+  $("#clockTop").textContent = d.toLocaleTimeString("it-IT");
+  $("#hS").setAttribute("transform", "rotate(" + s * 6 + ")");
+  $("#hM").setAttribute("transform", "rotate(" + m * 6 + ")");
+  $("#hH").setAttribute("transform", "rotate(" + h * 30 + ")");
+}, 1000);
+
+/* ---------------------------------------------------------------- 17. APERTURA */
+(async function intro() {
+  ui(); tvShow("home");
+  log("La taverna apre. <b>Gullotta</b> e gia sul divano.", "#ffd166");
+  await sleep(600);
+  await fx(520, p => { EX.y = -Math.sin(p * Math.PI) * 30; EX.sy = 1 + .06 * Math.sin(p * Math.PI); });
+  EX.y = 0; EX.sy = 0; SFX.step();
+  await say(pick(PH.hi), { pitch: 1.8, rate: 1.05, hold: 1700 });
+  fx(1500, p => { EX.head = Math.sin(p * Math.PI * 2) * 16; });
+  await say("Qui e casa mia: scrivimi qualcosa, dammi luva 🍇, o apri la dashboard Xbox 🎮.", { pitch: 1.85, hold: 2600 });
+  setFace("calm", 300);
+})();
+</script>
+</body>
+</html>
