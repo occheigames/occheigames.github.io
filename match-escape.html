@@ -1,1528 +1,190 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Match & Escape - Mini Games Arcade</title>
-
-<!-- ===== GOOGLE ADSENSE ===== -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6380006770259018"
-     crossorigin="anonymous"></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;700;800&display=swap" rel="stylesheet">
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cacciatore di Sfere VR</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  
-  html, body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    touch-action: manipulation;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-text-size-adjust: 100%;
-  }
-  
-  body {
-    font-family: Rubik, system-ui, sans-serif;
-    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-    display: flex;
-    flex-direction: column;
-    color: #fff;
-    overscroll-behavior: none;
-    position: fixed;
-    inset: 0;
-  }
-  
-  /* ===== LAYOUT ===== */
-  .app {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 4px;
-    gap: 4px;
-  }
-  
-  /* ===== TOP BAR COMPATTA ===== */
-  .top-bar {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 10px;
-    background: rgba(0,0,0,0.5);
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-  
-  .back-btn {
-    display: flex;
-    align-items: center;
-    padding: 6px 12px;
-    background: linear-gradient(135deg, #4ecdc4, #44a3aa);
-    color: #08121f;
-    text-decoration: none;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 8px;
-    border-radius: 8px;
-    box-shadow: 0 3px 0 #2d7a74;
-  }
-  .back-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #2d7a74; }
-  
-  .game-title {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 9px;
-    color: #ffd93d;
-    text-shadow: 0 0 8px rgba(255,217,61,0.6);
-  }
-  
-  .mute-btn {
-    background: rgba(0,0,0,0.5);
-    border: 2px solid rgba(255,255,255,0.3);
-    color: white;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 0.9em;
-    font-family: inherit;
-  }
-  .mute-btn:active { transform: scale(0.9); }
-  
-  /* ===== AREA GIOCO CENTRATA ===== */
-  .canvas-wrapper {
-    flex: 1;
-    position: relative;
-    min-height: 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  #gameCanvas {
-    display: block;
-    border-radius: 12px;
-    box-shadow: 0 0 30px rgba(78, 205, 196, 0.2), 0 10px 40px rgba(0,0,0,0.6);
-    background: #1a1a2e;
-    cursor: pointer;
-    touch-action: none;
-  }
-  
-  /* ===== MENU OVERLAY ===== */
-  .menu-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(26, 26, 46, 0.98);
-    backdrop-filter: blur(15px);
-    border-radius: 16px;
-    padding: 16px;
-    text-align: center;
-    border: 2px solid rgba(255,217,61,0.6);
-    box-shadow: 0 0 50px rgba(255,217,61,0.3), 0 15px 40px rgba(0,0,0,0.9);
-    z-index: 10;
-    width: 88%;
-    max-width: 340px;
-    max-height: 90%;
-    overflow-y: auto;
-  }
-  
-  .menu-overlay h1 {
-    color: #ffd93d;
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(12px, 4vw, 20px);
-    text-shadow: 0 0 12px #ffd93d, 2px 2px 0 #ff6b6b;
-    margin-bottom: 6px;
-    line-height: 1.3;
-  }
-  
-  .menu-overlay .subtitle {
-    color: #4ecdc4;
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(7px, 2vw, 10px);
-    margin-bottom: 12px;
-  }
-  
-  .instructions {
-    background: rgba(0,0,0,0.5);
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 12px;
-    text-align: left;
-  }
-  
-  .instructions h3 {
-    color: #ffd93d;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 8px;
-    margin-bottom: 8px;
-    text-align: center;
-  }
-  
-  .instructions ul { list-style: none; }
-  
-  .instructions li {
-    color: #fff;
-    font-size: 11px;
-    margin: 5px 0;
-    padding-left: 18px;
-    position: relative;
-    line-height: 1.4;
-  }
-  
-  .instructions li::before {
-    content: '◆';
-    position: absolute;
-    left: 2px;
-    color: #4ecdc4;
-    font-size: 9px;
-  }
-  
-  .btn {
-    display: block;
-    width: 100%;
-    padding: 12px 16px;
-    font-size: 10px;
-    font-weight: bold;
-    font-family: 'Press Start 2P', monospace;
-    color: white;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 4px 0 #c93d3d;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-  }
-  
-  .btn:active {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0 #c93d3d;
-  }
-  
-  .btn.secondary {
-    background: linear-gradient(135deg, #4ecdc4, #44a3aa);
-    box-shadow: 0 4px 0 #2d7a74;
-  }
-  
-  .btn.secondary:active {
-    box-shadow: 0 1px 0 #2d7a74;
-  }
-  
-  .hidden { display: none !important; }
-  
-  /* ===== AD BANNER COMPATTO ===== */
-  #adbar {
-    flex-shrink: 0;
-    width: 100%;
-    max-width: 320px;
-    height: 50px;
-    margin: 0 auto;
-    border-radius: 8px;
-    overflow: hidden;
-    opacity: 0.85;
-  }
-  
-  #adbar ins {
-    max-height: 50px;
-  }
-  
-  /* ===== MOBILE FIXES ===== */
-  @media (max-width: 480px) {
-    .game-title { display: none; }
-    #adbar { max-width: 100%; }
-  }
-  
-  @media (max-height: 450px) and (orientation: landscape) {
-    .top-bar { padding: 3px 8px; }
-    .back-btn { padding: 4px 8px; font-size: 7px; }
-    .mute-btn { width: 28px; height: 28px; font-size: 0.8em; }
-    #adbar { height: 32px; }
-    #adbar ins { max-height: 32px; }
-  }
+:root{--bg:#050818;--fg:#e8ecff;--ac:#4df0c0;--ac2:#7a5cff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden;touch-action:none;cursor:default}
+canvas{position:fixed;inset:0;display:block}
+#ov{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;background:rgba(5,8,24,.94);overflow-y:auto}
+h1{margin:0;font-size:clamp(26px,6vw,44px);background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+p{margin:0;max-width:34em;line-height:1.5;opacity:.85}
+button{font:inherit;font-weight:700;font-size:18px;padding:14px 26px;border-radius:14px;border:0;cursor:pointer;color:#05110d;background:var(--ac);min-width:260px}
+button.alt{background:transparent;color:var(--fg);border:2px solid var(--ac2)}
+small{opacity:.55;max-width:32em}
 </style>
 </head>
 <body>
-
-<div class="app">
-  <!-- ===== TOP BAR ===== -->
-  <div class="top-bar">
-    <a href="index.html" class="back-btn">← BACK</a>
-    <div class="game-title">MATCH &amp; ESCAPE</div>
-    <button class="mute-btn" id="muteBtn" onclick="toggleMute()">♪</button>
-  </div>
-
-  <!-- ===== GAME CANVAS ===== -->
-  <div class="canvas-wrapper">
-    <canvas id="gameCanvas"></canvas>
-    
-    <div class="menu-overlay" id="menu">
-      <h1>MATCH &amp; ESCAPE</h1>
-      <p class="subtitle">◆ Puzzle Runner ◆</p>
-      
-      <div class="instructions">
-        <h3>COME SI GIOCA</h3>
-        <ul>
-          <li>Tocca un simbolo, poi uno adiacente per scambiarli</li>
-          <li>Allinea 3+ simboli uguali per eliminarli</li>
-          <li>Ogni match fa correre l'omino verso il traguardo</li>
-          <li>Raggiungi la bandiera per passare al livello dopo</li>
-          <li>Il mostro ti insegue: non perdere tempo!</li>
-        </ul>
-      </div>
-      
-      <button class="btn" onclick="startGame(1)">▶ NORMALE</button>
-      <button class="btn secondary" onclick="startGame(2)">▶ DIFFICILE</button>
-    </div>
-  </div>
-
-  <!-- ===== ADSENSE COMPATTO ===== -->
-  <div id="adbar">
-    <ins class="adsbygoogle"
-         style="display:block; height:50px;"
-         data-ad-client="ca-pub-6380006770259018"
-         data-ad-slot="IL-TUO-SLOT-ID"
-         data-ad-format="horizontal"
-         data-full-width-responsive="false"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  </div>
+<div id="ov">
+  <h1>Cacciatore di Sfere</h1>
+  <p>Inserisci il telefono nel VR Box e <b>guarda le sfere colorate</b>: tienile al centro del mirino per circa un secondo per farle esplodere. Hai 60 secondi!</p>
+  <button id="b1">Gioca con VR Box</button>
+  <button id="b2" class="alt">Gioca a schermo singolo</button>
+  <small>Premi “Gioca”, accetta il permesso per i sensori di movimento, poi metti il telefono in orizzontale nel visore. Su computer puoi guardarti attorno trascinando il mouse.</small>
 </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// ===== BLOCCO ZOOM =====
-document.addEventListener('gesturestart', e => e.preventDefault());
-document.addEventListener('gesturechange', e => e.preventDefault());
-document.addEventListener('gestureend', e => e.preventDefault());
-document.addEventListener('dblclick', e => e.preventDefault());
-document.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+(function(){
+const D2R=Math.PI/180, TAU=Math.PI*2, IPD=0.032;
+let stereo=true, hasGyro=false, yaw=0, pitch=0, state="idle";
+let score=0, timeLeft=60, spawnT=0, gazeT=0, gazed=null, hudKey="", actx=null;
+const targets=[];
 
-// ==================== AUDIO SYSTEM ====================
-class AudioSystem {
-  constructor() {
-    this.ctx = null;
-    this.muted = false;
-    this.initialized = false;
-  }
-  
-  init() {
-    if (this.initialized) return;
-    try {
-      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-      this.initialized = true;
-    } catch(e) {}
-  }
-  
-  play(type) {
-    if (this.muted || !this.initialized) return;
-    if (this.ctx.state === 'suspended') this.ctx.resume();
-    
-    switch(type) {
-      case 'select': this.playTone(400, 0.08, 'sine', 0.15); break;
-      case 'swap': this.playSwap(); break;
-      case 'match': this.playMatch(); break;
-      case 'explosion': this.playExplosion(); break;
-      case 'invalid': this.playInvalid(); break;
-      case 'levelup': this.playLevelUp(); break;
-      case 'win': this.playWin(); break;
-      case 'lose': this.playLose(); break;
-      case 'tick': this.playTone(800, 0.03, 'square', 0.05); break;
-      case 'step': this.playTone(180 + Math.random()*40, 0.04, 'triangle', 0.08); break;
-    }
-  }
-  
-  playTone(freq, duration, type = 'sine', volume = 0.2) {
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-    gain.gain.setValueAtTime(volume, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start();
-    osc.stop(this.ctx.currentTime + duration);
-  }
-  
-  playSwap() {
-    [300, 400, 500].forEach((f, i) => setTimeout(() => this.playTone(f, 0.06, 'sine', 0.1), i * 30));
-  }
-  
-  playMatch() {
-    [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => this.playTone(f, 0.15, 'sine', 0.15), i * 60));
-  }
-  
-  playExplosion() {
-    if (!this.ctx) return;
-    const bufferSize = this.ctx.sampleRate * 0.3;
-    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 2);
-    }
-    const source = this.ctx.createBufferSource();
-    const gain = this.ctx.createGain();
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(1000, this.ctx.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.3);
-    source.buffer = buffer;
-    gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
-    source.connect(filter);
-    filter.connect(gain);
-    gain.connect(this.ctx.destination);
-    source.start();
-  }
-  
-  playInvalid() {
-    this.playTone(200, 0.1, 'sawtooth', 0.1);
-    setTimeout(() => this.playTone(150, 0.1, 'sawtooth', 0.1), 80);
-  }
-  
-  playLevelUp() {
-    [523, 659, 784, 1047, 1319].forEach((f, i) => setTimeout(() => this.playTone(f, 0.2, 'sine', 0.15), i * 100));
-  }
-  
-  playWin() {
-    [523, 659, 784, 1047, 784, 1047, 1319, 1568].forEach((f, i) => setTimeout(() => this.playTone(f, 0.25, 'sine', 0.12), i * 120));
-  }
-  
-  playLose() {
-    [400, 350, 300, 250, 200].forEach((f, i) => setTimeout(() => this.playTone(f, 0.3, 'sawtooth', 0.08), i * 150));
-  }
-  
-  toggleMute() {
-    this.muted = !this.muted;
-    document.getElementById('muteBtn').textContent = this.muted ? '✕' : '♪';
-  }
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.setClearColor(0x050818);
+renderer.autoClear=false;
+document.body.appendChild(renderer.domElement);
+
+const scene=new THREE.Scene();
+const head=new THREE.Group(); scene.add(head);
+const eyeL=new THREE.PerspectiveCamera(80,1,0.05,120);
+const eyeR=new THREE.PerspectiveCamera(80,1,0.05,120);
+head.add(eyeL,eyeR);
+
+// Ambiente: stelle, griglia, solidi wireframe
+const sp=[]; for(let i=0;i<700;i++){const a=Math.random()*TAU,e=Math.asin(Math.random()*2-1),r=60;sp.push(r*Math.cos(e)*Math.cos(a),r*Math.sin(e),r*Math.cos(e)*Math.sin(a));}
+const sg=new THREE.BufferGeometry(); sg.setAttribute("position",new THREE.Float32BufferAttribute(sp,3));
+scene.add(new THREE.Points(sg,new THREE.PointsMaterial({size:2,sizeAttenuation:false,color:0xffffff})));
+const grid=new THREE.GridHelper(80,80,0x7a5cff,0x1a1f4a); grid.position.y=-2.4; scene.add(grid);
+const deco=[];
+for(let i=0;i<8;i++){const m=new THREE.Mesh(new THREE.IcosahedronGeometry(2+Math.random()*2,1),new THREE.MeshBasicMaterial({color:i%2?0x7a5cff:0x4df0c0,wireframe:true,transparent:true,opacity:.35}));
+const a=i/8*TAU,r=24+Math.random()*8;m.position.set(Math.cos(a)*r,Math.random()*10-2,Math.sin(a)*r);scene.add(m);deco.push(m);}
+
+// Mirino e HUD (figli della testa, a 3 m: profondità corretta in stereo)
+const ret=new THREE.Group(); ret.position.set(0,0,-3); ret.renderOrder=10;
+const retMat=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.9,depthTest:false});
+const ring=new THREE.Mesh(new THREE.RingGeometry(.05,.07,40),retMat);
+const dot=new THREE.Mesh(new THREE.CircleGeometry(.014,16),retMat);
+ring.renderOrder=10; dot.renderOrder=10; ret.add(ring,dot); head.add(ret);
+
+const cv=document.createElement("canvas"); cv.width=512; cv.height=256;
+const cx=cv.getContext("2d"); const tex=new THREE.CanvasTexture(cv);
+const hud=new THREE.Mesh(new THREE.PlaneGeometry(1.8,.9),new THREE.MeshBasicMaterial({map:tex,transparent:true,depthTest:false}));
+hud.position.set(0,-1.15,-3); hud.renderOrder=9; head.add(hud);
+function drawHud(a,b){
+  const k=a+"|"+b; if(k===hudKey) return; hudKey=k;
+  cx.clearRect(0,0,512,256); cx.fillStyle="rgba(5,8,24,.6)"; cx.fillRect(16,60,480,140);
+  cx.textAlign="center"; cx.fillStyle="#e8ecff"; cx.font="bold 58px system-ui,sans-serif"; cx.fillText(a,256,125);
+  cx.fillStyle="#4df0c0"; cx.font="30px system-ui,sans-serif"; cx.fillText(b,256,172);
+  tex.needsUpdate=true;
 }
 
-const audio = new AudioSystem();
-function toggleMute() { audio.toggleMute(); }
+// Audio
+function beep(f,d){ if(!actx) return; const o=actx.createOscillator(),g=actx.createGain(); o.type="sine"; o.frequency.value=f; g.gain.setValueAtTime(.15,actx.currentTime); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+d); o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime+d); }
 
-// ==================== GAME STATE ====================
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+// Bersagli
+const COLS=[0xff4d8d,0xffc933,0x4df0c0,0x7a5cff];
+function makeTarget(az,el,r,col,opts){
+  const m=new THREE.Mesh(new THREE.SphereGeometry(.5,20,16),new THREE.MeshBasicMaterial({color:col,transparent:true}));
+  m.add(new THREE.Mesh(new THREE.SphereGeometry(.72,16,12),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.22})));
+  m.userData=Object.assign({az,el,r,col,spd:(Math.random()-.5)*.3,age:0,life:7+Math.random()*2,dying:-1,restart:false},opts||{});
+  place(m); scene.add(m); targets.push(m); return m;
+}
+function place(m){const u=m.userData;m.position.set(u.r*Math.cos(u.el)*Math.sin(u.az),u.r*Math.sin(u.el),-u.r*Math.cos(u.el)*Math.cos(u.az));}
+function spawn(){ makeTarget(Math.random()*TAU,-.15+Math.random()*.8,6+Math.random()*4,COLS[Math.floor(Math.random()*4)]); }
+function removeT(m){ scene.remove(m); const i=targets.indexOf(m); if(i>=0) targets.splice(i,1); }
+function pop(m){ m.userData.dying=0; m.scale.setScalar(1); if(m.userData.restart){ startGame(); beep(880,.2); } else { score++; beep(520+Math.random()*300,.12); } }
 
-const BASE_W = 700;
-const BASE_H = 850;
+function startGame(){
+  targets.slice().forEach(removeT); score=0; timeLeft=60; spawnT=0; gazeT=0; gazed=null; state="play"; hudKey="";
+}
+function endGame(){
+  targets.slice().forEach(removeT); state="end"; gazed=null; gazeT=0;
+  const f=new THREE.Vector3(0,0,-1).applyQuaternion(head.quaternion);
+  const m=makeTarget(0,0,7,0x39ff6a,{restart:true,life:1e9,spd:0}); m.position.copy(f.multiplyScalar(7));
+  beep(300,.4);
+}
 
-let gameState = 'menu';
-let gridSize = 7;
-let cellSize = 68;
-let gridOffsetX = 113;
-let gridOffsetY = 330;
-let grid = [];
-let selectedCell = null;
-let timeLeft = 60;
-let maxTime = 60;
-let heroPos = 0;
-let monsterPos = -15;
-let goalPos = 90;
-let difficulty = 1;
-let score = 0;
-let level = 1;
-let combo = 0;
-let lastMatchTime = 0;
-let runCycle = 0;
-let lastStepTime = 0;
+// Orientamento
+const euler=new THREE.Euler(), q=new THREE.Quaternion(), q1=new THREE.Quaternion(-Math.sqrt(.5),0,0,Math.sqrt(.5)), q0=new THREE.Quaternion(), zee=new THREE.Vector3(0,0,1);
+const gyroQ=new THREE.Quaternion();
+function onOri(e){
+  if(e.alpha==null) return; hasGyro=true;
+  const o=((screen.orientation&&screen.orientation.angle)||window.orientation||0)*D2R;
+  euler.set(e.beta*D2R,e.alpha*D2R,-e.gamma*D2R,"YXZ"); gyroQ.setFromEuler(euler); gyroQ.multiply(q1); gyroQ.multiply(q0.setFromAxisAngle(zee,-o));
+}
+let lx=0,ly=0;
+window.addEventListener("pointerdown",e=>{lx=e.clientX;ly=e.clientY;});
+window.addEventListener("pointermove",e=>{ if(hasGyro||!e.buttons) return; yaw-=(e.clientX-lx)*.005; pitch=Math.max(-1.4,Math.min(1.4,pitch-(e.clientY-ly)*.005)); lx=e.clientX; ly=e.clientY; });
 
-let animationTime = 0;
-let particles = [];
-let floatingTexts = [];
-let dustParticles = [];
-let screenShake = 0;
-let flashAlpha = 0;
-let swapAnimation = null;
-let isProcessing = false;
+function resize(){
+  const w=window.innerWidth,h=window.innerHeight; renderer.setSize(w,h);
+  const asp=stereo?(w/2)/h:w/h; eyeL.aspect=eyeR.aspect=asp; eyeL.updateProjectionMatrix(); eyeR.updateProjectionMatrix();
+  eyeL.position.x=stereo?-IPD:0;
+}
+window.addEventListener("resize",resize); resize();
 
-const symbols = [
-  { type: 'circle', color: '#ff6b6b', glow: '#ff9999' },
-  { type: 'square', color: '#4ecdc4', glow: '#7ee8e0' },
-  { type: 'triangle', color: '#ffd93d', glow: '#ffe580' },
-  { type: 'diamond', color: '#a29bfe', glow: '#c8c4ff' },
-  { type: 'star', color: '#fd79a8', glow: '#ffa8cc' },
-  { type: 'hexagon', color: '#74b9ff', glow: '#a8d5ff' }
-];
+// Ciclo di gioco
+const gdir=new THREE.Vector3(), v=new THREE.Vector3(); let last=performance.now();
+function frame(now){
+  requestAnimationFrame(frame);
+  const dt=Math.min(.05,(now-last)/1000); last=now;
+  if(hasGyro) head.quaternion.copy(gyroQ); else head.quaternion.setFromEuler(new THREE.Euler(pitch,yaw,0,"YXZ"));
+  deco.forEach((d,i)=>{d.rotation.y+=dt*.1*(i%2?1:-1);d.rotation.x+=dt*.05;});
 
-// ==================== RESIZE CON ASPECT RATIO CORRETTO ====================
-function handleResize() {
-  const wrapper = document.querySelector('.canvas-wrapper');
-  const rect = wrapper.getBoundingClientRect();
-  
-  if (rect.width === 0 || rect.height === 0) return;
-  
-  const targetAspect = BASE_W / BASE_H;
-  const containerAspect = rect.width / rect.height;
-  
-  let displayWidth, displayHeight;
-  
-  if (containerAspect > targetAspect) {
-    displayHeight = rect.height;
-    displayWidth = displayHeight * targetAspect;
-  } else {
-    displayWidth = rect.width;
-    displayHeight = displayWidth / targetAspect;
+  if(state==="play"){
+    timeLeft-=dt; spawnT-=dt;
+    if(spawnT<=0&&targets.length<5){spawn();spawnT=.8;}
+    if(timeLeft<=0){timeLeft=0;endGame();}
   }
-  
-  canvas.style.width = displayWidth + 'px';
-  canvas.style.height = displayHeight + 'px';
-  
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.width = Math.floor(displayWidth * dpr);
-  canvas.height = Math.floor(displayHeight * dpr);
-  
-  ctx.setTransform(canvas.width / BASE_W, 0, 0, canvas.height / BASE_H, 0, 0);
-}
+  // sguardo
+  gdir.set(0,0,-1).applyQuaternion(head.quaternion);
+  let best=null,bd=0;
+  targets.forEach(m=>{const u=m.userData; if(u.dying>=0) return;
+    v.copy(m.position).normalize(); const d=gdir.dot(v), r=m.position.length();
+    if(d>Math.cos(Math.atan(.85/r))&&d>bd){bd=d;best=m;}});
+  if(best&&best===gazed) gazeT+=dt; else {gazed=best;gazeT=0;}
+  const p=best?Math.min(1,gazeT/.9):0;
+  if(best&&p>=1){pop(best);gazed=null;gazeT=0;}
+  ret.scale.setScalar(1+p*1.2); retMat.color.setRGB(1-p*.7,1,1-p*.4);
 
-window.addEventListener('resize', handleResize);
-window.addEventListener('orientationchange', () => setTimeout(handleResize, 300));
-window.addEventListener('load', handleResize);
-setTimeout(handleResize, 150);
-
-// ==================== GAME FUNCTIONS ====================
-function startGame(diff) {
-  audio.init();
-  difficulty = diff;
-  maxTime = diff === 1 ? 60 : 45;
-  timeLeft = maxTime;
-  heroPos = 0;
-  monsterPos = -15;
-  score = 0;
-  level = 1;
-  combo = 0;
-  generateGrid();
-  gameState = 'playing';
-  document.getElementById('menu').classList.add('hidden');
-  audio.play('levelup');
-  requestAnimationFrame(gameLoop);
-}
-
-function nextLevel() {
-  level++;
-  timeLeft = Math.min(maxTime, timeLeft + 15);
-  heroPos = 0;
-  monsterPos = -15 - level * 2;
-  goalPos = Math.min(95, 90 + level * 2);
-  combo = 0;
-  generateGrid();
-  gameState = 'playing';
-  audio.play('levelup');
-  flashAlpha = 0.5;
-  screenShake = 10;
-  spawnLevelUpText();
-}
-
-function generateGrid() {
-  grid = [];
-  const numSymbols = Math.min(6, 4 + Math.floor(level / 2));
-  for (let r = 0; r < gridSize; r++) {
-    grid[r] = [];
-    for (let c = 0; c < gridSize; c++) {
-      let symbol;
-      do {
-        symbol = symbols[Math.floor(Math.random() * numSymbols)];
-      } while (wouldCreateMatch(r, c, symbol));
-      grid[r][c] = { ...symbol, offsetY: 0, scale: 1, alpha: 1 };
-    }
+  for(let i=targets.length-1;i>=0;i--){
+    const m=targets[i],u=m.userData; u.age+=dt; u.az+=u.spd*dt; if(!u.restart) place(m);
+    let s=Math.min(1,u.age/.3);
+    if(u.dying>=0){u.dying+=dt; s=1+u.dying*5; m.material.opacity=Math.max(0,1-u.dying/.25); if(u.dying>.25){removeT(m);continue;}}
+    else if(u.age>u.life){const k=1-(u.age-u.life)/.4; if(k<=0){removeT(m);continue;} s*=k;}
+    else if(m===gazed) s*=1+.35*p;
+    m.scale.setScalar(s);
+    m.material.color.setHex(m===gazed&&u.dying<0?0xffffff:u.col);
   }
+  if(state==="play") drawHud("Punti "+score+"  ·  "+Math.ceil(timeLeft)+"s", timeLeft>54?"Guarda le sfere per colpirle":"");
+  else if(state==="end") drawHud("Punti: "+score,"Guarda l’orbe verde per rigiocare");
+  else drawHud("","");
+  render();
 }
-
-function wouldCreateMatch(row, col, symbol) {
-  let count = 1;
-  if (col > 0 && grid[row][col-1]?.type === symbol.type) count++;
-  if (col > 1 && grid[row][col-2]?.type === symbol.type) count++;
-  if (count >= 3) return true;
-  
-  count = 1;
-  if (row > 0 && grid[row-1]?.[col]?.type === symbol.type) count++;
-  if (row > 1 && grid[row-2]?.[col]?.type === symbol.type) count++;
-  if (count >= 3) return true;
-  
-  return false;
+function render(){
+  const w=window.innerWidth,h=window.innerHeight; renderer.setScissorTest(true); renderer.setScissor(0,0,w,h); renderer.setViewport(0,0,w,h); renderer.clear();
+  if(stereo){const hw=Math.floor(w/2);
+    renderer.setViewport(0,0,hw,h);renderer.setScissor(0,0,hw,h);renderer.render(scene,eyeL);
+    renderer.setViewport(hw,0,hw,h);renderer.setScissor(hw,0,hw,h);renderer.render(scene,eyeR);
+  } else renderer.render(scene,eyeL);
 }
+// il colore originale resta quello creato: salvo in userData
+const _mk=makeTarget; 
+requestAnimationFrame(frame);
 
-function handleInput(clientX, clientY) {
-  if (gameState !== 'playing' || isProcessing) return;
-  
-  const rect = canvas.getBoundingClientRect();
-  const x = ((clientX - rect.left) / rect.width) * BASE_W;
-  const y = ((clientY - rect.top) / rect.height) * BASE_H;
-  
-  const col = Math.floor((x - gridOffsetX) / cellSize);
-  const row = Math.floor((y - gridOffsetY) / cellSize);
-  
-  if (row >= 0 && row < gridSize && col >= 0 && col < gridSize) {
-    if (!selectedCell) {
-      selectedCell = { row, col };
-      audio.play('select');
-    } else if (selectedCell.row === row && selectedCell.col === col) {
-      selectedCell = null;
-    } else if (isAdjacent(selectedCell.row, selectedCell.col, row, col)) {
-      startSwap(selectedCell.row, selectedCell.col, row, col);
-      selectedCell = null;
-    } else {
-      selectedCell = { row, col };
-      audio.play('select');
-    }
-  }
+async function begin(st){
+  stereo=st;
+  try{ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){}
+  try{
+    if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){
+      const r=await DeviceOrientationEvent.requestPermission(); if(r!=="granted") hasGyro=false;
+      else window.addEventListener("deviceorientation",onOri,true);
+    } else window.addEventListener("deviceorientation",onOri,true);
+  }catch(e){}
+  try{ if(document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen(); }catch(e){}
+  try{ if(screen.orientation&&screen.orientation.lock) await screen.orientation.lock("landscape"); }catch(e){}
+  try{ if(navigator.wakeLock) navigator.wakeLock.request("screen").catch(function(){}); }catch(e){}
+  document.getElementById("ov").style.display="none";
+  resize(); startGame();
 }
-
-canvas.addEventListener('click', (e) => handleInput(e.clientX, e.clientY));
-canvas.addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  if (e.touches.length > 0) {
-    handleInput(e.touches[0].clientX, e.touches[0].clientY);
-  }
-}, { passive: false });
-
-function isAdjacent(r1, c1, r2, c2) {
-  return (Math.abs(r1 - r2) + Math.abs(c1 - c2)) === 1;
-}
-
-function startSwap(r1, c1, r2, c2) {
-  isProcessing = true;
-  swapAnimation = { r1, c1, r2, c2, progress: 0, reverting: false };
-  audio.play('swap');
-}
-
-function updateSwapAnimation() {
-  if (!swapAnimation) return;
-  
-  swapAnimation.progress += 0.08;
-  
-  if (swapAnimation.progress >= 1) {
-    if (!swapAnimation.reverting) {
-      const { r1, c1, r2, c2 } = swapAnimation;
-      const temp = grid[r1][c1];
-      grid[r1][c1] = grid[r2][c2];
-      grid[r2][c2] = temp;
-      
-      if (checkAndRemoveMatches()) {
-        swapAnimation = null;
-        setTimeout(() => { isProcessing = false; }, 300);
-      } else {
-        grid[r2][c2] = grid[r1][c1];
-        grid[r1][c1] = temp;
-        swapAnimation.reverting = true;
-        swapAnimation.progress = 0;
-        audio.play('invalid');
-      }
-    } else {
-      swapAnimation = null;
-      isProcessing = false;
-    }
-  }
-}
-
-function checkAndRemoveMatches() {
-  const toRemove = new Set();
-  
-  for (let r = 0; r < gridSize; r++) {
-    let count = 1;
-    for (let c = 1; c < gridSize; c++) {
-      if (grid[r][c] && grid[r][c-1] && grid[r][c].type === grid[r][c-1].type) {
-        count++;
-      } else {
-        if (count >= 3) {
-          for (let k = c - count; k < c; k++) toRemove.add(`${r},${k}`);
-        }
-        count = 1;
-      }
-    }
-    if (count >= 3) {
-      for (let k = gridSize - count; k < gridSize; k++) toRemove.add(`${r},${k}`);
-    }
-  }
-  
-  for (let c = 0; c < gridSize; c++) {
-    let count = 1;
-    for (let r = 1; r < gridSize; r++) {
-      if (grid[r][c] && grid[r-1][c] && grid[r][c].type === grid[r-1][c].type) {
-        count++;
-      } else {
-        if (count >= 3) {
-          for (let k = r - count; k < r; k++) toRemove.add(`${k},${c}`);
-        }
-        count = 1;
-      }
-    }
-    if (count >= 3) {
-      for (let k = gridSize - count; k < gridSize; k++) toRemove.add(`${k},${c}`);
-    }
-  }
-  
-  if (toRemove.size > 0) {
-    const now = Date.now();
-    if (now - lastMatchTime < 2000) combo++;
-    else combo = 1;
-    lastMatchTime = now;
-    
-    toRemove.forEach(key => {
-      const [r, c] = key.split(',').map(Number);
-      const x = gridOffsetX + c * cellSize + cellSize / 2;
-      const y = gridOffsetY + r * cellSize + cellSize / 2;
-      spawnExplosion(x, y, grid[r][c].color, grid[r][c].glow);
-      grid[r][c] = null;
-    });
-    
-    const points = toRemove.size * 10 * combo;
-    score += points;
-    heroPos = Math.min(goalPos, heroPos + toRemove.size * (1.2 + combo * 0.2));
-    
-    spawnFloatingText(`+${points}`, BASE_W / 2, gridOffsetY - 20);
-    if (combo > 1) spawnFloatingText(`COMBO x${combo}!`, BASE_W / 2, gridOffsetY - 50, '#ffd93d');
-    
-    screenShake = Math.min(15, 5 + toRemove.size);
-    audio.play('match');
-    if (toRemove.size >= 4) audio.play('explosion');
-    
-    setTimeout(() => {
-      applyGravity();
-      setTimeout(() => checkAndRemoveMatches(), 250);
-    }, 200);
-    
-    if (heroPos >= goalPos) {
-      setTimeout(() => {
-        if (gameState === 'playing') {
-          gameState = 'levelcomplete';
-          audio.play('levelup');
-          flashAlpha = 0.8;
-          screenShake = 15;
-          setTimeout(() => nextLevel(), 1500);
-        }
-      }, 500);
-    }
-    
-    return true;
-  }
-  
-  return false;
-}
-
-function applyGravity() {
-  for (let c = 0; c < gridSize; c++) {
-    let writePos = gridSize - 1;
-    for (let r = gridSize - 1; r >= 0; r--) {
-      if (grid[r][c] !== null) {
-        if (writePos !== r) {
-          grid[writePos][c] = grid[r][c];
-          grid[writePos][c].offsetY = (r - writePos) * cellSize;
-          grid[r][c] = null;
-        }
-        writePos--;
-      }
-    }
-    
-    for (let r = writePos; r >= 0; r--) {
-      const numSymbols = Math.min(6, 4 + Math.floor(level / 2));
-      grid[r][c] = { ...symbols[Math.floor(Math.random() * numSymbols)], offsetY: -(writePos - r + 2) * cellSize, scale: 1, alpha: 1 };
-    }
-  }
-}
-
-function spawnExplosion(x, y, color, glow) {
-  for (let i = 0; i < 15; i++) {
-    const angle = (Math.PI * 2 * i) / 15 + Math.random() * 0.5;
-    const speed = 3 + Math.random() * 5;
-    particles.push({
-      x, y,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed - 2,
-      life: 1,
-      color: Math.random() > 0.5 ? color : glow,
-      size: 3 + Math.random() * 6,
-      type: Math.random() > 0.7 ? 'spark' : 'circle'
-    });
-  }
-}
-
-function spawnFloatingText(text, x, y, color = '#4ecdc4') {
-  floatingTexts.push({ text, x, y, life: 1, color });
-}
-
-function spawnLevelUpText() {
-  spawnFloatingText(`LIVELLO ${level}!`, BASE_W / 2, BASE_H / 2, '#ffd93d');
-}
-
-function spawnDust(x, y) {
-  dustParticles.push({
-    x: x + (Math.random() - 0.5) * 8,
-    y: y + Math.random() * 4,
-    vx: -0.5 - Math.random() * 1.5,
-    vy: -Math.random() * 1.5,
-    life: 1,
-    size: 2 + Math.random() * 3
-  });
-}
-
-function updateParticles() {
-  particles = particles.filter(p => {
-    p.x += p.vx;
-    p.y += p.vy;
-    p.vy += 0.25;
-    p.life -= 0.02;
-    return p.life > 0;
-  });
-  
-  floatingTexts = floatingTexts.filter(t => {
-    t.y -= 1;
-    t.life -= 0.02;
-    return t.life > 0;
-  });
-  
-  dustParticles = dustParticles.filter(d => {
-    d.x += d.vx;
-    d.y += d.vy;
-    d.vy += 0.05;
-    d.life -= 0.03;
-    d.size *= 1.02;
-    return d.life > 0;
-  });
-}
-
-// ==================== DRAWING ====================
-function drawSymbol(x, y, symbol, size) {
-  ctx.save();
-  ctx.globalAlpha = symbol.alpha || 1;
-  
-  ctx.shadowColor = symbol.glow;
-  ctx.shadowBlur = 15;
-  
-  const gradient = ctx.createRadialGradient(x - size*0.15, y - size*0.15, 0, x, y, size * 0.5);
-  gradient.addColorStop(0, symbol.glow);
-  gradient.addColorStop(1, symbol.color);
-  ctx.fillStyle = gradient;
-  
-  ctx.strokeStyle = 'rgba(255,255,255,0.6)';
-  ctx.lineWidth = 2;
-  
-  const s = size * (symbol.scale || 1);
-  
-  switch (symbol.type) {
-    case 'circle':
-      ctx.beginPath();
-      ctx.arc(x, y, s * 0.38, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      break;
-    case 'square':
-      const ss = s * 0.65;
-      ctx.fillRect(x - ss/2, y - ss/2, ss, ss);
-      ctx.strokeRect(x - ss/2, y - ss/2, ss, ss);
-      break;
-    case 'triangle':
-      ctx.beginPath();
-      ctx.moveTo(x, y - s * 0.4);
-      ctx.lineTo(x - s * 0.38, y + s * 0.28);
-      ctx.lineTo(x + s * 0.38, y + s * 0.28);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      break;
-    case 'diamond':
-      ctx.beginPath();
-      ctx.moveTo(x, y - s * 0.42);
-      ctx.lineTo(x + s * 0.35, y);
-      ctx.lineTo(x, y + s * 0.42);
-      ctx.lineTo(x - s * 0.35, y);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      break;
-    case 'star':
-      drawStar(x, y, 5, s * 0.42, s * 0.2);
-      ctx.fill();
-      ctx.stroke();
-      break;
-    case 'hexagon':
-      drawPolygon(x, y, 6, s * 0.4);
-      ctx.fill();
-      ctx.stroke();
-      break;
-  }
-  ctx.restore();
-}
-
-function drawStar(cx, cy, spikes, outerRadius, innerRadius) {
-  ctx.beginPath();
-  for (let i = 0; i < spikes * 2; i++) {
-    const radius = i % 2 === 0 ? outerRadius : innerRadius;
-    const angle = (Math.PI * i) / spikes - Math.PI / 2;
-    const x = cx + Math.cos(angle) * radius;
-    const y = cy + Math.sin(angle) * radius;
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  ctx.closePath();
-}
-
-function drawPolygon(cx, cy, sides, radius) {
-  ctx.beginPath();
-  for (let i = 0; i < sides; i++) {
-    const angle = (Math.PI * 2 * i) / sides - Math.PI / 2;
-    const x = cx + Math.cos(angle) * radius;
-    const y = cy + Math.sin(angle) * radius;
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  ctx.closePath();
-}
-
-function drawHero(x, y) {
-  const phase = (runCycle % 1 + 1) % 1;
-  const cycle = phase * Math.PI * 2;
-  
-  const bodyBounce = Math.abs(Math.sin(cycle)) * 2;
-  const lean = 0.12;
-  
-  const monsterDistance = heroPos - monsterPos;
-  const panic = Math.max(0, Math.min(1, (15 - monsterDistance) / 15));
-  
-  ctx.save();
-  ctx.translate(x, y);
-  
-  ctx.fillStyle = 'rgba(0,0,0,0.35)';
-  ctx.beginPath();
-  ctx.ellipse(0, 22, 14, 4, 0, 0, Math.PI * 2);
-  ctx.fill();
-  
-  ctx.rotate(lean);
-  
-  ctx.shadowColor = '#4ecdc4';
-  ctx.shadowBlur = 12;
-  
-  const leftThigh = Math.sin(cycle) * 0.9;
-  const leftKnee = Math.max(0, Math.sin(cycle - Math.PI/2)) * 1.2;
-  drawLeg(-4, 5, leftThigh, leftKnee);
-  
-  const rightThigh = Math.sin(cycle + Math.PI) * 0.9;
-  const rightKnee = Math.max(0, Math.sin(cycle + Math.PI/2)) * 1.2;
-  drawLeg(4, 5, rightThigh, rightKnee);
-  
-  const leftArm = Math.sin(cycle + Math.PI) * 0.8;
-  const rightArm = Math.sin(cycle) * 0.8;
-  drawArm(-8, -13, leftArm);
-  drawArm(8, -13, rightArm);
-  
-  ctx.fillStyle = '#4ecdc4';
-  ctx.strokeStyle = '#2d9a92';
-  ctx.lineWidth = 2;
-  
-  ctx.beginPath();
-  ctx.moveTo(-9, -18 - bodyBounce);
-  ctx.lineTo(9, -18 - bodyBounce);
-  ctx.lineTo(7, 5 - bodyBounce);
-  ctx.lineTo(-7, 5 - bodyBounce);
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-  
-  ctx.fillStyle = '#3ab5ad';
-  ctx.fillRect(-3, -14 - bodyBounce, 6, 8);
-  
-  const headBounce = bodyBounce * 1.2;
-  const headTilt = Math.sin(cycle * 2) * 0.05;
-  
-  ctx.save();
-  ctx.translate(0, -28 - headBounce);
-  ctx.rotate(headTilt);
-  
-  ctx.fillStyle = '#ffd93d';
-  ctx.strokeStyle = '#d4a017';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(0, 0, 11, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-  
-  ctx.fillStyle = '#8b4513';
-  ctx.beginPath();
-  ctx.arc(0, -3, 11, Math.PI, Math.PI * 2);
-  ctx.lineTo(-10, -3);
-  ctx.closePath();
-  ctx.fill();
-  ctx.fillRect(-11, -4, 22, 3);
-  
-  ctx.fillStyle = '#fff';
-  ctx.beginPath();
-  ctx.ellipse(-4, -1, 3, panic > 0.5 ? 4 : 3, 0, 0, Math.PI * 2);
-  ctx.ellipse(4, -1, 3, panic > 0.5 ? 4 : 3, 0, 0, Math.PI * 2);
-  ctx.fill();
-  
-  ctx.fillStyle = '#000';
-  const pupilX = panic > 0.5 ? -1 : 1;
-  ctx.beginPath();
-  ctx.arc(-4 + pupilX, -1, 1.5, 0, Math.PI * 2);
-  ctx.arc(4 + pupilX, -1, 1.5, 0, Math.PI * 2);
-  ctx.fill();
-  
-  ctx.strokeStyle = '#000';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  if (panic > 0.5) {
-    ctx.moveTo(-7, -6);
-    ctx.lineTo(-2, -5);
-    ctx.moveTo(7, -6);
-    ctx.lineTo(2, -5);
-  } else {
-    ctx.moveTo(-7, -5);
-    ctx.lineTo(-2, -4);
-    ctx.moveTo(7, -5);
-    ctx.lineTo(2, -4);
-  }
-  ctx.stroke();
-  
-  ctx.strokeStyle = '#000';
-  ctx.lineWidth = 1.5;
-  ctx.fillStyle = '#c93d3d';
-  ctx.beginPath();
-  if (panic > 0.7) {
-    ctx.ellipse(0, 5, 3, 4, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-  } else if (panic > 0.3) {
-    ctx.arc(0, 6, 2, Math.PI, 0, false);
-    ctx.stroke();
-  } else {
-    ctx.arc(0, 3, 3, 0, Math.PI);
-    ctx.stroke();
-  }
-  
-  if (panic > 0.4) {
-    ctx.fillStyle = '#74b9ff';
-    ctx.beginPath();
-    ctx.moveTo(8, -5);
-    ctx.lineTo(10, 0);
-    ctx.lineTo(6, 0);
-    ctx.closePath();
-    ctx.fill();
-  }
-  
-  ctx.restore();
-  ctx.restore();
-}
-
-function drawLeg(hipX, hipY, thighAngle, kneeAngle) {
-  const thighLength = 12;
-  const shinLength = 11;
-  
-  ctx.save();
-  ctx.translate(hipX, hipY);
-  ctx.rotate(thighAngle);
-  
-  ctx.strokeStyle = '#2d7a74';
-  ctx.lineWidth = 7;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(0, thighLength);
-  ctx.stroke();
-  
-  ctx.translate(0, thighLength);
-  ctx.rotate(kneeAngle);
-  
-  ctx.strokeStyle = '#2d7a74';
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(0, shinLength);
-  ctx.stroke();
-  
-  ctx.fillStyle = '#ff6b6b';
-  ctx.strokeStyle = '#c93d3d';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.ellipse(2, shinLength + 2, 5, 3, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-  
-  ctx.restore();
-}
-
-function drawArm(shoulderX, shoulderY, angle) {
-  const upperLength = 10;
-  const forearmLength = 9;
-  
-  ctx.save();
-  ctx.translate(shoulderX, shoulderY);
-  ctx.rotate(angle);
-  
-  ctx.strokeStyle = '#ffd93d';
-  ctx.lineWidth = 5;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(0, upperLength);
-  ctx.stroke();
-  
-  ctx.translate(0, upperLength);
-  ctx.rotate(-1.2);
-  ctx.strokeStyle = '#ffd93d';
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(0, forearmLength);
-  ctx.stroke();
-  
-  ctx.fillStyle = '#ffd93d';
-  ctx.beginPath();
-  ctx.arc(0, forearmLength, 2.5, 0, Math.PI * 2);
-  ctx.fill();
-  
-  ctx.restore();
-}
-
-function drawMonster(x, y) {
-  const bounce = Math.sin(animationTime * 8) * 4;
-  
-  ctx.save();
-  ctx.shadowColor = '#ff6b6b';
-  ctx.shadowBlur = 20;
-  
-  ctx.fillStyle = 'rgba(0,0,0,0.4)';
-  ctx.beginPath();
-  ctx.ellipse(x, y + 22, 18, 5, 0, 0, Math.PI * 2);
-  ctx.fill();
-  
-  ctx.fillStyle = '#ff6b6b';
-  ctx.beginPath();
-  ctx.arc(x, y - 18 + bounce, 20, 0, Math.PI * 2);
-  ctx.fill();
-  
-  ctx.fillStyle = '#c93d3d';
-  ctx.beginPath();
-  ctx.arc(x, y - 18 + bounce, 20, 0, Math.PI);
-  ctx.fill();
-  
-  ctx.fillStyle = '#fff';
-  ctx.beginPath();
-  ctx.arc(x - 8, y - 24 + bounce, 6, 0, Math.PI * 2);
-  ctx.arc(x + 8, y - 24 + bounce, 6, 0, Math.PI * 2);
-  ctx.fill();
-  
-  ctx.fillStyle = '#000';
-  ctx.beginPath();
-  ctx.arc(x - 6, y - 22 + bounce, 3.5, 0, Math.PI * 2);
-  ctx.arc(x + 10, y - 22 + bounce, 3.5, 0, Math.PI * 2);
-  ctx.fill();
-  
-  ctx.strokeStyle = '#000';
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  ctx.moveTo(x - 13, y - 32 + bounce);
-  ctx.lineTo(x - 4, y - 29 + bounce);
-  ctx.moveTo(x + 13, y - 32 + bounce);
-  ctx.lineTo(x + 4, y - 29 + bounce);
-  ctx.stroke();
-  
-  ctx.fillStyle = '#000';
-  ctx.beginPath();
-  ctx.arc(x, y - 10 + bounce, 9, 0, Math.PI);
-  ctx.fill();
-  
-  ctx.fillStyle = '#fff';
-  for (let i = 0; i < 5; i++) {
-    ctx.beginPath();
-    ctx.moveTo(x - 8 + i * 4, y - 10 + bounce);
-    ctx.lineTo(x - 6 + i * 4, y - 5 + bounce);
-    ctx.lineTo(x - 4 + i * 4, y - 10 + bounce);
-    ctx.closePath();
-    ctx.fill();
-  }
-  
-  ctx.fillStyle = '#ff6b6b';
-  ctx.beginPath();
-  ctx.moveTo(x - 14, y - 34 + bounce);
-  ctx.lineTo(x - 18, y - 48 + bounce);
-  ctx.lineTo(x - 10, y - 36 + bounce);
-  ctx.closePath();
-  ctx.fill();
-  
-  ctx.beginPath();
-  ctx.moveTo(x + 14, y - 34 + bounce);
-  ctx.lineTo(x + 18, y - 48 + bounce);
-  ctx.lineTo(x + 10, y - 36 + bounce);
-  ctx.closePath();
-  ctx.fill();
-  
-  ctx.restore();
-}
-
-function drawRoad() {
-  const roadY = 130;
-  const roadWidth = 620;
-  const roadX = 40;
-  
-  ctx.save();
-  
-  const roadGrad = ctx.createLinearGradient(roadX, roadY, roadX, roadY + 80);
-  roadGrad.addColorStop(0, '#2d2d2d');
-  roadGrad.addColorStop(0.5, '#404040');
-  roadGrad.addColorStop(1, '#2d2d2d');
-  ctx.fillStyle = roadGrad;
-  ctx.fillRect(roadX, roadY, roadWidth, 80);
-  
-  ctx.strokeStyle = '#1a1a1a';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(roadX, roadY, roadWidth, 80);
-  
-  ctx.strokeStyle = '#ffd93d';
-  ctx.lineWidth = 4;
-  ctx.setLineDash([25, 20]);
-  ctx.lineDashOffset = -animationTime * 80;
-  ctx.beginPath();
-  ctx.moveTo(roadX, roadY + 40);
-  ctx.lineTo(roadX + roadWidth, roadY + 40);
-  ctx.stroke();
-  ctx.setLineDash([]);
-  
-  const flagX = roadX + (goalPos / 100) * roadWidth;
-  ctx.fillStyle = '#4ecdc4';
-  ctx.shadowColor = '#4ecdc4';
-  ctx.shadowBlur = 15;
-  ctx.fillRect(flagX, roadY - 35, 6, 70);
-  ctx.shadowBlur = 0;
-  
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 3; j++) {
-      ctx.fillStyle = (i + j) % 2 === 0 ? '#fff' : '#000';
-      ctx.fillRect(flagX + 6, roadY - 35 + i * 17, 17, 17);
-    }
-  }
-  
-  dustParticles.forEach(d => {
-    ctx.fillStyle = `rgba(200, 180, 150, ${d.life * 0.6})`;
-    ctx.beginPath();
-    ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
-    ctx.fill();
-  });
-  
-  const heroX = roadX + (heroPos / 100) * roadWidth;
-  drawHero(heroX, roadY + 40);
-  
-  const monsterX = roadX + (Math.max(-15, monsterPos) / 100) * roadWidth;
-  drawMonster(monsterX, roadY + 40);
-  
-  ctx.restore();
-}
-
-function drawHUD() {
-  ctx.save();
-  
-  ctx.fillStyle = 'rgba(0,0,0,0.5)';
-  ctx.fillRect(15, 15, 220, 75);
-  
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 20px Arial';
-  ctx.fillText(`TEMPO: ${Math.ceil(timeLeft)}s`, 28, 40);
-  
-  const barWidth = 180;
-  const barHeight = 16;
-  ctx.fillStyle = 'rgba(0,0,0,0.6)';
-  ctx.fillRect(28, 52, barWidth, barHeight);
-  
-  const timePercent = Math.max(0, timeLeft / maxTime);
-  const gradient = ctx.createLinearGradient(28, 0, 28 + barWidth, 0);
-  if (timePercent > 0.5) {
-    gradient.addColorStop(0, '#4ecdc4');
-    gradient.addColorStop(1, '#7ee8e0');
-  } else if (timePercent > 0.25) {
-    gradient.addColorStop(0, '#ffd93d');
-    gradient.addColorStop(1, '#ffe580');
-  } else {
-    gradient.addColorStop(0, '#ff6b6b');
-    gradient.addColorStop(1, '#ff9999');
-  }
-  ctx.fillStyle = gradient;
-  ctx.shadowColor = timePercent > 0.5 ? '#4ecdc4' : timePercent > 0.25 ? '#ffd93d' : '#ff6b6b';
-  ctx.shadowBlur = 8;
-  ctx.fillRect(28, 52, barWidth * timePercent, barHeight);
-  ctx.shadowBlur = 0;
-  
-  ctx.fillStyle = 'rgba(0,0,0,0.5)';
-  ctx.fillRect(BASE_W - 170, 15, 155, 42);
-  
-  ctx.fillStyle = '#ffd93d';
-  ctx.font = 'bold 22px Arial';
-  ctx.textAlign = 'right';
-  ctx.shadowColor = '#ffd93d';
-  ctx.shadowBlur = 6;
-  ctx.fillText(`PUNTI: ${score}`, BASE_W - 25, 43);
-  ctx.shadowBlur = 0;
-  ctx.textAlign = 'left';
-  
-  ctx.fillStyle = 'rgba(0,0,0,0.5)';
-  ctx.fillRect(BASE_W / 2 - 65, 15, 130, 32);
-  
-  ctx.fillStyle = '#a29bfe';
-  ctx.font = 'bold 18px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText(`LIVELLO ${level}`, BASE_W / 2, 38);
-  ctx.textAlign = 'left';
-  
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 15px Arial';
-  ctx.fillText(`Distanza: ${Math.floor(heroPos / goalPos * 100)}%`, 28, 240);
-  
-  if (combo > 1) {
-    ctx.fillStyle = '#ffd93d';
-    ctx.font = 'bold 26px Arial';
-    ctx.textAlign = 'center';
-    ctx.shadowColor = '#ffd93d';
-    ctx.shadowBlur = 12;
-    ctx.fillText(`COMBO x${combo}`, BASE_W / 2, 270);
-    ctx.shadowBlur = 0;
-    ctx.textAlign = 'left';
-  }
-  
-  ctx.restore();
-}
-
-function drawGrid() {
-  ctx.save();
-  
-  ctx.fillStyle = 'rgba(0,0,0,0.3)';
-  ctx.fillRect(gridOffsetX - 15, gridOffsetY - 15, gridSize * cellSize + 30, gridSize * cellSize + 30);
-  
-  for (let r = 0; r < gridSize; r++) {
-    for (let c = 0; c < gridSize; c++) {
-      const x = gridOffsetX + c * cellSize;
-      const y = gridOffsetY + r * cellSize;
-      
-      ctx.fillStyle = 'rgba(255,255,255,0.05)';
-      ctx.fillRect(x + 2, y + 2, cellSize - 4, cellSize - 4);
-      
-      if (selectedCell && selectedCell.row === r && selectedCell.col === c) {
-        ctx.strokeStyle = '#ffd93d';
-        ctx.lineWidth = 4;
-        ctx.shadowColor = '#ffd93d';
-        ctx.shadowBlur = 15;
-        ctx.strokeRect(x + 2, y + 2, cellSize - 4, cellSize - 4);
-        ctx.shadowBlur = 0;
-      }
-      
-      if (grid[r][c]) {
-        if (grid[r][c].offsetY < 0) {
-          grid[r][c].offsetY = Math.min(0, grid[r][c].offsetY + 12);
-        }
-        
-        let drawX = x + cellSize / 2;
-        let drawY = y + cellSize / 2 + grid[r][c].offsetY;
-        
-        if (swapAnimation && !swapAnimation.reverting) {
-          const { r1, c1, r2, c2, progress } = swapAnimation;
-          if ((r === r1 && c === c1) || (r === r2 && c === c2)) {
-            const otherR = r === r1 ? r2 : r1;
-            const otherC = c === c1 ? c2 : c1;
-            const t = Math.min(1, progress);
-            const ease = t < 0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
-            drawX = x + cellSize/2 + (otherC - c) * cellSize * ease;
-            drawY = y + cellSize/2 + (otherR - r) * cellSize * ease;
-          }
-        }
-        
-        drawSymbol(drawX, drawY, grid[r][c], cellSize);
-      }
-    }
-  }
-  
-  ctx.restore();
-}
-
-function drawParticles() {
-  particles.forEach(p => {
-    ctx.save();
-    ctx.globalAlpha = p.life;
-    
-    if (p.type === 'spark') {
-      ctx.strokeStyle = p.color;
-      ctx.lineWidth = p.size / 2;
-      ctx.shadowColor = p.color;
-      ctx.shadowBlur = 10;
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-      ctx.lineTo(p.x - p.vx * 2, p.y - p.vy * 2);
-      ctx.stroke();
-    } else {
-      ctx.fillStyle = p.color;
-      ctx.shadowColor = p.color;
-      ctx.shadowBlur = 8;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    
-    ctx.restore();
-  });
-}
-
-function drawFloatingTexts() {
-  floatingTexts.forEach(t => {
-    ctx.save();
-    ctx.globalAlpha = t.life;
-    ctx.fillStyle = t.color;
-    ctx.font = 'bold 30px Arial';
-    ctx.textAlign = 'center';
-    ctx.shadowColor = t.color;
-    ctx.shadowBlur = 12;
-    ctx.fillText(t.text, t.x, t.y);
-    ctx.restore();
-  });
-}
-
-function drawLevelComplete() {
-  ctx.save();
-  ctx.fillStyle = 'rgba(0,0,0,0.7)';
-  ctx.fillRect(0, 0, BASE_W, BASE_H);
-  
-  ctx.textAlign = 'center';
-  ctx.font = 'bold 55px Arial';
-  ctx.fillStyle = '#4ecdc4';
-  ctx.shadowColor = '#4ecdc4';
-  ctx.shadowBlur = 25;
-  ctx.fillText('TRAGUARDO!', BASE_W / 2, BASE_H / 2 - 60);
-  
-  ctx.font = 'bold 36px Arial';
-  ctx.fillStyle = '#ffd93d';
-  ctx.shadowColor = '#ffd93d';
-  ctx.shadowBlur = 18;
-  ctx.fillText(`LIVELLO ${level} COMPLETATO`, BASE_W / 2, BASE_H / 2);
-  
-  ctx.font = '22px Arial';
-  ctx.fillStyle = '#fff';
-  ctx.shadowBlur = 0;
-  ctx.fillText('Preparati al prossimo...', BASE_W / 2, BASE_H / 2 + 60);
-  ctx.restore();
-}
-
-function drawEndScreen(won) {
-  ctx.save();
-  ctx.fillStyle = 'rgba(0,0,0,0.85)';
-  ctx.fillRect(0, 0, BASE_W, BASE_H);
-  
-  ctx.textAlign = 'center';
-  
-  ctx.font = 'bold 60px Arial';
-  ctx.fillStyle = won ? '#4ecdc4' : '#ff6b6b';
-  ctx.shadowColor = won ? '#4ecdc4' : '#ff6b6b';
-  ctx.shadowBlur = 30;
-  ctx.fillText(won ? 'HAI VINTO!' : 'TI HA PRESO!', BASE_W / 2, BASE_H / 2 - 80);
-  ctx.shadowBlur = 0;
-  
-  ctx.font = 'bold 32px Arial';
-  ctx.fillStyle = '#ffd93d';
-  ctx.fillText(`PUNTEGGIO: ${score}`, BASE_W / 2, BASE_H / 2);
-  
-  ctx.font = 'bold 26px Arial';
-  ctx.fillStyle = '#a29bfe';
-  ctx.fillText(`LIVELLO RAGGIUNTO: ${level}`, BASE_W / 2, BASE_H / 2 + 50);
-  
-  ctx.font = '20px Arial';
-  ctx.fillStyle = '#fff';
-  ctx.fillText('Tocca per tornare al menu', BASE_W / 2, BASE_H / 2 + 110);
-  
-  ctx.restore();
-}
-
-// ==================== GAME LOOP ====================
-let lastTimestamp = 0;
-let prevHeroPos = 0;
-
-function gameLoop(timestamp) {
-  if (gameState === 'menu') {
-    requestAnimationFrame(gameLoop);
-    return;
-  }
-  
-  const deltaTime = Math.min(50, timestamp - lastTimestamp);
-  lastTimestamp = timestamp;
-  animationTime = timestamp / 1000;
-  
-  if (gameState === 'playing') {
-    timeLeft -= deltaTime / 1000;
-    
-    if (timeLeft <= 5 && timeLeft > 0 && Math.floor(timeLeft * 2) !== Math.floor((timeLeft + deltaTime/1000) * 2)) {
-      audio.play('tick');
-    }
-    
-    const monsterSpeed = difficulty === 1 ? 1 : 1.4;
-    monsterPos = -15 + (1 - timeLeft / maxTime) * (heroPos + 12) * monsterSpeed;
-    
-    const heroDelta = heroPos - prevHeroPos;
-    if (heroDelta > 0.01) {
-      runCycle += heroDelta * 0.15;
-      
-      if (timestamp - lastStepTime > 120) {
-        const roadX = 40;
-        const roadWidth = 620;
-        const heroX = roadX + (heroPos / 100) * roadWidth;
-        spawnDust(heroX - 8, 170);
-        spawnDust(heroX - 4, 172);
-        audio.play('step');
-        lastStepTime = timestamp;
-      }
-    }
-    prevHeroPos = heroPos;
-    
-    if (timeLeft <= 0 || monsterPos >= heroPos - 3) {
-      gameState = 'lose';
-      audio.play('lose');
-      screenShake = 20;
-      setTimeout(() => {
-        canvas.onclick = () => {
-          gameState = 'menu';
-          document.getElementById('menu').classList.remove('hidden');
-          canvas.onclick = (e) => handleInput(e.clientX, e.clientY);
-        };
-      }, 500);
-    }
-    
-    updateSwapAnimation();
-  }
-  
-  updateParticles();
-  
-  ctx.save();
-  
-  if (screenShake > 0) {
-    ctx.translate(
-      (Math.random() - 0.5) * screenShake,
-      (Math.random() - 0.5) * screenShake
-    );
-    screenShake *= 0.9;
-    if (screenShake < 0.5) screenShake = 0;
-  }
-  
-  ctx.clearRect(-20, -20, BASE_W + 40, BASE_H + 40);
-  
-  drawRoad();
-  drawHUD();
-  drawGrid();
-  drawParticles();
-  drawFloatingTexts();
-  
-  if (flashAlpha > 0) {
-    ctx.fillStyle = `rgba(255,255,255,${flashAlpha})`;
-    ctx.fillRect(-20, -20, BASE_W + 40, BASE_H + 40);
-    flashAlpha -= 0.05;
-  }
-  
-  ctx.restore();
-  
-  if (gameState === 'levelcomplete') {
-    drawLevelComplete();
-  } else if (gameState === 'win' || gameState === 'lose') {
-    drawEndScreen(gameState === 'win');
-  }
-  
-  requestAnimationFrame(gameLoop);
-}
-
-requestAnimationFrame(gameLoop);
+document.getElementById("b1").addEventListener("click",()=>begin(true));
+document.getElementById("b2").addEventListener("click",()=>begin(false));
+})();
 </script>
-
 </body>
 </html>
